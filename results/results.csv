@@ -1,0 +1,9 @@
+Metric,Gradient Descent (GD),Stochastic Gradient Descent (SGD),Analytical OLS (Reference)
+Training MSE,0.7892,0.7176,0.6823
+Training RMSE,0.8884,0.8471,0.8260
+Training R^2,0.9968,0.9971,0.9973
+Test MSE,0.8636,0.8650,1.0151
+Test RMSE,0.9293,0.9300,1.0075
+Test R^2,0.9973,0.9973,0.9968
+Final Weight (w),7.7822,7.7156,7.6379
+Final Bias (b),28.2121,28.5394,28.9753
