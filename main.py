@@ -18,7 +18,7 @@ This script orchestrates the end-to-end educational machine learning experiment:
 - Compares models against analytical Ordinary Least Squares (OLS).
 - Generates all 6 high-resolution visualization figures.
 - Exports results to CSV files.
-- Prints clean, structured academic logs for course presentation and viva.
+- Prints clean, structured academic logs for project evaluation and analysis.
 """
 
 import os
@@ -289,7 +289,7 @@ EDUCATIONAL FINDINGS & SYNTHESIS:
    - On massive datasets (e.g., n = 1,000,000), Batch GD becomes computationally unfeasible
      per iteration, whereas SGD or Mini-batch GD makes rapid initial progress with small batches.
 
-5. Presentation & Viva Final Takeaway:
+5. Final Project Takeaway:
    - "The experiment demonstrates that both Batch Gradient Descent and Stochastic Gradient Descent
      can effectively optimize a Linear Regression model. Batch GD provides a smoother optimization
      trajectory, while SGD introduces stochastic fluctuations due to sample-wise updates. In our

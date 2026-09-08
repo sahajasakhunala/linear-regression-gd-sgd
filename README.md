@@ -96,29 +96,35 @@ The 5 held-out test students are:
 ## 5. Mathematical Foundations
 
 ### 5.1 Linear Regression Model
-The univariate linear model defines the mapping from input study hours x to predicted exam score y_hat:
+The univariate linear model defines the mapping from input study hours $x$ to predicted exam score $\hat{y}$:
 
-y_hat_i = w * x_i + b
+$$
+\hat{y}_i = w x_i + b
+$$
 
 where:
-- w is the slope / weight, representing the marginal gain in exam points per additional hour studied.
-- b is the intercept / bias, representing the expected baseline score when zero hours are studied.
-- x_i is the feature value for student i.
-- y_hat_i is the model prediction for student i.
+- $w$ is the slope / weight, representing the marginal gain in exam points per additional hour studied.
+- $b$ is the intercept / bias, representing the expected baseline score when zero hours are studied.
+- $x_i$ is the feature value for student $i$.
+- $\hat{y}_i$ is the model prediction for student $i$.
 
-Initial parameter values: w_0 = 0.0, b_0 = 0.0.
+Initial parameter values: $w_0 = 0.0, b_0 = 0.0$.
 
 ### 5.2 Loss Function: Mean Squared Error (MSE)
-The Mean Squared Error quantifies empirical risk by averaging the squared differences between observed values y_i and predictions y_hat_i over a sample size of n:
+The Mean Squared Error quantifies empirical risk by averaging the squared differences between observed values $y_i$ and predictions $\hat{y}_i$ over a sample size of $n$:
 
-MSE = (1 / n) * sum_{i=1}^{n} (y_i - y_hat_i)^2 = (1 / n) * sum_{i=1}^{n} (y_i - (w * x_i + b))^2
+$$
+\text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2 = \frac{1}{n} \sum_{i=1}^{n} \left(y_i - (w x_i + b)\right)^2
+$$
 
 Root Mean Squared Error (RMSE) expresses the average deviation in the original measurement units (exam points):
 
-RMSE = sqrt(MSE)
+$$
+\text{RMSE} = \sqrt{\text{MSE}}
+$$
 
 Mathematical Justification for MSE in Linear Regression:
-1. Strict Convexity: MSE is a quadratic function of parameters (w, b). Its Hessian matrix is positive semi-definite, guaranteeing an elliptical bowl with a unique global minimum and no local minima traps.
+1. Strict Convexity: MSE is a quadratic function of parameters $(w, b)$. Its Hessian matrix is positive semi-definite, guaranteeing an elliptical bowl with a unique global minimum and no local minima traps.
 2. Smooth Differentiability: The squared error term is continuous and differentiable over all real numbers, yielding well-behaved analytical gradients.
 3. Outlier Sensitivity: By squaring errors, larger discrepancies are penalized disproportionately compared to smaller residuals.
 4. Statistical Alignment: Under the classical assumption of normally distributed additive noise, minimizing MSE is mathematically equivalent to Maximum Likelihood Estimation (MLE).
@@ -126,27 +132,53 @@ Mathematical Justification for MSE in Linear Regression:
 ### 5.3 Coefficient of Determination (R-squared)
 R-squared quantifies the proportion of variance in the dependent variable explained by the linear model:
 
-R^2 = 1 - (SS_res / SS_tot)
+$$
+R^2 = 1 - \frac{\text{SS}_{\text{res}}}{\text{SS}_{\text{tot}}}
+$$
 
 where:
-- SS_res = sum_{i=1}^{n} (y_i - y_hat_i)^2 (Residual Sum of Squares)
-- SS_tot = sum_{i=1}^{n} (y_i - y_mean)^2 (Total Sum of Squares)
+- $\text{SS}_{\text{res}} = \sum_{i=1}^{n} (y_i - \hat{y}_i)^2$ (Residual Sum of Squares)
+- $\text{SS}_{\text{tot}} = \sum_{i=1}^{n} (y_i - \bar{y})^2$ (Total Sum of Squares)
 
 ### 5.4 Analytical Gradient Derivation
-Applying the calculus chain rule to the MSE loss function:
 
-Let e_i = y_i - (w * x_i + b).
-Then MSE = (1 / n) * sum_{i=1}^{n} (e_i)^2.
+Applying the calculus chain rule to the Mean Squared Error loss function:
 
-Differentiating with respect to weight w:
-d(MSE)/dw = (1 / n) * sum_{i=1}^{n} 2 * e_i * (d(e_i)/dw)
-Since d(e_i)/dw = -x_i:
-dw = -(2 / n) * sum_{i=1}^{n} x_i * (y_i - y_hat_i)
+Let the individual prediction residual be:
 
-Differentiating with respect to bias b:
-d(MSE)/db = (1 / n) * sum_{i=1}^{n} 2 * e_i * (d(e_i)/db)
-Since d(e_i)/db = -1:
-db = -(2 / n) * sum_{i=1}^{n} (y_i - y_hat_i)
+$$
+e_i = y_i - (w x_i + b)
+$$
+
+The Mean Squared Error is expressed as:
+
+$$
+\text{MSE} = \frac{1}{n} \sum_{i=1}^{n} e_i^2
+$$
+
+#### Partial Derivative with Respect to Weight ($w$):
+
+$$
+\frac{\partial \text{MSE}}{\partial w} = \frac{1}{n} \sum_{i=1}^{n} \frac{\partial (e_i^2)}{\partial w} = \frac{1}{n} \sum_{i=1}^{n} 2 e_i \left( \frac{\partial e_i}{\partial w} \right)
+$$
+
+Since $\frac{\partial e_i}{\partial w} = \frac{\partial}{\partial w} [y_i - w x_i - b] = -x_i$:
+
+$$
+dw = \frac{\partial \text{MSE}}{\partial w} = -\frac{2}{n} \sum_{i=1}^{n} x_i (y_i - \hat{y}_i)
+$$
+
+#### Partial Derivative with Respect to Bias ($b$):
+
+$$
+\frac{\partial \text{MSE}}{\partial b} = \frac{1}{n} \sum_{i=1}^{n} \frac{\partial (e_i^2)}{\partial b} = \frac{1}{n} \sum_{i=1}^{n} 2 e_i \left( \frac{\partial e_i}{\partial b} \right)
+$$
+
+Since $\frac{\partial e_i}{\partial b} = \frac{\partial}{\partial b} [y_i - w x_i - b] = -1$:
+
+$$
+db = \frac{\partial \text{MSE}}{\partial b} = -\frac{2}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)
+$$
 
 ---
 
@@ -181,42 +213,90 @@ The project includes an educational standardizer (ZeroLeakageStandardScaler) in 
 ## 7. Optimization Algorithms: GD vs. SGD
 
 ### 7.1 Batch Gradient Descent (GD)
-Batch Gradient Descent computes the exact gradient of the loss surface over the entire training set (n = 10) before updating parameters:
 
-Algorithm:
-1. Initialize w = 0.0, b = 0.0.
-2. For iteration = 1 to 1000:
-   a. Compute predictions for all 10 training observations: y_hat = w * X_train + b.
-   b. Compute error vector: e = y_train - y_hat.
-   c. Compute batch gradients:
-      dw = -(2 / n) * sum(X_train * e)
-      db = -(2 / n) * sum(e)
-   d. Update parameters simultaneously:
-      w = w - alpha * dw
-      b = b - alpha * db
-   e. Record training MSE loss.
+Batch Gradient Descent computes the exact gradient of the loss surface over the entire training set ($n = 10$) before updating parameters.
+
+#### Mathematical Update Rules:
+
+$$
+w \leftarrow w - \alpha \cdot dw
+$$
+
+$$
+b \leftarrow b - \alpha \cdot db
+$$
+
+where the batch gradients are averaged over all $n$ training instances:
+
+$$
+dw = -\frac{2}{n} \sum_{i=1}^{n} x_i (y_i - \hat{y}_i)
+$$
+
+$$
+db = -\frac{2}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)
+$$
+
+#### Algorithm Steps:
+
+1. **Initialize Parameters**: Set $w = 0.0, b = 0.0$, and learning rate $\alpha = 0.01$.
+2. **Batch Iteration Loop**: For $\text{iteration} = 1 \text{ to } 1000$:
+   - **Step A (Forward Pass)**: Compute predictions across all $n=10$ training samples:
+     $$\hat{y}_i = w x_i + b \quad \text{for } i = 1, \dots, n$$
+   - **Step B (Residuals)**: Compute the error vector:
+     $$e_i = y_i - \hat{y}_i$$
+   - **Step C (Gradients)**: Compute full-batch gradients $dw$ and $db$.
+   - **Step D (Update)**: Update parameters simultaneously:
+     $$w \leftarrow w - \alpha \cdot dw$$
+     $$b \leftarrow b - \alpha \cdot db$$
+   - **Step E (Loss Tracking)**: Compute and record current training MSE loss.
 
 Characteristics:
 - Optimization Path: Smooth, deterministic, monotonic trajectory toward the minimum.
 - Computational Work: 1,000 iterations * 10 samples = 10,000 sample evaluations producing 1,000 parameter updates.
 
 ### 7.2 Stochastic Gradient Descent (SGD)
-Stochastic Gradient Descent approximates the batch gradient using an individual observation (sample-wise gradient) and updates parameters immediately:
 
-Algorithm:
-1. Initialize w = 0.0, b = 0.0. Set random seed = 42.
-2. For epoch = 1 to 100:
-   a. Shuffle the training data indices using a pseudorandom permutation.
-   b. For each sample (x_i, y_i) in shuffled training data:
-      i.   Compute prediction: y_hat_i = w * x_i + b.
-      ii.  Compute error: e_i = y_i - y_hat_i.
-      iii. Compute instantaneous gradients:
-           dw_i = -2 * x_i * e_i
-           db_i = -2 * e_i
-      iv.  Update parameters immediately:
-           w = w - alpha * dw_i
-           b = b - alpha * db_i
-   c. Record epoch-average training MSE across all 10 samples.
+Stochastic Gradient Descent approximates the batch gradient using an individual observation (sample-wise gradient) and updates parameters immediately.
+
+#### Single-Sample Update Rules:
+
+For each individual observation $(x_i, y_i)$, the instantaneous residual is:
+
+$$
+e_i = y_i - \hat{y}_i = y_i - (w x_i + b)
+$$
+
+The instantaneous sample gradients are:
+
+$$
+dw_i = -2 x_i e_i
+$$
+
+$$
+db_i = -2 e_i
+$$
+
+The parameters are updated immediately after evaluating that single sample:
+
+$$
+w \leftarrow w - \alpha \cdot dw_i
+$$
+
+$$
+b \leftarrow b - \alpha \cdot db_i
+$$
+
+#### Algorithm Steps:
+
+1. **Initialize Parameters**: Set $w = 0.0, b = 0.0$, learning rate $\alpha = 0.01$, and seed $= 42$.
+2. **Epoch Loop**: For $\text{epoch} = 1 \text{ to } 100$:
+   - **Step A (Shuffle)**: Permute the training dataset indices pseudorandomly.
+   - **Step B (Sample Iteration)**: For each observation $(x_i, y_i)$ in the shuffled training data:
+     - Compute prediction: $\hat{y}_i = w x_i + b$
+     - Compute error: $e_i = y_i - \hat{y}_i$
+     - Compute sample gradients: $dw_i = -2 x_i e_i$ and $db_i = -2 e_i$
+     - Immediately update parameters: $w \leftarrow w - \alpha \cdot dw_i$ and $b \leftarrow b - \alpha \cdot db_i$
+   - **Step C (Epoch Loss)**: Calculate and record the epoch-average training MSE across all 10 samples.
 
 Characteristics:
 - Optimization Path: Stochastic, fluctuating path. Because individual observations contain specific deviations, single-sample gradients are noisy approximations of the full-batch gradient.
@@ -327,7 +407,7 @@ In the spirit of scientific rigor, the following experimental constraints must b
 
 ---
 
-## 12. Final Conclusion & Presentation / Viva Defense Summary
+## 12. Final Conclusion & Synthesis
 
 Based strictly on the numerical evidence obtained from the implementation:
 
@@ -351,7 +431,7 @@ Based strictly on the numerical evidence obtained from the implementation:
 6. Why might the results be different on a much larger dataset?
    On massive datasets containing millions of records, Batch GD becomes computationally unfeasible because computing a single parameter update requires an entire pass through memory and disk. Conversely, SGD (and Mini-batch GD) makes rapid early progress and can reach near-optimal parameters after examining only a fraction of the data. Furthermore, in non-convex loss landscapes (such as deep neural networks), the stochastic noise in SGD helps parameters escape shallow saddle points and sharp local minima.
 
-### Recommended Defense Statement for Viva:
+### Summary Finding:
 "The experiment demonstrates that both Batch Gradient Descent and Stochastic Gradient Descent can effectively optimize a Linear Regression model. Batch GD provides a smoother optimization trajectory, while SGD introduces stochastic fluctuations due to sample-wise updates. In our small dataset, both methods produced nearly identical test performance, showing that the optimization behavior can differ even when the final predictive performance is similar."
 
 ---
