@@ -137,8 +137,16 @@ R^2 = 1 - \frac{\text{SS}_{\text{res}}}{\text{SS}_{\text{tot}}}
 $$
 
 where:
-- $\text{SS}_{\text{res}} = \sum_{i=1}^{n} (y_i - \hat{y}_i)^2$ (Residual Sum of Squares)
-- $\text{SS}_{\text{tot}} = \sum_{i=1}^{n} (y_i - \bar{y})^2$ (Total Sum of Squares)
+
+$$
+\text{SS}_{\text{res}} = \sum_{i=1}^{n} (y_i - \hat{y}_i)^2 \quad \text{(Residual Sum of Squares)}
+$$
+
+$$
+\text{SS}_{\text{tot}} = \sum_{i=1}^{n} (y_i - \bar{y})^2 \quad \text{(Total Sum of Squares)}
+$$
+
+and $\bar{y} = \frac{1}{n} \sum_{i=1}^{n} y_i$ is the empirical mean of the observed training scores.
 
 ### 5.4 Analytical Gradient Derivation
 
