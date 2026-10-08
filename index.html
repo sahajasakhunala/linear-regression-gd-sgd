@@ -197,17 +197,7 @@
 
     /* Drag Handle Indicator */
     .drag-handle {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      font-size: 10px;
-      background: rgba(255, 255, 255, 0.07);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      color: var(--text-muted);
-      padding: 2px 7px;
-      border-radius: 4px;
-      letter-spacing: 0.5px;
-      pointer-events: none;
+      display: none;
     }
 
     /* Typography & Components Inside Cards */
@@ -501,9 +491,7 @@
       <span>Linear Regression: Batch GD vs. Stochastic GD</span>
     </div>
     <div class="header-right">
-      <span id="moveable-indicator" style="font-size: 12px; color: var(--accent-green);">● Moveable Cards Active</span>
-      <span>|</span>
-      <span>Foundations of AI</span>
+      <span>Foundations of Artificial Intelligence</span>
     </div>
   </header>
 
@@ -524,7 +512,6 @@
         <div class="meta-cards-row">
           <!-- Moveable Presenters Card -->
           <div class="moveable-card presenters-card" data-card="title-presenters">
-            <span class="drag-handle">Drag to Move</span>
             <div class="card-title" style="color: var(--accent-cyan); font-size: 17px; margin-bottom: 14px;">
               Project Presenters
             </div>
@@ -538,13 +525,12 @@
             </div>
             <div class="presenter-item">
               <span class="presenter-name">Sri Sai Charan Chunduri</span>
-              <span class="presenter-id">25WU0102235M</span>
+              <span class="presenter-id">25WU0102235</span>
             </div>
           </div>
 
           <!-- Moveable Course & Professor Card -->
           <div class="moveable-card course-card" data-card="title-course">
-            <span class="drag-handle">Drag to Move</span>
             <div class="card-title" style="color: var(--accent-green); font-size: 17px; margin-bottom: 14px;">
               Academic Mentorship
             </div>
@@ -555,9 +541,6 @@
             <div>
               <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Course Professor</div>
               <div style="font-size: 16px; font-weight: 700; color: #38bdf8; margin-top: 2px;">Dr. YVR Naga Pavan</div>
-            </div>
-            <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 12px; color: #94a3b8;">
-              Tip: All content cards on these slides can be dragged freely to arrange during your presentation.
             </div>
           </div>
         </div>
