@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linear Regression: GD vs. SGD | Foundations of Artificial Intelligence</title>
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0b0f19 0%, #111827 50%, #0d1527 100%);
+      --card-bg: rgba(30, 41, 59, 0.82);
+      --card-border: rgba(148, 163, 184, 0.18);
+      --card-hover: rgba(51, 65, 85, 0.95);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --accent-rose: #f43f5e;
+      --accent-amber: #f59e0b;
+      --accent-purple: #8b5cf6;
+      --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Progress Bar */
+    #progress-container {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 100;
+    }
+    #progress-bar {
+      height: 100%;
+      width: 8.33%;
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green));
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Top Header Bar */
+    header {
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 50;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: var(--accent-cyan);
+    }
+    .badge {
+      background: rgba(6, 182, 212, 0.15);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Slide Deck Stage */
+    #deck-viewport {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .slide {
+      position: absolute;
+      width: 95%;
+      max-width: 1380px;
+      height: 92%;
+      max-height: 820px;
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 32px 40px;
+      display: none;
+      flex-direction: column;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(12px);
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .slide.active {
+      display: flex;
+      animation: fadeInSlide 0.35s ease-out forwards;
+    }
+
+    @keyframes fadeInSlide {
+      from { opacity: 0; transform: translateY(12px) scale(0.99); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Slide Header */
+    .slide-header {
+      margin-bottom: 24px;
+      position: relative;
+    }
+    .slide-category {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent-cyan);
+      margin-bottom: 4px;
+    }
+    .slide-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .slide-subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Moveable Cards & Grid */
+    .cards-grid {
+      display: grid;
+      gap: 20px;
+      flex: 1;
+      position: relative;
+    }
+    .grid-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-4 { grid-template-columns: repeat(4, 1fr); }
+    .grid-1-2 { grid-template-columns: 1fr 1.6fr; }
+    .grid-2-1 { grid-template-columns: 1.6fr 1fr; }
+
+    /* Moveable Element Styling */
+    .moveable-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      position: relative;
+      transition: box-shadow 0.2s, border-color 0.2s;
+      cursor: grab;
+    }
+    .moveable-card:hover {
+      border-color: rgba(6, 182, 212, 0.4);
+      box-shadow: 0 14px 25px -4px rgba(0, 0, 0, 0.5);
+    }
+    .moveable-card.dragging {
+      cursor: grabbing !important;
+      opacity: 0.95;
+      box-shadow: 0 25px 35px -5px rgba(6, 182, 212, 0.35);
+      border-color: var(--accent-cyan);
+      z-index: 1000 !important;
+    }
+
+    /* Drag Handle Indicator */
+    .drag-handle {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 10px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-muted);
+      padding: 2px 7px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      pointer-events: none;
+    }
+
+    /* Typography & Components Inside Cards */
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-body {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #cbd5e1;
+    }
+    .card-body p { margin-bottom: 8px; }
+    .card-body ul { list-style: none; padding-left: 0; }
+    .card-body li {
+      margin-bottom: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .card-body li::before {
+      content: "•";
+      color: var(--accent-cyan);
+      font-weight: bold;
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    /* Math Formula Block */
+    .formula-box {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(6, 182, 212, 0.25);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 10px 0;
+      text-align: center;
+      font-family: 'Cambria Math', 'KaTeX_Main', serif, monospace;
+      font-size: 17px;
+      color: #38bdf8;
+      letter-spacing: 0.5px;
+    }
+
+    /* Tables */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      text-align: left;
+    }
+    .data-table th {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--accent-cyan);
+      padding: 9px 12px;
+      font-weight: 700;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .data-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      color: #e2e8f0;
+    }
+    .data-table tr:hover td {
+      background: rgba(255, 255, 255, 0.04);
+    }
+    .highlight-cell {
+      color: var(--accent-green);
+      font-weight: 700;
+    }
+
+    /* Figure Images */
+    .figure-container {
+      width: 100%;
+      height: 100%;
+      min-height: 260px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      overflow: hidden;
+    }
+    .figure-container img {
+      max-width: 100%;
+      max-height: 380px;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+
+    /* Bottom Control Bar */
+    footer {
+      height: 64px;
+      background: rgba(15, 23, 42, 0.95);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      z-index: 50;
+    }
+    .ctrl-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #0891b2, #0284c7);
+      border: none;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(8, 145, 178, 0.3);
+    }
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #06b6d4, #0369a1);
+      box-shadow: 0 6px 16px rgba(8, 145, 178, 0.45);
+      color: #fff;
+    }
+    .slide-indicator {
+      font-size: 13px;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+    .slide-indicator span {
+      color: #fff;
+    }
+
+    /* Modal / Overview Drawer */
+    #overview-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(11, 15, 25, 0.92);
+      backdrop-filter: blur(12px);
+      z-index: 200;
+      display: none;
+      flex-direction: column;
+      padding: 40px;
+    }
+    #overview-modal.active { display: flex; }
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+      overflow-y: auto;
+      padding: 20px 0;
+      flex: 1;
+    }
+    .overview-thumb {
+      background: #1e293b;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .overview-thumb:hover, .overview-thumb.current {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+      transform: translateY(-2px);
+    }
+    .overview-thumb h4 {
+      font-size: 14px;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .overview-thumb p {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    /* Specific Presentation Styling for Slide 1 (Front Page) */
+    .title-slide-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      justify-content: space-between;
+    }
+    .title-top {
+      text-align: center;
+      margin-top: 12px;
+    }
+    .academic-tag {
+      display: inline-block;
+      background: rgba(6, 182, 212, 0.12);
+      border: 1px solid rgba(6, 182, 212, 0.35);
+      color: var(--accent-cyan);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      padding: 6px 18px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .main-presentation-title {
+      font-size: 38px;
+      font-weight: 900;
+      line-height: 1.25;
+      color: #ffffff;
+      max-width: 1050px;
+      margin: 0 auto;
+      letter-spacing: -0.8px;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #38bdf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .main-presentation-subtitle {
+      font-size: 18px;
+      color: #94a3b8;
+      margin-top: 14px;
+      font-weight: 400;
+    }
+
+    .meta-cards-row {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+    .presenters-card, .course-card {
+      background: rgba(30, 41, 59, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 24px;
+    }
+    .presenter-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .presenter-name {
+      font-weight: 700;
+      color: #f1f5f9;
+      font-size: 15px;
+    }
+    .presenter-id {
+      background: rgba(6, 182, 212, 0.15);
+      color: #38bdf8;
+      font-family: monospace;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 5px;
+      border: 1px solid rgba(6, 182, 212, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Progress Bar -->
+  <div id="progress-container">
+    <div id="progress-bar"></div>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="header-left">
+      <span class="badge">AI Course Project</span>
+      <span>Linear Regression: Batch GD vs. Stochastic GD</span>
+    </div>
+    <div class="header-right">
+      <span id="moveable-indicator" style="font-size: 12px; color: var(--accent-green);">● Moveable Cards Active</span>
+      <span>|</span>
+      <span>Foundations of AI</span>
+    </div>
+  </header>
+
+  <!-- Slide Deck Viewport -->
+  <main id="deck-viewport">
+
+    <!-- ======================================================== -->
+    <!-- SLIDE 1: TITLE / FRONT PAGE                              -->
+    <!-- ======================================================== -->
+    <section class="slide active" id="slide-1" data-index="1">
+      <div class="title-slide-container">
+        <div class="title-top">
+          <div class="academic-tag">Machine Learning Comparative Study</div>
+          <h1 class="main-presentation-title">Linear Regression Using Gradient Descent and Stochastic Gradient Descent</h1>
+          <p class="main-presentation-subtitle">A Comprehensive First-Principles Investigation on Parameter Optimization and Generalization</p>
+        </div>
+
+        <div class="meta-cards-row">
+          <!-- Moveable Presenters Card -->
+          <div class="moveable-card presenters-card" data-card="title-presenters">
+            <span class="drag-handle">Drag to Move</span>
+            <div class="card-title" style="color: var(--accent-cyan); font-size: 17px; margin-bottom: 14px;">
+              Project Presenters
+            </div>
+            <div class="presenter-item">
+              <span class="presenter-name">Sakhunala Sahaja</span>
+              <span class="presenter-id">25WU0102237</span>
+            </div>
+            <div class="presenter-item">
+              <span class="presenter-name">Sufiyan Yusuf Jahan</span>
+              <span class="presenter-id">25WU0102276</span>
+            </div>
+            <div class="presenter-item">
+              <span class="presenter-name">Sri Sai Charan Chunduri</span>
+              <span class="presenter-id">25WU0102235M</span>
+            </div>
+          </div>
+
+          <!-- Moveable Course & Professor Card -->
+          <div class="moveable-card course-card" data-card="title-course">
+            <span class="drag-handle">Drag to Move</span>
+            <div class="card-title" style="color: var(--accent-green); font-size: 17px; margin-bottom: 14px;">
+              Academic Mentorship
+            </div>
+            <div style="margin-bottom: 16px;">
+              <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Subject</div>
+              <div style="font-size: 16px; font-weight: 700; color: #fff; margin-top: 2px;">Foundations of Artificial Intelligence</div>
+            </div>
+            <div>
+              <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Course Professor</div>
+              <div style="font-size: 16px; font-weight: 700; color: #38bdf8; margin-top: 2px;">Dr. YVR Naga Pavan</div>
+            </div>
+            <div style="margin-top: 18px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 12px; color: #94a3b8;">
+              Tip: All content cards on these slides can be dragged freely to arrange during your presentation.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- SLIDE 2: PROBLEM STATEMENT & MOTIVATION                  -->
+    <!-- ======================================================== -->
+    <section class="slide" id="slide-2" data-index="2">
+      <div class="slide-header">
+        <div class="slide-category">Problem Statement</div>
+        <div class="slide-title">
+          <span>Understanding Parameter Optimization in Linear Regression</span>
+          <button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="resetCurrentSlide()">Reset Positions</button>
+        </div>
+        <div class="slide-subtitle">Why build Gradient Descent and Stochastic Gradient Descent from scratch?</div>
+      </div>
+
+      <div class="cards-grid grid-3">
+        <div class="moveable-card" data-card="s2-c1">
+          <span class="drag-handle">Drag to Move</span>
+          <div class="card-title" style="color: var(--accent-cyan);">The Black-Box Dilemma</div>
+          <div class="card-body">
+            <p>Modern machine learning frameworks (e.g., <code>sklearn.linear_model</code>) abstract optimization behind single-line function calls.</p>
+            <p>While convenient for industry pipelines, this hides the mathematical mechanics of how gradients adjust weights and bias from empirical residuals.</p>
+          </div>
+        </div>
+
+        <div class="moveable-card" data-card="s2-c2">
+          <span class="drag-handle">Drag to Move</span>
+          <div class="card-title" style="color: var(--accent-green);">The Educational Objective</div>
+          <div class="card-body">
+            <ul>
+              <li>Derive partial derivatives analytically from first principles.</li>
+              <li>Implement Batch GD (full-batch gradients) and SGD (sample-wise gradients) without third-party optimizers.</li>
+              <li>Directly inspect the loss trajectories and convergence behavior on identical partitions.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="moveable-card" data-card="s2-c3">
+          <span class="drag-handle">Drag to Move</span>
+          <div class="card-title" style="color: var(--accent-rose);">Key Research Questions</div>
+          <div class="card-body">
+            <ul>
+              <li>Does SGD oscillate or converge cleanly compared to Batch GD?</li>
+              <li>How do sample-evaluation budgets differ (10,000 vs. 1,000)?</li>
+              <li>Can both methods achieve near-identical generalization on unseen test data?</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- SLIDE 3: DATASET & DATA LEAKAGE PREVENTION               -->
+    <!-- ======================================================== -->
+    <section class="slide" id="slide-3" data-index="3">
+      <div class="slide-header">
+        <div class="slide-category">Empirical Foundation</div>
+        <div class="slide-title">
+          <span>The Study Dataset & Train/Test Partition</span>
+          <button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="resetCurrentSlide()">Reset Positions</button>
+        </div>
+        <div class="slide-subtitle">Strict 70% / 30% separation ensuring zero data leakage</div>
+      </div>
+
+      <div class="cards-grid grid-1-2">
+        <div class="moveable-card" data-card="s3-c1">
+          <span class="drag-handle">Drag to Move</span>
+          <div class="card-title" style="color: var(--accent-cyan);">Experimental Setup</div>
+          <div class="card-body">
+            <p><strong>Input (X)</strong>: Hours Studied (1.0 to 8.0 hours)</p>
+            <p><strong>Target (y)</strong>: Exam Score (35 to 89 points)</p>
+            <p><strong>Split Ratio</strong>: 70% Train (10) / 30% Test (5)</p>
+            <p><strong>Seed</strong>: <code>random_state = 42</code> (Strictly reproducible)</p>
+            <div style="background: rgba(16, 185, 129, 0.1); border-left: 3px solid var(--accent-green); padding: 8px 12px; margin-top: 12px; border-radius: 4px;">
+              <strong style="color: var(--accent-green);">Zero Data Leakage Rule:</strong> The 5 test observations are isolated and never touched during gradient calculation.
+            </div>
+          </div>
+        </div>
+
+        <div class="moveable-card" data-card="s3-c2">
+          <span class="drag-handle">Drag to Move</span>
+          <div class="card-title">Partition Table (15 Observations)</div>
+          <div style="overflow-x: auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>Hours Studied (X)</th>
+                  <th>Exam Score (y)</th>
+                  <th>Partition Role</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td>1.0</td><td>35</td><td style="color: var(--accent-rose); font-weight: bold;">Test Sample (Unseen)</td></tr>
+                <tr><td>2</td><td>1.5</td><td>39</td><td style="color: var(--accent-cyan);">Training Set</td></tr>
+                <tr><td>3</td><td>2.0</td><td>44</td><td style="color: var(--accent-cyan);">Training Set</td></tr>
+                <tr><td>4</td><td>2.5</td><td>48</td><td style="color: var(--accent-cyan);">Training Set</td></tr>
+                <tr><td>5</td><td>3.0</td><td>52</td><td style="color: var(--accent-cyan);">Training Set</td></tr>
+                <tr><td>6</td><td>3.5</td><td>55</td><td style="color: var(--accent-rose); font-weight: bold;">Test Sample (Unseen)</td></tr>
+                <tr><td>7</td><td>4.0</td><td>61</td><td style="color: var(--accent-cyan);">Training Set</td></tr>
+                <tr><td>8</td><td>4.5</td><td>64</td><td style="color: var(--accent-cyan);">Training Set</td></tr>
+                <tr><td>9</td><td>5.0</td><td>68</td><td style="color: var(--accent-cyan);">Training Set</td></tr>
+                <tr><td>10</td><td>5.5</td><td>71</td><td style="color: var(--accent-rose); font-weight: bold;">Test Sample (Unseen)</td></tr>
+                <tr><td>11</td><td>6.0</td><td>75</td><td style="color: var(--accent-cyan);">Training Set</td></tr>
+                <tr><td>12</td><td>6.5</td><td>78</td><td style="color: var(--accent-rose); font-weight: bold;">Test Sample (Unseen)</td></tr>
+                <tr><td>13</td><td>7.0</td><td>82</td><td style="color: var(--accent-cyan);">Training Set</td></tr>
+                <tr><td>14</td><td>7.5</td><td>85</td><td style="color: var(--accent-rose); font-weight: bold;">Test Sample (Unseen)</td></tr>
+                <tr><td>15</td><td>8.0</td><td>89</td><td style="color: var(--accent-cyan);">Training Set</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- SLIDE 4: MATHEMATICAL DERIVATIONS                        -->
+    <!-- ======================================================== -->
+    <section class="slide" id="slide-4" data-index="4">
+      <div class="slide-header">
+        <div class="slide-category">Mathematical Modeling</div>
+        <div class="slide-title">
+          <span>Hypothesis, Loss Function & Calculus Derivations</span>
+          <button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="resetCurrentSlide()">Reset Positions</button>
+        </div>
+        <div class="slide-subtitle">Analytical gradient derivation via chain rule</div>
+      </div>
+
+      <div class="cards-grid grid-2">
+        <div class="moveable-card" data-card="s4-c1">
+          <span class="drag-handle">Drag to Move</span>
+          <div class="card-title" style="color: var(--accent-cyan);">1. Hypothesis & MSE Loss</div>
+          <div class="card-body">
+            <p><strong>Linear Hypothesis:</strong></p>
+            <div class="formula-box">ŷ<sub>i</sub> = w · x<sub>i</sub> + b</div>
+            <p><strong>Mean Squared Error (MSE):</strong></p>
+            <div class="formula-box">MSE = (1 / n) Σ<sub>i=1</sub><sup>n</sup> (y<sub>i</sub> - ŷ<sub>i</sub>)<sup>2</sup></div>
+            <p><strong>Why MSE?</strong> Strictly convex quadratic bowl guaranteeing a single global minimum without local minima traps.</p>
+          </div>
+        </div>
+
+        <div class="moveable-card" data-card="s4-c2">
+          <span class="drag-handle">Drag to Move</span>
+          <div class="card-title" style="color: var(--accent-green);">2. Analytical Gradient Equations</div>
+          <div class="card-body">
+            <p>Let error residual: e<sub>i</sub> = y<sub>i</sub> - (w·x<sub>i</sub> + b)</p>
+            <p><strong>Derivative with respect to weight (w):</strong></p>
+            <div class="formula-box">dw = -(2 / n) Σ<sub>i=1</sub><sup>n</sup> x<sub>i</sub> · (y<sub>i</sub> - ŷ<sub>i</sub>)</div>
+            <p><strong>Derivative with respect to bias (b):</strong></p>
+            <div class="formula-box">db = -(2 / n) Σ<sub>i=1</sub><sup>n</sup> (y<sub>i</sub> - ŷ<sub>i</sub>)</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- SLIDE 5: FEATURE SCALING & ZERO LEAKAGE                  -->
+    <!-- ======================================================== -->
+    <section class="slide" id="slide-5" data-index="5">
+      <div class="slide-header">
+        <div class="slide-category">Optimization Theory</div>
+        <div class="slide-title">
+          <span>Feature Scaling Analysis & Zero Data Leakage</span>
+          <button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="resetCurrentSlide()">Reset Positions</button>
+        </div>
+        <div class="slide-subtitle">Why raw scale works for 1D and how standardization must be handled</div>
+      </div>
+
+      <div class="cards-grid grid-2">
+        <div class="moveable-card" data-card="s5-c1">
+          <span class="drag-handle">Drag to Move</span>
+          <div class="card-title" style="color: var(--accent-amber);">Why Unscaled Features Work in This Study</div>
+          <div class="card-body">
+            <ul>
+              <li><strong>Naturally Compact Range:</strong> Hours studied spans [1.0, 8.0]. There are no multi-scale distortions (e.g. Salary vs Age).</li>
+              <li><strong>Well-Conditioned Contours:</strong> The Hessian eigenvalues are nearly balanced, preventing extreme zig-zag oscillations with α = 0.01.</li>
+              <li><strong>Direct Interpretability:</strong> Parameter <em>w</em> directly represents <em>points gained per study hour</em> (~7.7 marks/hr), and <em>b</em> is the <em>baseline score</em> (~28.2 marks).</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="moveable-card" data-card="s5-c2">
+          <span class="drag-handle">Drag to Move</span>
+          <div class="card-title" style="color: var(--accent-purple);">Strict Zero-Leakage Standardization Protocol</div>
+          <div class="card-body">
+            <p>If Z-score standardization is applied:</p>
+            <div class="formula-box">μ<sub>train</sub> = mean(X<sub>train</sub>), &nbsp; σ<sub>train</sub> = std(X<sub>train</sub>)</div>
+            <p><strong>The Golden Rule:</strong> Never calculate μ or σ using the test set! Computing statistics on the combined dataset leaks future distribution information into model parameters.</p>
+            <p>Our project includes <code>ZeroLeakageStandardScaler</code> strictly implementing this guarantee.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- SLIDE 6: BATCH GRADIENT DESCENT IMPLEMENTATION           -->
+    <!-- ======================================================== -->
+    <section class="slide" id="slide-6" data-index="6">
+      <div class="slide-header">
+        <div class="slide-category">Algorithm 1</div>
+        <div class="slide-title">
+          <span>Batch Gradient Descent (GD)</span>
+          <button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="resetCurrentSlide()">Reset Positions</button>
+        </div>
+        <div class="slide-subtitle">Deterministic full-batch optimization across all training observations</div>
+      </div>
+
+      <div class="cards-grid grid-2">
+        <div class="moveable-card" data-card="s6-c1">
+          <span class="drag-handle">Drag to Move</span>
+          <div class="card-title" style="color: var(--accent-green);">Algorithmic Workflow</div>
+          <div class="card-body">
+            <ol style="padding-left: 20px; line-height: 1.8;">
+              <li>Initialize parameters: w<sub>0</sub> = 0.0, b<sub>0</sub> = 0.0, α = 0.01.</li>
+              <li>For each iteration (1 to 1,000):
+                <ul style="margin-top: 4px;">
+                  <li>Compute predictions for all 10 training samples: ŷ = w·X + b.</li>
+                  <li>Compute batch average gradient vector: dw and db.</li>
+                  <li>Simultaneously update parameters:
+                    <div style="color: var(--accent-green); font-family: monospace; margin: 4px 0;">w ← w - α·dw<br>b ← b - α·db</div>
+                  </li>
+                  <li>Record MSE loss.</li>
+                </ul>
+              </li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="moveable-card" data-card="s6-c2">
+          <span class="drag-handle">Drag to Move</span>
+          <div class="card-title" style="color: var(--accent-cyan);">Computational Profile</div>
+          <div class="card-body">
+            <ul>
+              <li><strong>Trajectory:</strong> Strictly deterministic and smooth descent.</li>
+              <li><strong>Sample Evaluations:</strong> 1,000 iterations × 10 samples = <strong>10,000 evaluations</strong>.</li>
+              <li><strong>Total Parameter Updates:</strong> 1,000 updates.</li>
+              <li><strong>Initial Loss (iter 0):</strong> 4,117.60</li>
+              <li><strong>Final Training Loss (iter 1000):</strong> 0.7892</li>
+              <li><strong>Final Parameters:</strong> w = 7.7822, b = 28.2121</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- SLIDE 7: STOCHASTIC GRADIENT DESCENT IMPLEMENTATION      -->
+    <!-- ======================================================== -->
+    <section class="slide" id="slide-7" data-index="7">
+      <div class="slide-header">
+        <div class="slide-category">Algorithm 2</div>
+        <div class="slide-title">
+          <span>Stochastic Gradient Descent (SGD)</span>
+          <button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="resetCurrentSlide()">Reset Positions</button>
+        </div>
+        <div class="slide-subtitle">Sample-by-sample online parameter updates with per-epoch shuffling</div>
+      </div>
+
+      <div class="cards-grid grid-2">
+        <div class="moveable-card" data-card="s7-c1">
+          <span class="drag-handle">Drag to Move</span>
+          <div class="card-title" style="color: var(--accent-rose);">Algorithmic Workflow</div>
+          <div class="card-body">
+            <ol style="padding-left: 20px; line-height: 1.8;">
+              <li>Initialize w<sub>0</sub> = 0.0, b<sub>0</sub> = 0.0, α = 0.01, seed = 42.</li>
+              <li>For each epoch (1 to 100):
+                <ul style="margin-top: 4px;">
+                  <li><strong>Shuffle:</strong> Randomly permute the 10 training instances.</li>
+                  <li><strong>Sample Pass:</strong> For each individual instance (x<sub>i</sub>, y<sub>i</sub>):
+                    <div style="color: var(--accent-rose); font-family: monospace; margin: 4px 0;">
+                      dw<sub>i</sub> = -2·x<sub>i</sub>·(y<sub>i</sub> - ŷ<sub>i</sub>)<br>
+                      db<sub>i</sub> = -2·(y<sub>i</sub> - ŷ<sub>i</sub>)<br>
+                      w ← w - α·dw<sub>i</sub><br>
+                      b ← b - α·db<sub>i</sub>
+                    </div>
+                  </li>
+                  <li>Record epoch-average training MSE across all 10 samples.</li>
+                </ul>
+              </li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="moveable-card" data-card="s7-c2">
+          <span class="drag-handle">Drag to Move</span>
+          <div class="card-title" style="color: var(--accent-amber);">Computational Profile & Stochasticity</div>
+          <div class="card-body">
+            <ul>
+              <li><strong>Why it Fluctuates:</strong> Individual points have idiosyncratic residual noise, making single-sample gradients a noisy estimate of the batch gradient.</li>
+              <li><strong>Sample Evaluations:</strong> 100 epochs × 10 samples = <strong>1,000 evaluations</strong>.</li>
+              <li><strong>Total Parameter Updates:</strong> 1,000 updates.</li>
+              <li><strong>Initial Loss (epoch 0):</strong> 4,117.60</li>
+              <li><strong>Final Training Loss (epoch 100):</strong> 0.7176</li>
+              <li><strong>Final Parameters:</strong> w = 7.7156, b = 28.5394</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- SLIDE 8: RESULTS & OLS BENCHMARK                         -->
+    <!-- ======================================================== -->
+    <section class="slide" id="slide-8" data-index="8">
+      <div class="slide-header">
+        <div class="slide-category">Empirical Results</div>
+        <div class="slide-title">
+          <span>Comparative Performance: GD vs. SGD vs. OLS</span>
+          <button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="resetCurrentSlide()">Reset Positions</button>
+        </div>
+        <div class="slide-subtitle">Dynamically computed verification against analytical closed-form solution</div>
+      </div>
+
+      <div class="cards-grid grid-1-2">
+        <div class="moveable-card" data-card="s8-c1">
+          <span class="drag-handle">Drag to Move</span>
+          <div class="card-title" style="color: var(--accent-cyan);">Analytical OLS Solution</div>
+          <div class="card-body">
+            <p>Ordinary Least Squares on the exact 10 training samples:</p>
+            <div class="formula-box">w<sub>OLS</sub> = 7.6379<br>b<sub>OLS</sub> = 28.9753</div>
+            <p>Both manual algorithms converged within <strong>&lt; 0.15</strong> of the theoretical global optimum.</p>
+            <p>Train MSE OLS = 0.6823, Test MSE OLS = 1.0151</p>
+          </div>
+        </div>
+
+        <div class="moveable-card" data-card="s8-c2">
+          <span class="drag-handle">Drag to Move</span>
+          <div class="card-title">Side-by-Side Metrics Table</div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Evaluation Metric</th>
+                <th>Batch GD (1000 iter)</th>
+                <th>SGD (100 epochs)</th>
+                <th>Analytical OLS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Training MSE</td><td class="highlight-cell">0.7892</td><td class="highlight-cell">0.7176</td><td>0.6823</td></tr>
+              <tr><td>Training RMSE</td><td>0.8884</td><td>0.8471</td><td>0.8260</td></tr>
+              <tr><td>Training R²</td><td>0.9968</td><td>0.9971</td><td>0.9973</td></tr>
+              <tr style="background: rgba(6, 182, 212, 0.08);">
+                <td><strong>Test MSE (Unseen)</strong></td>
+                <td style="color: var(--accent-cyan); font-weight: bold;">0.8636</td>
+                <td style="color: var(--accent-cyan); font-weight: bold;">0.8650</td>
+                <td>1.0151</td>
+              </tr>
+              <tr><td>Test RMSE</td><td>0.9293</td><td>0.9300</td><td>1.0075</td></tr>
+              <tr><td>Test R²</td><td>0.9973</td><td>0.9973</td><td>0.9968</td></tr>
+              <tr><td>Final Weight (w)</td><td>7.7822</td><td>7.7156</td><td>7.6379</td></tr>
+              <tr><td>Final Bias (b)</td><td>28.2121</td><td>28.5394</td><td>28.9753</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- SLIDE 9: UNSEEN TEST SET PREDICTIONS                     -->
+    <!-- ======================================================== -->
+    <section class="slide" id="slide-9" data-index="9">
+      <div class="slide-header">
+        <div class="slide-category">Model Generalization</div>
+        <div class="slide-title">
+          <span>Predictions on Unseen Test Observations</span>
+          <button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="resetCurrentSlide()">Reset Positions</button>
+        </div>
+        <div class="slide-subtitle">Student-by-student test performance comparison</div>
+      </div>
+
+      <div class="cards-grid grid-1-2">
+        <div class="moveable-card" data-card="s9-c1">
+          <span class="drag-handle">Drag to Move</span>
+          <div class="card-title" style="color: var(--accent-green);">Generalization Findings</div>
+          <div class="card-body">
+            <ul>
+              <li>Both models exhibit nearly indistinguishable test predictions.</li>
+              <li>Maximum absolute difference between GD and SGD on any test student is only <strong>0.26 exam points</strong> (at 1.0 hour).</li>
+              <li>At 5.5 hours studied, both models predict 71.0 marks, matching the actual score (71.0) with residual ~0.01!</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="moveable-card" data-card="s9-c2">
+          <span class="drag-handle">Drag to Move</span>
+          <div class="card-title">Test Set Evaluation Table (n = 5)</div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Hours Studied</th>
+                <th>Actual Score</th>
+                <th>GD Prediction</th>
+                <th>SGD Prediction</th>
+                <th>GD Residual (y - ŷ)</th>
+                <th>SGD Residual (y - ŷ)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>1.0 hr</td><td>35.0</td><td>35.99</td><td>36.25</td><td>-0.99</td><td>-1.25</td></tr>
+              <tr><td>3.5 hrs</td><td>55.0</td><td>55.45</td><td>55.54</td><td>-0.45</td><td>-0.54</td></tr>
+              <tr style="background: rgba(16, 185, 129, 0.1);"><td>5.5 hrs</td><td>71.0</td><td>71.01</td><td>70.97</td><td class="highlight-cell">-0.01</td><td class="highlight-cell">+0.03</td></tr>
+              <tr><td>6.5 hrs</td><td>78.0</td><td>78.80</td><td>78.69</td><td>-0.80</td><td>-0.69</td></tr>
+              <tr><td>7.5 hrs</td><td>85.0</td><td>86.58</td><td>86.41</td><td>-1.58</td><td>-1.41</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- SLIDE 10: VISUALIZATIONS GALLERY                         -->
+    <!-- ======================================================== -->
+    <section class="slide" id="slide-10" data-index="10">
+      <div class="slide-header">
+        <div class="slide-category">Empirical Visualizations</div>
+        <div class="slide-title">
+          <span>Project Figures Gallery</span>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="setFigure('01_dataset_scatter.png')">Scatter</button>
+            <button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="setFigure('02_regression_lines.png')">Regression Lines</button>
+            <button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="setFigure('05_gd_vs_sgd_loss.png')">GD vs SGD Loss</button>
+            <button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="setFigure('06_actual_vs_predicted_test.png')">Actual vs Pred</button>
+            <button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="resetCurrentSlide()">Reset</button>
+          </div>
+        </div>
+        <div class="slide-subtitle">Select any plot to examine high-resolution generated results</div>
+      </div>
+
+      <div class="cards-grid grid-1-2">
+        <div class="moveable-card" data-card="s10-c1">
+          <span class="drag-handle">Drag to Move</span>
+          <div class="card-title" id="fig-title" style="color: var(--accent-cyan);">Figure Inspection</div>
+          <div class="card-body" id="fig-desc">
+            <p><strong>Fitted Regression Lines:</strong> Both Batch GD (solid green) and SGD (dashed red) lines track the empirical data points closely.</p>
+            <p>The visual overlay confirms that while the optimization trajectory differed, the learned hypothesis function is virtually identical on the original hours/marks scale.</p>
+          </div>
+        </div>
+
+        <div class="moveable-card figure-container" data-card="s10-c2">
+          <span class="drag-handle">Drag to Move</span>
+          <img id="active-fig-img" src="./results/figures/02_regression_lines.png" alt="Regression Lines">
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- SLIDE 11: COMPARATIVE INSIGHTS & COMPLEXITY              -->
+    <!-- ======================================================== -->
+    <section class="slide" id="slide-11" data-index="11">
+      <div class="slide-header">
+        <div class="slide-category">Analytical Insights</div>
+        <div class="slide-title">
+          <span>Trajectory Comparison & Computational Trade-offs</span>
+          <button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="resetCurrentSlide()">Reset Positions</button>
+        </div>
+        <div class="slide-subtitle">Why SGD fluctuated and what happens on massive datasets</div>
+      </div>
+
+      <div class="cards-grid grid-2">
+        <div class="moveable-card" data-card="s11-c1">
+          <span class="drag-handle">Drag to Move</span>
+          <div class="card-title" style="color: var(--accent-cyan);">Optimization Trajectory Contrast</div>
+          <div class="card-body">
+            <ul>
+              <li><strong>Batch GD:</strong> Computes the true gradient over all 10 training instances. Each step heads deterministically along the steepest descent path, producing a monotonic, smooth loss curve.</li>
+              <li><strong>SGD:</strong> Updates after each individual sample. Because each student observation has individual variance, sample gradients fluctuate, causing visible epoch-to-epoch oscillations.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="moveable-card" data-card="s11-c2">
+          <span class="drag-handle">Drag to Move</span>
+          <div class="card-title" style="color: var(--accent-amber);">Computational Scaling & Big Data Behavior</div>
+          <div class="card-body">
+            <ul>
+              <li><strong>Small Dataset Reality:</strong> SGD evaluated 1,000 samples while Batch GD evaluated 10,000. Despite this 10× difference in evaluations, both achieved virtually identical test MSE (~0.864).</li>
+              <li><strong>Scale to N = 1,000,000+:</strong> Batch GD becomes unfeasible per step because computing one update requires passing the entire million records. SGD or Mini-batch GD makes rapid early progress after examining only small slices.</li>
+              <li><strong>Non-Convex Landscapes:</strong> In deep neural networks, SGD's noise helps parameters escape sharp saddle points.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- SLIDE 12: LIMITATIONS & ACADEMIC CONCLUSION              -->
+    <!-- ======================================================== -->
+    <section class="slide" id="slide-12" data-index="12">
+      <div class="slide-header">
+        <div class="slide-category">Synthesis & Conclusion</div>
+        <div class="slide-title">
+          <span>Project Limitations & Defensible Conclusions</span>
+          <button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="resetCurrentSlide()">Reset Positions</button>
+        </div>
+        <div class="slide-subtitle">Scientifically rigorous summary without exaggerated claims</div>
+      </div>
+
+      <div class="cards-grid grid-2">
+        <div class="moveable-card" data-card="s12-c1">
+          <span class="drag-handle">Drag to Move</span>
+          <div class="card-title" style="color: var(--accent-rose);">Realistic Academic Limitations</div>
+          <div class="card-body">
+            <ul>
+              <li><strong>Small Sample Size (N = 15):</strong> High empirical variance; results are educational rather than a real-world predictive tool for student marks.</li>
+              <li><strong>Small Test Set (n = 5):</strong> A 1-point difference on a single student has a noticeable effect on test MSE. Small differences between GD and SGD should not be overinterpreted.</li>
+              <li><strong>Cautious Overfitting Assessment:</strong> Similar train and test errors suggest no obvious overfitting in this experiment, but the 5-sample test set requires interpreting this conclusion cautiously.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="moveable-card" data-card="s12-c2">
+          <span class="drag-handle">Drag to Move</span>
+          <div class="card-title" style="color: var(--accent-green);">Final Project Takeaway</div>
+          <div class="card-body">
+            <div style="background: rgba(16, 185, 129, 0.1); border-left: 3px solid var(--accent-green); padding: 12px 16px; border-radius: 6px; font-style: italic; color: #f1f5f9; line-height: 1.7;">
+              "The experiment demonstrates that both Batch Gradient Descent and Stochastic Gradient Descent can effectively optimize a Linear Regression model. Batch GD provides a smoother optimization trajectory, while SGD introduces stochastic fluctuations due to sample-wise updates. In our small dataset, both methods produced nearly identical test performance, showing that the optimization behavior can differ even when the final predictive performance is similar."
+            </div>
+            <div style="margin-top: 14px; text-align: center; color: var(--accent-cyan); font-weight: bold;">
+              Thank You! Any Questions?
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bottom Control Bar -->
+  <footer>
+    <div class="ctrl-group">
+      <button class="btn" id="prev-btn" onclick="prevSlide()">◀ Previous</button>
+      <button class="btn btn-primary" id="next-btn" onclick="nextSlide()">Next ▶</button>
+      <div class="slide-indicator">
+        Slide <span id="current-slide-num">1</span> of <span id="total-slides-num">12</span>
+      </div>
+    </div>
+
+    <div class="ctrl-group">
+      <button class="btn" onclick="resetCurrentSlide()">↺ Reset Positions</button>
+      <button class="btn" onclick="toggleOverview()">☷ Overview</button>
+      <button class="btn" onclick="toggleFullScreen()">⛶ Fullscreen</button>
+    </div>
+  </footer>
+
+  <!-- Slide Overview Modal -->
+  <div id="overview-modal" onclick="if(event.target === this) toggleOverview()">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+      <h3 style="font-size: 20px; font-weight: 800; color: #fff;">Slide Overview</h3>
+      <button class="btn" onclick="toggleOverview()">✕ Close</button>
+    </div>
+    <div class="overview-grid" id="overview-grid"></div>
+  </div>
+
+  <!-- Interactive JavaScript Engine -->
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 12;
+    const slides = document.querySelectorAll('.slide');
+
+    // Initialize slide counters
+    document.getElementById('total-slides-num').innerText = totalSlides;
+
+    function updateSlide() {
+      slides.forEach((s, idx) => {
+        if (idx + 1 === currentSlide) {
+          s.classList.add('active');
+        } else {
+          s.classList.remove('active');
+        }
+      });
+      document.getElementById('current-slide-num').innerText = currentSlide;
+      document.getElementById('progress-bar').style.width = ((currentSlide / totalSlides) * 100) + '%';
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) {
+        currentSlide++;
+        updateSlide();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        currentSlide--;
+        updateSlide();
+      }
+    }
+
+    function goToSlide(n) {
+      if (n >= 1 && n <= totalSlides) {
+        currentSlide = n;
+        updateSlide();
+        document.getElementById('overview-modal').classList.remove('active');
+      }
+    }
+
+    // Keyboard Navigation
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevSlide();
+      } else if (e.key.toLowerCase() === 'f') {
+        toggleFullScreen();
+      } else if (e.key.toLowerCase() === 'o') {
+        toggleOverview();
+      } else if (e.key.toLowerCase() === 'r') {
+        resetCurrentSlide();
+      }
+    });
+
+    // Fullscreen Toggle
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => console.log(err));
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    // Overview Grid Builder
+    function buildOverview() {
+      const grid = document.getElementById('overview-grid');
+      grid.innerHTML = '';
+      slides.forEach((s, idx) => {
+        const titleEl = s.querySelector('.slide-title span') || s.querySelector('.main-presentation-title');
+        const title = titleEl ? titleEl.innerText : 'Slide ' + (idx + 1);
+        const card = document.createElement('div');
+        card.className = 'overview-thumb ' + (idx + 1 === currentSlide ? 'current' : '');
+        card.onclick = () => goToSlide(idx + 1);
+        card.innerHTML = `
+          <h4>${idx + 1}. ${title}</h4>
+          <p>${s.querySelector('.slide-subtitle') ? s.querySelector('.slide-subtitle').innerText : 'Presentation Title Slide'}</p>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function toggleOverview() {
+      const modal = document.getElementById('overview-modal');
+      if (modal.classList.contains('active')) {
+        modal.classList.remove('active');
+      } else {
+        buildOverview();
+        modal.classList.add('active');
+      }
+    }
+
+    // ========================================================
+    // MOVEABLE CARDS ENGINE (Free Drag & Drop Positioning)
+    // ========================================================
+    const cardPositions = new Map();
+
+    function initMoveableCards() {
+      const cards = document.querySelectorAll('.moveable-card');
+      cards.forEach(card => {
+        let isDragging = false;
+        let startX, startY;
+        let currentTranslateX = 0;
+        let currentTranslateY = 0;
+
+        card.addEventListener('mousedown', (e) => {
+          // Ignore clicks on buttons, links, or tables if text is selected
+          if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') return;
+
+          isDragging = true;
+          card.classList.add('dragging');
+          startX = e.clientX - currentTranslateX;
+          startY = e.clientY - currentTranslateY;
+
+          function onMouseMove(moveEvent) {
+            if (!isDragging) return;
+            currentTranslateX = moveEvent.clientX - startX;
+            currentTranslateY = moveEvent.clientY - startY;
+            card.style.transform = `translate(${currentTranslateX}px, ${currentTranslateY}px)`;
+          }
+
+          function onMouseUp() {
+            if (isDragging) {
+              isDragging = false;
+              card.classList.remove('dragging');
+              cardPositions.set(card, { x: currentTranslateX, y: currentTranslateY });
+              window.removeEventListener('mousemove', onMouseMove);
+              window.removeEventListener('mouseup', onMouseUp);
+            }
+          }
+
+          window.addEventListener('mousemove', onMouseMove);
+          window.addEventListener('mouseup', onMouseUp);
+        });
+      });
+    }
+
+    function resetCurrentSlide() {
+      const activeSlide = document.querySelector('.slide.active');
+      if (!activeSlide) return;
+      const cards = activeSlide.querySelectorAll('.moveable-card');
+      cards.forEach(card => {
+        card.style.transform = 'translate(0px, 0px)';
+        cardPositions.delete(card);
+      });
+    }
+
+    // Interactive Gallery Switcher
+    const figData = {
+      '01_dataset_scatter.png': {
+        title: 'Figure 1: Dataset Partition Scatter Plot',
+        desc: 'Displays all 15 student observations. 10 training samples (blue circles) and 5 held-out test samples (orange squares) are distributed across the 1.0 to 8.0 hours range with zero overlap.'
+      },
+      '02_regression_lines.png': {
+        title: 'Figure 2: Fitted Regression Lines (GD vs. SGD)',
+        desc: 'Batch GD Line: ŷ = 7.78x + 28.21 | SGD Line: ŷ = 7.72x + 28.54. Both lines capture the underlying data trend almost identically.'
+      },
+      '05_gd_vs_sgd_loss.png': {
+        title: 'Figure 5: Optimization Trajectories Compared',
+        desc: 'Side-by-side contrast: Batch GD shows a smooth deterministic reduction over 1,000 iterations, whereas SGD exhibits visible epoch-by-epoch fluctuations due to individual sample updates.'
+      },
+      '06_actual_vs_predicted_test.png': {
+        title: 'Figure 6: Unseen Test Set: Actual vs. Predicted',
+        desc: 'Grouped bar chart for the 5 held-out test students. GD and SGD predictions track actual exam scores tightly across low, mid, and high study hours.'
+      }
+    };
+
+    function setFigure(filename) {
+      document.getElementById('active-fig-img').src = './results/figures/' + filename;
+      if (figData[filename]) {
+        document.getElementById('fig-title').innerText = figData[filename].title;
+        document.getElementById('fig-desc').innerHTML = `<p>${figData[filename].desc}</p>`;
+      }
+    }
+
+    // Initialize on page load
+    window.onload = () => {
+      initMoveableCards();
+      updateSlide();
+    };
+  </script>
+</body>
+</html>
