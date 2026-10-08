@@ -212,37 +212,214 @@
     }
     .card-body {
       font-size: 14px;
-      line-height: 1.6;
+      line-height: 1.65;
       color: #cbd5e1;
     }
-    .card-body p { margin-bottom: 8px; }
-    .card-body ul { list-style: none; padding-left: 0; }
-    .card-body li {
-      margin-bottom: 8px;
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
+    .card-body p {
+      margin-bottom: 10px;
+      line-height: 1.65;
     }
-    .card-body li::before {
+    .card-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Unordered Lists */
+    .card-body ul {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 10px;
+    }
+    .card-body ul > li {
+      position: relative;
+      padding-left: 18px;
+      margin-bottom: 9px;
+      line-height: 1.6;
+      display: block;
+    }
+    .card-body ul > li::before {
       content: "•";
+      position: absolute;
+      left: 0;
+      top: 0;
       color: var(--accent-cyan);
       font-weight: bold;
       font-size: 16px;
-      line-height: 1;
+      line-height: 1.4;
     }
 
-    /* Math Formula Block */
+    /* Ordered Lists */
+    .card-body ol {
+      list-style-type: decimal;
+      padding-left: 22px;
+      margin-bottom: 10px;
+    }
+    .card-body ol > li {
+      margin-bottom: 10px;
+      line-height: 1.6;
+      display: list-item;
+      padding-left: 4px;
+    }
+    .card-body ol > li::marker {
+      color: var(--accent-cyan);
+      font-weight: 700;
+    }
+    .card-body ol > li::before {
+      content: none !important;
+    }
+
+    /* Nested Lists */
+    .card-body ol > li > ul,
+    .card-body ul > li > ul {
+      list-style: none;
+      padding-left: 0;
+      margin-top: 6px;
+      margin-bottom: 4px;
+      display: block;
+    }
+    .card-body ol > li > ul > li,
+    .card-body ul > li > ul > li {
+      position: relative;
+      padding-left: 16px;
+      margin-bottom: 6px;
+      line-height: 1.55;
+      display: block;
+    }
+    .card-body ol > li > ul > li::before,
+    .card-body ul > li > ul > li::before {
+      content: "›";
+      position: absolute;
+      left: 2px;
+      top: 0;
+      color: var(--accent-cyan);
+      font-weight: bold;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    /* Inline Code and Subscripts */
+    code {
+      font-family: 'Consolas', 'Fira Code', 'Courier New', monospace;
+      font-size: 0.9em;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #38bdf8;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    sub, sup {
+      font-size: 75%;
+      line-height: 0;
+      position: relative;
+      vertical-align: baseline;
+    }
+    sub { bottom: -0.25em; }
+    sup { top: -0.5em; }
+
+    /* Algorithm Workflow Steps */
+    .algo-step {
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+    }
+    .algo-step:last-child {
+      margin-bottom: 0;
+    }
+    .algo-step-header {
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 13.5px;
+    }
+    .step-badge {
+      font-size: 10.5px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-green {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+    .badge-rose {
+      background: rgba(244, 63, 94, 0.2);
+      color: #fb7185;
+      border: 1px solid rgba(244, 63, 94, 0.4);
+    }
+    .badge-cyan {
+      background: rgba(6, 182, 212, 0.2);
+      color: #38bdf8;
+      border: 1px solid rgba(6, 182, 212, 0.4);
+    }
+
+    /* Formula & Math Display Boxes */
     .formula-box {
       background: rgba(15, 23, 42, 0.85);
       border: 1px solid rgba(6, 182, 212, 0.25);
       border-radius: 8px;
-      padding: 12px 16px;
-      margin: 10px 0;
+      padding: 10px 16px;
+      margin: 8px 0;
       text-align: center;
       font-family: 'Cambria Math', 'KaTeX_Main', serif, monospace;
-      font-size: 17px;
+      font-size: 16px;
       color: #38bdf8;
       letter-spacing: 0.5px;
+    }
+    .math-block {
+      background: rgba(11, 15, 25, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin: 6px 0;
+      font-family: 'Cambria Math', 'Consolas', monospace;
+      font-size: 13.5px;
+      line-height: 1.6;
+      display: block;
+    }
+    .math-block.green {
+      border-left: 3px solid var(--accent-green);
+      color: #a7f3d0;
+    }
+    .math-block.rose {
+      border-left: 3px solid var(--accent-rose);
+      color: #fecdd3;
+    }
+    .math-block.cyan {
+      border-left: 3px solid var(--accent-cyan);
+      color: #bae6fd;
+    }
+
+    /* Profile Metrics Grid */
+    .metric-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .metric-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    .metric-row-label {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .metric-row-val {
+      font-family: 'Consolas', monospace;
+      font-weight: 700;
+      color: #f8fafc;
     }
 
     /* Tables */
@@ -678,11 +855,13 @@
           <span class="drag-handle">Drag to Move</span>
           <div class="card-title" style="color: var(--accent-cyan);">1. Hypothesis & MSE Loss</div>
           <div class="card-body">
-            <p><strong>Linear Hypothesis:</strong></p>
+            <p><strong>Linear Hypothesis Function:</strong></p>
             <div class="formula-box">ŷ<sub>i</sub> = w · x<sub>i</sub> + b</div>
             <p><strong>Mean Squared Error (MSE):</strong></p>
             <div class="formula-box">MSE = (1 / n) Σ<sub>i=1</sub><sup>n</sup> (y<sub>i</sub> - ŷ<sub>i</sub>)<sup>2</sup></div>
-            <p><strong>Why MSE?</strong> Strictly convex quadratic bowl guaranteeing a single global minimum without local minima traps.</p>
+            <div style="background: rgba(6, 182, 212, 0.08); border-left: 3px solid var(--accent-cyan); padding: 8px 12px; margin-top: 10px; border-radius: 4px; font-size: 13px;">
+              <strong>Convexity Guarantee:</strong> Strictly convex quadratic bowl guaranteeing a single global minimum without local minima traps.
+            </div>
           </div>
         </div>
 
@@ -690,11 +869,15 @@
           <span class="drag-handle">Drag to Move</span>
           <div class="card-title" style="color: var(--accent-green);">2. Analytical Gradient Equations</div>
           <div class="card-body">
-            <p>Let error residual: e<sub>i</sub> = y<sub>i</sub> - (w·x<sub>i</sub> + b)</p>
+            <p>Let prediction residual: <strong>e<sub>i</sub> = y<sub>i</sub> - (w · x<sub>i</sub> + b)</strong></p>
             <p><strong>Derivative with respect to weight (w):</strong></p>
-            <div class="formula-box">dw = -(2 / n) Σ<sub>i=1</sub><sup>n</sup> x<sub>i</sub> · (y<sub>i</sub> - ŷ<sub>i</sub>)</div>
+            <div class="formula-box" style="border-color: rgba(16, 185, 129, 0.3); color: #34d399;">
+              dw = -(2 / n) Σ<sub>i=1</sub><sup>n</sup> x<sub>i</sub> · (y<sub>i</sub> - ŷ<sub>i</sub>)
+            </div>
             <p><strong>Derivative with respect to bias (b):</strong></p>
-            <div class="formula-box">db = -(2 / n) Σ<sub>i=1</sub><sup>n</sup> (y<sub>i</sub> - ŷ<sub>i</sub>)</div>
+            <div class="formula-box" style="border-color: rgba(16, 185, 129, 0.3); color: #34d399;">
+              db = -(2 / n) Σ<sub>i=1</sub><sup>n</sup> (y<sub>i</sub> - ŷ<sub>i</sub>)
+            </div>
           </div>
         </div>
       </div>
@@ -732,7 +915,9 @@
           <div class="card-body">
             <p>If Z-score standardization is applied:</p>
             <div class="formula-box">μ<sub>train</sub> = mean(X<sub>train</sub>), &nbsp; σ<sub>train</sub> = std(X<sub>train</sub>)</div>
-            <p><strong>The Golden Rule:</strong> Never calculate μ or σ using the test set! Computing statistics on the combined dataset leaks future distribution information into model parameters.</p>
+            <div style="background: rgba(244, 63, 94, 0.1); border-left: 3px solid var(--accent-rose); padding: 10px 14px; margin: 12px 0; border-radius: 6px; font-size: 13px;">
+              <strong style="color: var(--accent-rose);">The Golden Rule:</strong> Never calculate μ or σ using the test set! Computing statistics on the combined dataset leaks future distribution information into model parameters.
+            </div>
             <p>Our project includes <code>ZeroLeakageStandardScaler</code> strictly implementing this guarantee.</p>
           </div>
         </div>
@@ -757,19 +942,39 @@
           <span class="drag-handle">Drag to Move</span>
           <div class="card-title" style="color: var(--accent-green);">Algorithmic Workflow</div>
           <div class="card-body">
-            <ol style="padding-left: 20px; line-height: 1.8;">
-              <li>Initialize parameters: w<sub>0</sub> = 0.0, b<sub>0</sub> = 0.0, α = 0.01.</li>
-              <li>For each iteration (1 to 1,000):
-                <ul style="margin-top: 4px;">
-                  <li>Compute predictions for all 10 training samples: ŷ = w·X + b.</li>
-                  <li>Compute batch average gradient vector: dw and db.</li>
-                  <li>Simultaneously update parameters:
-                    <div style="color: var(--accent-green); font-family: monospace; margin: 4px 0;">w ← w - α·dw<br>b ← b - α·db</div>
-                  </li>
-                  <li>Record MSE loss.</li>
-                </ul>
-              </li>
-            </ol>
+            <div class="algo-step">
+              <div class="algo-step-header">
+                <span class="step-badge badge-green">Step 1</span>
+                <span>Parameter Initialization</span>
+              </div>
+              <p style="margin: 0 0 6px 0;">Initialize model parameters and learning rate:</p>
+              <div class="math-block green">
+                w<sub>0</sub> = 0.0, &nbsp; b<sub>0</sub> = 0.0, &nbsp; α = 0.01 &nbsp; (1,000 iterations)
+              </div>
+            </div>
+
+            <div class="algo-step">
+              <div class="algo-step-header">
+                <span class="step-badge badge-green">Step 2</span>
+                <span>Full-Batch Iteration Loop (t = 1 to 1,000)</span>
+              </div>
+              <ul>
+                <li><strong>Vectorized Predictions:</strong> Compute ŷ = w · X + b across all 10 training instances.</li>
+                <li><strong>Batch Gradient Vector:</strong> Compute exact mean derivatives:
+                  <div class="math-block green">
+                    dw = -(2 / 10) Σ<sub>i=1</sub><sup>10</sup> x<sub>i</sub> · (y<sub>i</sub> - ŷ<sub>i</sub>)<br>
+                    db = -(2 / 10) Σ<sub>i=1</sub><sup>10</sup> (y<sub>i</sub> - ŷ<sub>i</sub>)
+                  </div>
+                </li>
+                <li><strong>Simultaneous Parameter Update:</strong>
+                  <div class="math-block green" style="font-weight: bold;">
+                    w ← w - α · dw<br>
+                    b ← b - α · db
+                  </div>
+                </li>
+                <li><strong>Loss Tracking:</strong> Record MSE = (1 / 10) Σ (y<sub>i</sub> - ŷ<sub>i</sub>)<sup>2</sup>.</li>
+              </ul>
+            </div>
           </div>
         </div>
 
@@ -777,14 +982,36 @@
           <span class="drag-handle">Drag to Move</span>
           <div class="card-title" style="color: var(--accent-cyan);">Computational Profile</div>
           <div class="card-body">
-            <ul>
-              <li><strong>Trajectory:</strong> Strictly deterministic and smooth descent.</li>
-              <li><strong>Sample Evaluations:</strong> 1,000 iterations × 10 samples = <strong>10,000 evaluations</strong>.</li>
-              <li><strong>Total Parameter Updates:</strong> 1,000 updates.</li>
-              <li><strong>Initial Loss (iter 0):</strong> 4,117.60</li>
-              <li><strong>Final Training Loss (iter 1000):</strong> 0.7892</li>
-              <li><strong>Final Parameters:</strong> w = 7.7822, b = 28.2121</li>
-            </ul>
+            <div class="metric-list">
+              <div class="metric-row">
+                <span class="metric-row-label">Optimization Trajectory</span>
+                <span class="metric-row-val" style="color: var(--accent-green);">Deterministic & Smooth</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-row-label">Sample Evaluations</span>
+                <span class="metric-row-val">1,000 iter × 10 = 10,000</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-row-label">Total Parameter Updates</span>
+                <span class="metric-row-val">1,000 updates</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-row-label">Initial Loss (iter 0)</span>
+                <span class="metric-row-val">4,117.60</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-row-label">Final Training Loss</span>
+                <span class="metric-row-val" style="color: var(--accent-green);">0.7892</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-row-label">Final Weight (w)</span>
+                <span class="metric-row-val">7.7822</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-row-label">Final Bias (b)</span>
+                <span class="metric-row-val">28.2121</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -808,23 +1035,37 @@
           <span class="drag-handle">Drag to Move</span>
           <div class="card-title" style="color: var(--accent-rose);">Algorithmic Workflow</div>
           <div class="card-body">
-            <ol style="padding-left: 20px; line-height: 1.8;">
-              <li>Initialize w<sub>0</sub> = 0.0, b<sub>0</sub> = 0.0, α = 0.01, seed = 42.</li>
-              <li>For each epoch (1 to 100):
-                <ul style="margin-top: 4px;">
-                  <li><strong>Shuffle:</strong> Randomly permute the 10 training instances.</li>
-                  <li><strong>Sample Pass:</strong> For each individual instance (x<sub>i</sub>, y<sub>i</sub>):
-                    <div style="color: var(--accent-rose); font-family: monospace; margin: 4px 0;">
-                      dw<sub>i</sub> = -2·x<sub>i</sub>·(y<sub>i</sub> - ŷ<sub>i</sub>)<br>
-                      db<sub>i</sub> = -2·(y<sub>i</sub> - ŷ<sub>i</sub>)<br>
-                      w ← w - α·dw<sub>i</sub><br>
-                      b ← b - α·db<sub>i</sub>
-                    </div>
-                  </li>
-                  <li>Record epoch-average training MSE across all 10 samples.</li>
-                </ul>
-              </li>
-            </ol>
+            <div class="algo-step">
+              <div class="algo-step-header">
+                <span class="step-badge badge-rose">Step 1</span>
+                <span>Initialization & Reproducibility</span>
+              </div>
+              <p style="margin: 0 0 6px 0;">Initialize parameters and set random seed:</p>
+              <div class="math-block rose">
+                w<sub>0</sub> = 0.0, &nbsp; b<sub>0</sub> = 0.0, &nbsp; α = 0.01, &nbsp; seed = 42 &nbsp; (100 epochs)
+              </div>
+            </div>
+
+            <div class="algo-step">
+              <div class="algo-step-header">
+                <span class="step-badge badge-rose">Step 2</span>
+                <span>Epoch Outer Loop (epoch = 1 to 100)</span>
+              </div>
+              <ul>
+                <li><strong>Random Permutation:</strong> Shuffle the 10 training instances at the start of each epoch.</li>
+                <li><strong>Online Sample Updates:</strong> For each single instance (x<sub>i</sub>, y<sub>i</sub>) sequentially:
+                  <div class="math-block rose">
+                    dw<sub>i</sub> = -2 · x<sub>i</sub> · (y<sub>i</sub> - ŷ<sub>i</sub>)<br>
+                    db<sub>i</sub> = -2 · (y<sub>i</sub> - ŷ<sub>i</sub>)
+                  </div>
+                  <div class="math-block rose" style="font-weight: bold;">
+                    w ← w - α · dw<sub>i</sub><br>
+                    b ← b - α · db<sub>i</sub>
+                  </div>
+                </li>
+                <li><strong>Epoch Loss:</strong> Evaluate and record average training MSE across all 10 instances.</li>
+              </ul>
+            </div>
           </div>
         </div>
 
@@ -832,14 +1073,39 @@
           <span class="drag-handle">Drag to Move</span>
           <div class="card-title" style="color: var(--accent-amber);">Computational Profile & Stochasticity</div>
           <div class="card-body">
-            <ul>
-              <li><strong>Why it Fluctuates:</strong> Individual points have idiosyncratic residual noise, making single-sample gradients a noisy estimate of the batch gradient.</li>
-              <li><strong>Sample Evaluations:</strong> 100 epochs × 10 samples = <strong>1,000 evaluations</strong>.</li>
-              <li><strong>Total Parameter Updates:</strong> 1,000 updates.</li>
-              <li><strong>Initial Loss (epoch 0):</strong> 4,117.60</li>
-              <li><strong>Final Training Loss (epoch 100):</strong> 0.7176</li>
-              <li><strong>Final Parameters:</strong> w = 7.7156, b = 28.5394</li>
-            </ul>
+            <div class="metric-list">
+              <div class="metric-row">
+                <span class="metric-row-label">Optimization Trajectory</span>
+                <span class="metric-row-val" style="color: var(--accent-amber);">Stochastic Oscillations</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-row-label">Sample Evaluations</span>
+                <span class="metric-row-val">100 epochs × 10 = 1,000</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-row-label">Total Parameter Updates</span>
+                <span class="metric-row-val">1,000 updates</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-row-label">Initial Loss (epoch 0)</span>
+                <span class="metric-row-val">4,117.60</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-row-label">Final Training Loss</span>
+                <span class="metric-row-val" style="color: var(--accent-green);">0.7176</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-row-label">Final Weight (w)</span>
+                <span class="metric-row-val">7.7156</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-row-label">Final Bias (b)</span>
+                <span class="metric-row-val">28.5394</span>
+              </div>
+            </div>
+            <p style="margin-top: 10px; font-size: 12.5px; color: var(--text-muted);">
+              <strong>Why it Fluctuates:</strong> Each observation has idiosyncratic noise, making single-sample gradients a noisy estimate of the batch gradient.
+            </p>
           </div>
         </div>
       </div>
@@ -863,10 +1129,19 @@
           <span class="drag-handle">Drag to Move</span>
           <div class="card-title" style="color: var(--accent-cyan);">Analytical OLS Solution</div>
           <div class="card-body">
-            <p>Ordinary Least Squares on the exact 10 training samples:</p>
-            <div class="formula-box">w<sub>OLS</sub> = 7.6379<br>b<sub>OLS</sub> = 28.9753</div>
-            <p>Both manual algorithms converged within <strong>&lt; 0.15</strong> of the theoretical global optimum.</p>
-            <p>Train MSE OLS = 0.6823, Test MSE OLS = 1.0151</p>
+            <p>Ordinary Least Squares closed-form baseline on 10 training samples:</p>
+            <div class="formula-box">w<sub>OLS</sub> = 7.6379 &nbsp;&nbsp;|&nbsp;&nbsp; b<sub>OLS</sub> = 28.9753</div>
+            <p style="margin-top: 10px;">Both manual optimization algorithms converged within <strong>&lt; 0.15</strong> of the theoretical global optimum.</p>
+            <div class="metric-list" style="margin-top: 12px;">
+              <div class="metric-row">
+                <span class="metric-row-label">Training MSE (OLS)</span>
+                <span class="metric-row-val" style="color: #38bdf8;">0.6823</span>
+              </div>
+              <div class="metric-row">
+                <span class="metric-row-label">Test MSE (OLS)</span>
+                <span class="metric-row-val" style="color: #38bdf8;">1.0151</span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1057,12 +1332,13 @@
 
         <div class="moveable-card" data-card="s12-c2">
           <span class="drag-handle">Drag to Move</span>
-          <div class="card-title" style="color: var(--accent-green);">Final Project Takeaway</div>
+          <div class="card-title" style="color: var(--accent-green);">Final Project Conclusion</div>
           <div class="card-body">
-            <div style="background: rgba(16, 185, 129, 0.1); border-left: 3px solid var(--accent-green); padding: 12px 16px; border-radius: 6px; font-style: italic; color: #f1f5f9; line-height: 1.7;">
-              "The experiment demonstrates that both Batch Gradient Descent and Stochastic Gradient Descent can effectively optimize a Linear Regression model. Batch GD provides a smoother optimization trajectory, while SGD introduces stochastic fluctuations due to sample-wise updates. In our small dataset, both methods produced nearly identical test performance, showing that the optimization behavior can differ even when the final predictive performance is similar."
+            <div style="background: rgba(16, 185, 129, 0.08); border-left: 3px solid var(--accent-green); padding: 14px 18px; border-radius: 8px; color: #f1f5f9; line-height: 1.7; font-size: 13.5px;">
+              <strong style="color: var(--accent-green); display: block; margin-bottom: 6px; font-size: 14px;">Summary Takeaway:</strong>
+              The experiment demonstrates that both Batch Gradient Descent and Stochastic Gradient Descent effectively optimize Linear Regression from first principles. Batch GD provides a smoother optimization trajectory, while SGD introduces stochastic fluctuations due to sample-wise updates. In our dataset, both methods produced nearly identical test performance (Test MSE ~0.864), demonstrating that optimization mechanics can differ substantially while achieving matching generalization.
             </div>
-            <div style="margin-top: 14px; text-align: center; color: var(--accent-cyan); font-weight: bold;">
+            <div style="margin-top: 18px; text-align: center; color: var(--accent-cyan); font-weight: 700; font-size: 15px;">
               Thank You! Any Questions?
             </div>
           </div>
@@ -1209,8 +1485,8 @@
         let currentTranslateY = 0;
 
         card.addEventListener('mousedown', (e) => {
-          // Ignore clicks on buttons, links, or tables if text is selected
-          if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A') return;
+          // Ignore clicks on buttons or links
+          if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A' || e.target.closest('button') || e.target.closest('a')) return;
 
           isDragging = true;
           card.classList.add('dragging');
