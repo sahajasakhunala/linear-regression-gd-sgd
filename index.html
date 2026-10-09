@@ -202,16 +202,16 @@
 
     /* Typography & Components Inside Cards */
     .card-title {
-      font-size: 16px;
+      font-size: 17px;
       font-weight: 700;
       color: #fff;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
     .card-body {
-      font-size: 14px;
+      font-size: 14.5px;
       line-height: 1.65;
       color: #cbd5e1;
     }
@@ -682,8 +682,8 @@
       <div class="title-slide-container">
         <div class="title-top">
           <div class="academic-tag">Machine Learning Comparative Study</div>
-          <h1 class="main-presentation-title">Linear Regression Using Gradient Descent and Stochastic Gradient Descent</h1>
-          <p class="main-presentation-subtitle">A Comprehensive First-Principles Investigation on Parameter Optimization and Generalization</p>
+          <h1 class="main-presentation-title">Linear Regression: Batch GD vs. Stochastic GD</h1>
+          <p class="main-presentation-subtitle">A First-Principles Comparative Study on Optimization and Generalization</p>
         </div>
 
         <div class="meta-cards-row">
@@ -711,13 +711,16 @@
             <div class="card-title" style="color: var(--accent-green); font-size: 17px; margin-bottom: 14px;">
               Academic Mentorship
             </div>
-            <div style="margin-bottom: 16px;">
+            <div style="margin-bottom: 14px;">
               <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Subject</div>
               <div style="font-size: 16px; font-weight: 700; color: #fff; margin-top: 2px;">Foundations of Artificial Intelligence</div>
             </div>
-            <div>
+            <div style="margin-bottom: 14px;">
               <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Course Professor</div>
               <div style="font-size: 16px; font-weight: 700; color: #38bdf8; margin-top: 2px;">Dr. YVR Naga Pavan</div>
+            </div>
+            <div style="padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, 0.08); font-size: 13px; color: var(--text-muted);">
+              <span style="color: var(--accent-cyan); font-weight: 600;">Built With:</span> Python, NumPy, Pandas, Matplotlib
             </div>
           </div>
         </div>
@@ -729,44 +732,35 @@
     <!-- ======================================================== -->
     <section class="slide" id="slide-2" data-index="2">
       <div class="slide-header">
-        <div class="slide-category">Problem Statement</div>
+        <div class="slide-category">Motivation</div>
         <div class="slide-title">
-          <span>Understanding Parameter Optimization in Linear Regression</span>
+          <span>Why Optimize from First Principles?</span>
           <button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="resetCurrentSlide()">Reset Positions</button>
         </div>
-        <div class="slide-subtitle">Why build Gradient Descent and Stochastic Gradient Descent from scratch?</div>
+        <div class="slide-subtitle">Looking inside the black-box of standard machine learning libraries</div>
       </div>
 
-      <div class="cards-grid grid-3">
+      <div class="cards-grid grid-2">
         <div class="moveable-card" data-card="s2-c1">
           <span class="drag-handle">Drag to Move</span>
           <div class="card-title" style="color: var(--accent-cyan);">The Black-Box Dilemma</div>
           <div class="card-body">
-            <p>Modern machine learning frameworks (e.g., <code>sklearn.linear_model</code>) abstract optimization behind single-line function calls.</p>
-            <p>While convenient for industry pipelines, this hides the mathematical mechanics of how gradients adjust weights and bias from empirical residuals.</p>
+            <ul>
+              <li>Standard libraries (like scikit-learn) solve linear regression in a single line.</li>
+              <li>This hides how gradients actually guide weights and bias toward the optimum.</li>
+              <li><strong>Our Goal:</strong> Build Batch GD and SGD completely from scratch in NumPy to see the optimization process directly.</li>
+            </ul>
           </div>
         </div>
 
         <div class="moveable-card" data-card="s2-c2">
           <span class="drag-handle">Drag to Move</span>
-          <div class="card-title" style="color: var(--accent-green);">The Educational Objective</div>
+          <div class="card-title" style="color: var(--accent-green);">Key Research Questions</div>
           <div class="card-body">
             <ul>
-              <li>Derive partial derivatives analytically from first principles.</li>
-              <li>Implement Batch GD (full-batch gradients) and SGD (sample-wise gradients) without third-party optimizers.</li>
-              <li>Directly inspect the loss trajectories and convergence behavior on identical partitions.</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="moveable-card" data-card="s2-c3">
-          <span class="drag-handle">Drag to Move</span>
-          <div class="card-title" style="color: var(--accent-rose);">Key Research Questions</div>
-          <div class="card-body">
-            <ul>
-              <li>Does SGD oscillate or converge cleanly compared to Batch GD?</li>
-              <li>How do sample-evaluation budgets differ (10,000 vs. 1,000)?</li>
-              <li>Can both methods achieve near-identical generalization on unseen test data?</li>
+              <li><strong>Gradient Dynamics:</strong> How does full-batch updating differ from single-sample updating?</li>
+              <li><strong>Trajectory:</strong> Does SGD oscillate heavily, and how fast does it reach convergence?</li>
+              <li><strong>Generalization:</strong> Do both methods achieve equal predictive accuracy on unseen test data?</li>
             </ul>
           </div>
         </div>
@@ -774,64 +768,45 @@
     </section>
 
     <!-- ======================================================== -->
-    <!-- SLIDE 3: DATASET & DATA LEAKAGE PREVENTION               -->
+    <!-- SLIDE 3: DATASET & PARTITION                             -->
     <!-- ======================================================== -->
     <section class="slide" id="slide-3" data-index="3">
       <div class="slide-header">
-        <div class="slide-category">Empirical Foundation</div>
+        <div class="slide-category">Dataset Setup</div>
         <div class="slide-title">
-          <span>The Study Dataset & Train/Test Partition</span>
+          <span>The Dataset & Train/Test Partition</span>
           <button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="resetCurrentSlide()">Reset Positions</button>
         </div>
-        <div class="slide-subtitle">Strict 70% / 30% separation ensuring zero data leakage</div>
+        <div class="slide-subtitle">Strict 70% / 30% separation with zero data leakage</div>
       </div>
 
-      <div class="cards-grid grid-1-2">
+      <div class="cards-grid grid-2">
         <div class="moveable-card" data-card="s3-c1">
           <span class="drag-handle">Drag to Move</span>
-          <div class="card-title" style="color: var(--accent-cyan);">Experimental Setup</div>
+          <div class="card-title" style="color: var(--accent-cyan);">Problem Formulation</div>
           <div class="card-body">
-            <p><strong>Input (X)</strong>: Hours Studied (1.0 to 8.0 hours)</p>
-            <p><strong>Target (y)</strong>: Exam Score (35 to 89 points)</p>
-            <p><strong>Split Ratio</strong>: 70% Train (10) / 30% Test (5)</p>
-            <p><strong>Seed</strong>: <code>random_state = 42</code> (Strictly reproducible)</p>
-            <div style="background: rgba(16, 185, 129, 0.1); border-left: 3px solid var(--accent-green); padding: 8px 12px; margin-top: 12px; border-radius: 4px;">
-              <strong style="color: var(--accent-green);">Zero Data Leakage Rule:</strong> The 5 test observations are isolated and never touched during gradient calculation.
-            </div>
+            <ul>
+              <li><strong>Input Feature (X):</strong> Hours Studied (1.0 to 8.0 hours).</li>
+              <li><strong>Target Variable (y):</strong> Exam Score (35 to 89 marks).</li>
+              <li><strong>Dataset Size:</strong> 15 student records.</li>
+              <li><strong>Split Ratio:</strong> 70% Train (10 students) / 30% Test (5 students).</li>
+              <li><strong>Reproducibility:</strong> Fixed <code>random_state = 42</code>.</li>
+            </ul>
           </div>
         </div>
 
         <div class="moveable-card" data-card="s3-c2">
           <span class="drag-handle">Drag to Move</span>
-          <div class="card-title">Partition Table (15 Observations)</div>
-          <div style="overflow-x: auto;">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Student</th>
-                  <th>Hours Studied (X)</th>
-                  <th>Exam Score (y)</th>
-                  <th>Partition Role</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td>1</td><td>1.0</td><td>35</td><td style="color: var(--accent-rose); font-weight: bold;">Test Sample (Unseen)</td></tr>
-                <tr><td>2</td><td>1.5</td><td>39</td><td style="color: var(--accent-cyan);">Training Set</td></tr>
-                <tr><td>3</td><td>2.0</td><td>44</td><td style="color: var(--accent-cyan);">Training Set</td></tr>
-                <tr><td>4</td><td>2.5</td><td>48</td><td style="color: var(--accent-cyan);">Training Set</td></tr>
-                <tr><td>5</td><td>3.0</td><td>52</td><td style="color: var(--accent-cyan);">Training Set</td></tr>
-                <tr><td>6</td><td>3.5</td><td>55</td><td style="color: var(--accent-rose); font-weight: bold;">Test Sample (Unseen)</td></tr>
-                <tr><td>7</td><td>4.0</td><td>61</td><td style="color: var(--accent-cyan);">Training Set</td></tr>
-                <tr><td>8</td><td>4.5</td><td>64</td><td style="color: var(--accent-cyan);">Training Set</td></tr>
-                <tr><td>9</td><td>5.0</td><td>68</td><td style="color: var(--accent-cyan);">Training Set</td></tr>
-                <tr><td>10</td><td>5.5</td><td>71</td><td style="color: var(--accent-rose); font-weight: bold;">Test Sample (Unseen)</td></tr>
-                <tr><td>11</td><td>6.0</td><td>75</td><td style="color: var(--accent-cyan);">Training Set</td></tr>
-                <tr><td>12</td><td>6.5</td><td>78</td><td style="color: var(--accent-rose); font-weight: bold;">Test Sample (Unseen)</td></tr>
-                <tr><td>13</td><td>7.0</td><td>82</td><td style="color: var(--accent-cyan);">Training Set</td></tr>
-                <tr><td>14</td><td>7.5</td><td>85</td><td style="color: var(--accent-rose); font-weight: bold;">Test Sample (Unseen)</td></tr>
-                <tr><td>15</td><td>8.0</td><td>89</td><td style="color: var(--accent-cyan);">Training Set</td></tr>
-              </tbody>
-            </table>
+          <div class="card-title" style="color: var(--accent-green);">Zero Data Leakage Protocol</div>
+          <div class="card-body">
+            <ul>
+              <li><strong>Training Set (10 points):</strong> Exclusively used for calculating gradients and updating parameters.</li>
+              <li><strong>Test Set (5 points):</strong> Completely isolated and never seen by the model during training.</li>
+              <li><strong>Strict Rule:</strong> Model parameters and evaluation metrics are never contaminated with test statistics.</li>
+            </ul>
+            <div style="background: rgba(16, 185, 129, 0.1); border-left: 3px solid var(--accent-green); padding: 8px 12px; margin-top: 10px; border-radius: 4px; font-size: 13px;">
+              <strong>Held-Out Test Hours:</strong> 1.0 hr, 3.5 hrs, 5.5 hrs, 6.5 hrs, 7.5 hrs
+            </div>
           </div>
         </div>
       </div>
@@ -844,10 +819,10 @@
       <div class="slide-header">
         <div class="slide-category">Mathematical Modeling</div>
         <div class="slide-title">
-          <span>Hypothesis, Loss Function & Calculus Derivations</span>
+          <span>Hypothesis, Loss Function & Gradients</span>
           <button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="resetCurrentSlide()">Reset Positions</button>
         </div>
-        <div class="slide-subtitle">Analytical gradient derivation via chain rule</div>
+        <div class="slide-subtitle">Analytical derivation for parameter optimization</div>
       </div>
 
       <div class="cards-grid grid-2">
@@ -855,13 +830,13 @@
           <span class="drag-handle">Drag to Move</span>
           <div class="card-title" style="color: var(--accent-cyan);">1. Hypothesis & MSE Loss</div>
           <div class="card-body">
-            <p><strong>Linear Hypothesis Function:</strong></p>
+            <p><strong>Linear Prediction Function:</strong></p>
             <div class="formula-box">ŷ<sub>i</sub> = w · x<sub>i</sub> + b</div>
             <p><strong>Mean Squared Error (MSE):</strong></p>
-            <div class="formula-box">MSE = (1 / n) Σ<sub>i=1</sub><sup>n</sup> (y<sub>i</sub> - ŷ<sub>i</sub>)<sup>2</sup></div>
-            <div style="background: rgba(6, 182, 212, 0.08); border-left: 3px solid var(--accent-cyan); padding: 8px 12px; margin-top: 10px; border-radius: 4px; font-size: 13px;">
-              <strong>Convexity Guarantee:</strong> Strictly convex quadratic bowl guaranteeing a single global minimum without local minima traps.
-            </div>
+            <div class="formula-box">MSE = (1 / n) Σ (y<sub>i</sub> - ŷ<sub>i</sub>)<sup>2</sup></div>
+            <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">
+              MSE forms a convex bowl shape, guaranteeing a single global minimum with no local traps.
+            </p>
           </div>
         </div>
 
@@ -869,15 +844,17 @@
           <span class="drag-handle">Drag to Move</span>
           <div class="card-title" style="color: var(--accent-green);">2. Analytical Gradient Equations</div>
           <div class="card-body">
-            <p>Let prediction residual: <strong>e<sub>i</sub> = y<sub>i</sub> - (w · x<sub>i</sub> + b)</strong></p>
-            <p><strong>Derivative with respect to weight (w):</strong></p>
+            <p><strong>Weight Gradient (dw):</strong></p>
             <div class="formula-box" style="border-color: rgba(16, 185, 129, 0.3); color: #34d399;">
-              dw = -(2 / n) Σ<sub>i=1</sub><sup>n</sup> x<sub>i</sub> · (y<sub>i</sub> - ŷ<sub>i</sub>)
+              dw = -(2 / n) Σ x<sub>i</sub> · (y<sub>i</sub> - ŷ<sub>i</sub>)
             </div>
-            <p><strong>Derivative with respect to bias (b):</strong></p>
+            <p><strong>Bias Gradient (db):</strong></p>
             <div class="formula-box" style="border-color: rgba(16, 185, 129, 0.3); color: #34d399;">
-              db = -(2 / n) Σ<sub>i=1</sub><sup>n</sup> (y<sub>i</sub> - ŷ<sub>i</sub>)
+              db = -(2 / n) Σ (y<sub>i</sub> - ŷ<sub>i</sub>)
             </div>
+            <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">
+              Parameters update along the negative gradient: <code>w ← w - α·dw</code>, <code>b ← b - α·db</code>
+            </p>
           </div>
         </div>
       </div>
@@ -890,35 +867,37 @@
       <div class="slide-header">
         <div class="slide-category">Optimization Theory</div>
         <div class="slide-title">
-          <span>Feature Scaling Analysis & Zero Data Leakage</span>
+          <span>Feature Scaling & Data Preprocessing</span>
           <button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="resetCurrentSlide()">Reset Positions</button>
         </div>
-        <div class="slide-subtitle">Why raw scale works for 1D and how standardization must be handled</div>
+        <div class="slide-subtitle">Why raw scale works for 1D and how leakage is avoided</div>
       </div>
 
       <div class="cards-grid grid-2">
         <div class="moveable-card" data-card="s5-c1">
           <span class="drag-handle">Drag to Move</span>
-          <div class="card-title" style="color: var(--accent-amber);">Why Unscaled Features Work in This Study</div>
+          <div class="card-title" style="color: var(--accent-amber);">Why Features Remain Unscaled</div>
           <div class="card-body">
             <ul>
-              <li><strong>Naturally Compact Range:</strong> Hours studied spans [1.0, 8.0]. There are no multi-scale distortions (e.g. Salary vs Age).</li>
-              <li><strong>Well-Conditioned Contours:</strong> The Hessian eigenvalues are nearly balanced, preventing extreme zig-zag oscillations with α = 0.01.</li>
-              <li><strong>Direct Interpretability:</strong> Parameter <em>w</em> directly represents <em>points gained per study hour</em> (~7.7 marks/hr), and <em>b</em> is the <em>baseline score</em> (~28.2 marks).</li>
+              <li><strong>Naturally Compact Range:</strong> Study hours spans [1.0, 8.0] with no multi-scale distortions.</li>
+              <li><strong>Stable Convergence:</strong> With learning rate <code>α = 0.01</code>, gradients step smoothly without extreme zig-zagging.</li>
+              <li><strong>Direct Interpretability:</strong>
+                <br>• Weight <em>w</em> = marks gained per study hour (~7.7 marks/hr).
+                <br>• Bias <em>b</em> = baseline score (~28.2 marks).
+              </li>
             </ul>
           </div>
         </div>
 
         <div class="moveable-card" data-card="s5-c2">
           <span class="drag-handle">Drag to Move</span>
-          <div class="card-title" style="color: var(--accent-purple);">Strict Zero-Leakage Standardization Protocol</div>
+          <div class="card-title" style="color: var(--accent-purple);">Strict Preprocessing Rule</div>
           <div class="card-body">
-            <p>If Z-score standardization is applied:</p>
-            <div class="formula-box">μ<sub>train</sub> = mean(X<sub>train</sub>), &nbsp; σ<sub>train</sub> = std(X<sub>train</sub>)</div>
-            <div style="background: rgba(244, 63, 94, 0.1); border-left: 3px solid var(--accent-rose); padding: 10px 14px; margin: 12px 0; border-radius: 6px; font-size: 13px;">
-              <strong style="color: var(--accent-rose);">The Golden Rule:</strong> Never calculate μ or σ using the test set! Computing statistics on the combined dataset leaks future distribution information into model parameters.
-            </div>
-            <p>Our project includes <code>ZeroLeakageStandardScaler</code> strictly implementing this guarantee.</p>
+            <ul>
+              <li><strong>The Rule:</strong> If standardization is applied, mean and std must come <em>only</em> from the training set.</li>
+              <li><strong>The Danger:</strong> Computing statistics over the entire dataset leaks future test distribution into training.</li>
+              <li><strong>Implementation:</strong> Built a dedicated <code>ZeroLeakageStandardScaler</code> strictly respecting this isolation.</li>
+            </ul>
           </div>
         </div>
       </div>
@@ -942,74 +921,41 @@
           <span class="drag-handle">Drag to Move</span>
           <div class="card-title" style="color: var(--accent-green);">Algorithmic Workflow</div>
           <div class="card-body">
-            <div class="algo-step">
-              <div class="algo-step-header">
-                <span class="step-badge badge-green">Step 1</span>
-                <span>Parameter Initialization</span>
-              </div>
-              <p style="margin: 0 0 6px 0;">Initialize model parameters and learning rate:</p>
-              <div class="math-block green">
-                w<sub>0</sub> = 0.0, &nbsp; b<sub>0</sub> = 0.0, &nbsp; α = 0.01 &nbsp; (1,000 iterations)
-              </div>
-            </div>
-
-            <div class="algo-step">
-              <div class="algo-step-header">
-                <span class="step-badge badge-green">Step 2</span>
-                <span>Full-Batch Iteration Loop (t = 1 to 1,000)</span>
-              </div>
-              <ul>
-                <li><strong>Vectorized Predictions:</strong> Compute ŷ = w · X + b across all 10 training instances.</li>
-                <li><strong>Batch Gradient Vector:</strong> Compute exact mean derivatives:
-                  <div class="math-block green">
-                    dw = -(2 / 10) Σ<sub>i=1</sub><sup>10</sup> x<sub>i</sub> · (y<sub>i</sub> - ŷ<sub>i</sub>)<br>
-                    db = -(2 / 10) Σ<sub>i=1</sub><sup>10</sup> (y<sub>i</sub> - ŷ<sub>i</sub>)
-                  </div>
-                </li>
-                <li><strong>Simultaneous Parameter Update:</strong>
-                  <div class="math-block green" style="font-weight: bold;">
-                    w ← w - α · dw<br>
-                    b ← b - α · db
-                  </div>
-                </li>
-                <li><strong>Loss Tracking:</strong> Record MSE = (1 / 10) Σ (y<sub>i</sub> - ŷ<sub>i</sub>)<sup>2</sup>.</li>
-              </ul>
-            </div>
+            <ul>
+              <li><strong>Initialize:</strong> <code>w₀ = 0.0</code>, <code>b₀ = 0.0</code>, <code>α = 0.01</code></li>
+              <li><strong>Loop (1 to 1,000 iterations):</strong>
+                <br>1. Predict all 10 training samples: <code>ŷ = w · X + b</code>
+                <br>2. Compute exact mean gradient: <code>dw</code> and <code>db</code>
+                <br>3. Simultaneously update parameters:
+                <div class="math-block green" style="font-weight: bold; margin: 8px 0;">
+                  w ← w - α · dw &nbsp;&nbsp;|&nbsp;&nbsp; b ← b - α · db
+                </div>
+                4. Record full-batch MSE loss.
+              </li>
+            </ul>
           </div>
         </div>
 
         <div class="moveable-card" data-card="s6-c2">
           <span class="drag-handle">Drag to Move</span>
-          <div class="card-title" style="color: var(--accent-cyan);">Computational Profile</div>
+          <div class="card-title" style="color: var(--accent-cyan);">Key Characteristics</div>
           <div class="card-body">
             <div class="metric-list">
               <div class="metric-row">
-                <span class="metric-row-label">Optimization Trajectory</span>
-                <span class="metric-row-val" style="color: var(--accent-green);">Deterministic & Smooth</span>
+                <span class="metric-row-label">Trajectory Nature</span>
+                <span class="metric-row-val" style="color: var(--accent-green);">Smooth & Monotonic</span>
               </div>
               <div class="metric-row">
                 <span class="metric-row-label">Sample Evaluations</span>
-                <span class="metric-row-val">1,000 iter × 10 = 10,000</span>
+                <span class="metric-row-val">10,000 (1,000 iter × 10)</span>
               </div>
               <div class="metric-row">
-                <span class="metric-row-label">Total Parameter Updates</span>
-                <span class="metric-row-val">1,000 updates</span>
+                <span class="metric-row-label">Initial vs. Final Loss</span>
+                <span class="metric-row-val">4,117.60 → 0.7892</span>
               </div>
               <div class="metric-row">
-                <span class="metric-row-label">Initial Loss (iter 0)</span>
-                <span class="metric-row-val">4,117.60</span>
-              </div>
-              <div class="metric-row">
-                <span class="metric-row-label">Final Training Loss</span>
-                <span class="metric-row-val" style="color: var(--accent-green);">0.7892</span>
-              </div>
-              <div class="metric-row">
-                <span class="metric-row-label">Final Weight (w)</span>
-                <span class="metric-row-val">7.7822</span>
-              </div>
-              <div class="metric-row">
-                <span class="metric-row-label">Final Bias (b)</span>
-                <span class="metric-row-val">28.2121</span>
+                <span class="metric-row-label">Learned Equation</span>
+                <span class="metric-row-val">ŷ = 7.78x + 28.21</span>
               </div>
             </div>
           </div>
@@ -1027,7 +973,7 @@
           <span>Stochastic Gradient Descent (SGD)</span>
           <button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="resetCurrentSlide()">Reset Positions</button>
         </div>
-        <div class="slide-subtitle">Sample-by-sample online parameter updates with per-epoch shuffling</div>
+        <div class="slide-subtitle">Sample-by-sample online updates with per-epoch shuffling</div>
       </div>
 
       <div class="cards-grid grid-2">
@@ -1035,77 +981,42 @@
           <span class="drag-handle">Drag to Move</span>
           <div class="card-title" style="color: var(--accent-rose);">Algorithmic Workflow</div>
           <div class="card-body">
-            <div class="algo-step">
-              <div class="algo-step-header">
-                <span class="step-badge badge-rose">Step 1</span>
-                <span>Initialization & Reproducibility</span>
-              </div>
-              <p style="margin: 0 0 6px 0;">Initialize parameters and set random seed:</p>
-              <div class="math-block rose">
-                w<sub>0</sub> = 0.0, &nbsp; b<sub>0</sub> = 0.0, &nbsp; α = 0.01, &nbsp; seed = 42 &nbsp; (100 epochs)
-              </div>
-            </div>
-
-            <div class="algo-step">
-              <div class="algo-step-header">
-                <span class="step-badge badge-rose">Step 2</span>
-                <span>Epoch Outer Loop (epoch = 1 to 100)</span>
-              </div>
-              <ul>
-                <li><strong>Random Permutation:</strong> Shuffle the 10 training instances at the start of each epoch.</li>
-                <li><strong>Online Sample Updates:</strong> For each single instance (x<sub>i</sub>, y<sub>i</sub>) sequentially:
-                  <div class="math-block rose">
-                    dw<sub>i</sub> = -2 · x<sub>i</sub> · (y<sub>i</sub> - ŷ<sub>i</sub>)<br>
-                    db<sub>i</sub> = -2 · (y<sub>i</sub> - ŷ<sub>i</sub>)
-                  </div>
-                  <div class="math-block rose" style="font-weight: bold;">
-                    w ← w - α · dw<sub>i</sub><br>
-                    b ← b - α · db<sub>i</sub>
-                  </div>
-                </li>
-                <li><strong>Epoch Loss:</strong> Evaluate and record average training MSE across all 10 instances.</li>
-              </ul>
-            </div>
+            <ul>
+              <li><strong>Initialize:</strong> <code>w₀ = 0.0</code>, <code>b₀ = 0.0</code>, <code>α = 0.01</code>, <code>seed = 42</code></li>
+              <li><strong>Loop (1 to 100 epochs):</strong>
+                <br>1. Shuffle the 10 training samples randomly.
+                <br>2. For each sample (x<sub>i</sub>, y<sub>i</sub>) individually:
+                <div class="math-block rose" style="font-weight: bold; margin: 8px 0;">
+                  w ← w - α · dw<sub>i</sub> &nbsp;&nbsp;|&nbsp;&nbsp; b ← b - α · db<sub>i</sub>
+                </div>
+                3. Record epoch-average MSE loss.
+              </li>
+            </ul>
           </div>
         </div>
 
         <div class="moveable-card" data-card="s7-c2">
           <span class="drag-handle">Drag to Move</span>
-          <div class="card-title" style="color: var(--accent-amber);">Computational Profile & Stochasticity</div>
+          <div class="card-title" style="color: var(--accent-amber);">Key Characteristics</div>
           <div class="card-body">
             <div class="metric-list">
               <div class="metric-row">
-                <span class="metric-row-label">Optimization Trajectory</span>
-                <span class="metric-row-val" style="color: var(--accent-amber);">Stochastic Oscillations</span>
+                <span class="metric-row-label">Trajectory Nature</span>
+                <span class="metric-row-val" style="color: var(--accent-amber);">Fluctuates / Oscillates</span>
               </div>
               <div class="metric-row">
                 <span class="metric-row-label">Sample Evaluations</span>
-                <span class="metric-row-val">100 epochs × 10 = 1,000</span>
+                <span class="metric-row-val" style="color: var(--accent-green);">1,000 (10× Fewer!)</span>
               </div>
               <div class="metric-row">
-                <span class="metric-row-label">Total Parameter Updates</span>
-                <span class="metric-row-val">1,000 updates</span>
+                <span class="metric-row-label">Initial vs. Final Loss</span>
+                <span class="metric-row-val">4,117.60 → 0.7176</span>
               </div>
               <div class="metric-row">
-                <span class="metric-row-label">Initial Loss (epoch 0)</span>
-                <span class="metric-row-val">4,117.60</span>
-              </div>
-              <div class="metric-row">
-                <span class="metric-row-label">Final Training Loss</span>
-                <span class="metric-row-val" style="color: var(--accent-green);">0.7176</span>
-              </div>
-              <div class="metric-row">
-                <span class="metric-row-label">Final Weight (w)</span>
-                <span class="metric-row-val">7.7156</span>
-              </div>
-              <div class="metric-row">
-                <span class="metric-row-label">Final Bias (b)</span>
-                <span class="metric-row-val">28.5394</span>
+                <span class="metric-row-label">Learned Equation</span>
+                <span class="metric-row-val">ŷ = 7.72x + 28.54</span>
               </div>
             </div>
-            <p style="margin-top: 10px; font-size: 12.5px; color: var(--text-muted);">
-              <strong>Why it Fluctuates:</strong> Each observation has idiosyncratic noise, making single-sample gradients a noisy estimate of the batch gradient.
-            </p>
           </div>
         </div>
       </div>
@@ -1121,33 +1032,26 @@
           <span>Comparative Performance: GD vs. SGD vs. OLS</span>
           <button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="resetCurrentSlide()">Reset Positions</button>
         </div>
-        <div class="slide-subtitle">Dynamically computed verification against analytical closed-form solution</div>
+        <div class="slide-subtitle">Verification against the closed-form theoretical optimum</div>
       </div>
 
       <div class="cards-grid grid-1-2">
         <div class="moveable-card" data-card="s8-c1">
           <span class="drag-handle">Drag to Move</span>
-          <div class="card-title" style="color: var(--accent-cyan);">Analytical OLS Solution</div>
+          <div class="card-title" style="color: var(--accent-cyan);">Theoretical Benchmark</div>
           <div class="card-body">
-            <p>Ordinary Least Squares closed-form baseline on 10 training samples:</p>
-            <div class="formula-box">w<sub>OLS</sub> = 7.6379 &nbsp;&nbsp;|&nbsp;&nbsp; b<sub>OLS</sub> = 28.9753</div>
-            <p style="margin-top: 10px;">Both manual optimization algorithms converged within <strong>&lt; 0.15</strong> of the theoretical global optimum.</p>
-            <div class="metric-list" style="margin-top: 12px;">
-              <div class="metric-row">
-                <span class="metric-row-label">Training MSE (OLS)</span>
-                <span class="metric-row-val" style="color: #38bdf8;">0.6823</span>
-              </div>
-              <div class="metric-row">
-                <span class="metric-row-label">Test MSE (OLS)</span>
-                <span class="metric-row-val" style="color: #38bdf8;">1.0151</span>
-              </div>
-            </div>
+            <p><strong>Ordinary Least Squares (OLS) Solution:</strong></p>
+            <div class="formula-box">w<sub>OLS</sub> = 7.64 &nbsp;&nbsp;|&nbsp;&nbsp; b<sub>OLS</sub> = 28.98</div>
+            <ul>
+              <li>Both manual algorithms converged within <strong>&lt; 0.15</strong> of the theoretical optimum.</li>
+              <li>Confirms the from-scratch gradient formulas and update logic are mathematically sound.</li>
+            </ul>
           </div>
         </div>
 
         <div class="moveable-card" data-card="s8-c2">
           <span class="drag-handle">Drag to Move</span>
-          <div class="card-title">Side-by-Side Metrics Table</div>
+          <div class="card-title">Side-by-Side Comparison Table</div>
           <table class="data-table">
             <thead>
               <tr>
@@ -1159,18 +1063,14 @@
             </thead>
             <tbody>
               <tr><td>Training MSE</td><td class="highlight-cell">0.7892</td><td class="highlight-cell">0.7176</td><td>0.6823</td></tr>
-              <tr><td>Training RMSE</td><td>0.8884</td><td>0.8471</td><td>0.8260</td></tr>
-              <tr><td>Training R²</td><td>0.9968</td><td>0.9971</td><td>0.9973</td></tr>
               <tr style="background: rgba(6, 182, 212, 0.08);">
                 <td><strong>Test MSE (Unseen)</strong></td>
                 <td style="color: var(--accent-cyan); font-weight: bold;">0.8636</td>
                 <td style="color: var(--accent-cyan); font-weight: bold;">0.8650</td>
                 <td>1.0151</td>
               </tr>
-              <tr><td>Test RMSE</td><td>0.9293</td><td>0.9300</td><td>1.0075</td></tr>
-              <tr><td>Test R²</td><td>0.9973</td><td>0.9973</td><td>0.9968</td></tr>
-              <tr><td>Final Weight (w)</td><td>7.7822</td><td>7.7156</td><td>7.6379</td></tr>
-              <tr><td>Final Bias (b)</td><td>28.2121</td><td>28.5394</td><td>28.9753</td></tr>
+              <tr><td>Test R² Score</td><td>0.9973</td><td>0.9973</td><td>0.9968</td></tr>
+              <tr><td>Sample Evaluations</td><td>10,000</td><td class="highlight-cell">1,000 (10× less)</td><td>Exact / Direct</td></tr>
             </tbody>
           </table>
         </div>
@@ -1182,23 +1082,23 @@
     <!-- ======================================================== -->
     <section class="slide" id="slide-9" data-index="9">
       <div class="slide-header">
-        <div class="slide-category">Model Generalization</div>
+        <div class="slide-category">Generalization</div>
         <div class="slide-title">
-          <span>Predictions on Unseen Test Observations</span>
+          <span>Predictions on Held-Out Test Students</span>
           <button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="resetCurrentSlide()">Reset Positions</button>
         </div>
-        <div class="slide-subtitle">Student-by-student test performance comparison</div>
+        <div class="slide-subtitle">Student-by-student performance on the 5 unseen test samples</div>
       </div>
 
       <div class="cards-grid grid-1-2">
         <div class="moveable-card" data-card="s9-c1">
           <span class="drag-handle">Drag to Move</span>
-          <div class="card-title" style="color: var(--accent-green);">Generalization Findings</div>
+          <div class="card-title" style="color: var(--accent-green);">Generalization Takeaways</div>
           <div class="card-body">
             <ul>
-              <li>Both models exhibit nearly indistinguishable test predictions.</li>
-              <li>Maximum absolute difference between GD and SGD on any test student is only <strong>0.26 exam points</strong> (at 1.0 hour).</li>
-              <li>At 5.5 hours studied, both models predict 71.0 marks, matching the actual score (71.0) with residual ~0.01!</li>
+              <li><strong>Matching Accuracy:</strong> Both GD and SGD produced virtually identical test predictions.</li>
+              <li><strong>Minimal Discrepancy:</strong> Max difference between GD and SGD on any test student is only 0.26 marks.</li>
+              <li><strong>Zero Residual at Mid-Point:</strong> At 5.5 hours, both predicted 71.0 marks, matching actual score exactly.</li>
             </ul>
           </div>
         </div>
@@ -1209,20 +1109,19 @@
           <table class="data-table">
             <thead>
               <tr>
-                <th>Hours Studied</th>
+                <th>Hours (X)</th>
                 <th>Actual Score</th>
                 <th>GD Prediction</th>
                 <th>SGD Prediction</th>
-                <th>GD Residual (y - ŷ)</th>
-                <th>SGD Residual (y - ŷ)</th>
+                <th>Residual (Error)</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>1.0 hr</td><td>35.0</td><td>35.99</td><td>36.25</td><td>-0.99</td><td>-1.25</td></tr>
-              <tr><td>3.5 hrs</td><td>55.0</td><td>55.45</td><td>55.54</td><td>-0.45</td><td>-0.54</td></tr>
-              <tr style="background: rgba(16, 185, 129, 0.1);"><td>5.5 hrs</td><td>71.0</td><td>71.01</td><td>70.97</td><td class="highlight-cell">-0.01</td><td class="highlight-cell">+0.03</td></tr>
-              <tr><td>6.5 hrs</td><td>78.0</td><td>78.80</td><td>78.69</td><td>-0.80</td><td>-0.69</td></tr>
-              <tr><td>7.5 hrs</td><td>85.0</td><td>86.58</td><td>86.41</td><td>-1.58</td><td>-1.41</td></tr>
+              <tr><td>1.0 hr</td><td>35.0</td><td>36.0</td><td>36.3</td><td>~1.0 mark</td></tr>
+              <tr><td>3.5 hrs</td><td>55.0</td><td>55.5</td><td>55.5</td><td>~0.5 marks</td></tr>
+              <tr style="background: rgba(16, 185, 129, 0.12);"><td>5.5 hrs</td><td>71.0</td><td>71.0</td><td>71.0</td><td class="highlight-cell">0.0 marks</td></tr>
+              <tr><td>6.5 hrs</td><td>78.0</td><td>78.8</td><td>78.7</td><td>~0.7 marks</td></tr>
+              <tr><td>7.5 hrs</td><td>85.0</td><td>86.6</td><td>86.4</td><td>~1.5 marks</td></tr>
             </tbody>
           </table>
         </div>
@@ -1270,34 +1169,33 @@
     <!-- ======================================================== -->
     <section class="slide" id="slide-11" data-index="11">
       <div class="slide-header">
-        <div class="slide-category">Analytical Insights</div>
+        <div class="slide-category">Practical Insights</div>
         <div class="slide-title">
-          <span>Trajectory Comparison & Computational Trade-offs</span>
+          <span>Trajectory Comparison & Practical Trade-offs</span>
           <button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="resetCurrentSlide()">Reset Positions</button>
         </div>
-        <div class="slide-subtitle">Why SGD fluctuated and what happens on massive datasets</div>
+        <div class="slide-subtitle">Comparing optimization behavior and real-world scalability</div>
       </div>
 
       <div class="cards-grid grid-2">
         <div class="moveable-card" data-card="s11-c1">
           <span class="drag-handle">Drag to Move</span>
-          <div class="card-title" style="color: var(--accent-cyan);">Optimization Trajectory Contrast</div>
+          <div class="card-title" style="color: var(--accent-cyan);">Optimization Path Contrast</div>
           <div class="card-body">
             <ul>
-              <li><strong>Batch GD:</strong> Computes the true gradient over all 10 training instances. Each step heads deterministically along the steepest descent path, producing a monotonic, smooth loss curve.</li>
-              <li><strong>SGD:</strong> Updates after each individual sample. Because each student observation has individual variance, sample gradients fluctuate, causing visible epoch-to-epoch oscillations.</li>
+              <li><strong>Batch GD:</strong> Computes the true gradient over all samples. The loss drops smoothly and steadily in a direct monotonic line.</li>
+              <li><strong>SGD:</strong> Updates after every single sample. Individual data noise causes the loss curve to fluctuate, but it makes fast early progress.</li>
             </ul>
           </div>
         </div>
 
         <div class="moveable-card" data-card="s11-c2">
           <span class="drag-handle">Drag to Move</span>
-          <div class="card-title" style="color: var(--accent-amber);">Computational Scaling & Big Data Behavior</div>
+          <div class="card-title" style="color: var(--accent-amber);">When to Use Which?</div>
           <div class="card-body">
             <ul>
-              <li><strong>Small Dataset Reality:</strong> SGD evaluated 1,000 samples while Batch GD evaluated 10,000. Despite this 10× difference in evaluations, both achieved virtually identical test MSE (~0.864).</li>
-              <li><strong>Scale to N = 1,000,000+:</strong> Batch GD becomes unfeasible per step because computing one update requires passing the entire million records. SGD or Mini-batch GD makes rapid early progress after examining only small slices.</li>
-              <li><strong>Non-Convex Landscapes:</strong> In deep neural networks, SGD's noise helps parameters escape sharp saddle points.</li>
+              <li><strong>Small Datasets:</strong> Batch GD is simple, stable, deterministic, and requires no data shuffling.</li>
+              <li><strong>Large Datasets (Big Data / Deep Learning):</strong> Full-batch passes become too expensive. SGD or Mini-batch GD is essential for scale and memory efficiency.</li>
             </ul>
           </div>
         </div>
@@ -1305,40 +1203,38 @@
     </section>
 
     <!-- ======================================================== -->
-    <!-- SLIDE 12: LIMITATIONS & ACADEMIC CONCLUSION              -->
+    <!-- SLIDE 12: LIMITATIONS & CONCLUSION                       -->
     <!-- ======================================================== -->
     <section class="slide" id="slide-12" data-index="12">
       <div class="slide-header">
-        <div class="slide-category">Synthesis & Conclusion</div>
+        <div class="slide-category">Conclusion</div>
         <div class="slide-title">
-          <span>Project Limitations & Defensible Conclusions</span>
+          <span>Project Summary & Key Takeaways</span>
           <button class="btn" style="padding: 4px 10px; font-size: 12px;" onclick="resetCurrentSlide()">Reset Positions</button>
         </div>
-        <div class="slide-subtitle">Scientifically rigorous summary without exaggerated claims</div>
+        <div class="slide-subtitle">Key findings from building optimizers from first principles</div>
       </div>
 
       <div class="cards-grid grid-2">
         <div class="moveable-card" data-card="s12-c1">
           <span class="drag-handle">Drag to Move</span>
-          <div class="card-title" style="color: var(--accent-rose);">Realistic Academic Limitations</div>
+          <div class="card-title" style="color: var(--accent-rose);">Project Scope & Limitations</div>
           <div class="card-body">
             <ul>
-              <li><strong>Small Sample Size (N = 15):</strong> High empirical variance; results are educational rather than a real-world predictive tool for student marks.</li>
-              <li><strong>Small Test Set (n = 5):</strong> A 1-point difference on a single student has a noticeable effect on test MSE. Small differences between GD and SGD should not be overinterpreted.</li>
-              <li><strong>Cautious Overfitting Assessment:</strong> Similar train and test errors suggest no obvious overfitting in this experiment, but the 5-sample test set requires interpreting this conclusion cautiously.</li>
+              <li><strong>Sample Size (N = 15):</strong> Designed as a clear educational demonstration of gradient behavior rather than a real-world score predictor.</li>
+              <li><strong>Small Test Set (n = 5):</strong> A 1-point difference on a single student shifts test MSE, so minor metric differences between GD and SGD are negligible.</li>
             </ul>
           </div>
         </div>
 
         <div class="moveable-card" data-card="s12-c2">
           <span class="drag-handle">Drag to Move</span>
-          <div class="card-title" style="color: var(--accent-green);">Final Project Conclusion</div>
+          <div class="card-title" style="color: var(--accent-green);">Final Conclusion</div>
           <div class="card-body">
-            <div style="background: rgba(16, 185, 129, 0.08); border-left: 3px solid var(--accent-green); padding: 14px 18px; border-radius: 8px; color: #f1f5f9; line-height: 1.7; font-size: 13.5px;">
-              <strong style="color: var(--accent-green); display: block; margin-bottom: 6px; font-size: 14px;">Summary Takeaway:</strong>
-              The experiment demonstrates that both Batch Gradient Descent and Stochastic Gradient Descent effectively optimize Linear Regression from first principles. Batch GD provides a smoother optimization trajectory, while SGD introduces stochastic fluctuations due to sample-wise updates. In our dataset, both methods produced nearly identical test performance (Test MSE ~0.864), demonstrating that optimization mechanics can differ substantially while achieving matching generalization.
+            <div style="background: rgba(16, 185, 129, 0.08); border-left: 3px solid var(--accent-green); padding: 12px 16px; border-radius: 8px; color: #f1f5f9; line-height: 1.6; font-size: 13.5px;">
+              Both Batch GD and SGD successfully optimized linear regression from scratch. Batch GD provided a smooth trajectory; SGD fluctuated but converged with <strong>10× fewer sample evaluations</strong>. Both methods reached virtually identical test performance (Test MSE ~0.864).
             </div>
-            <div style="margin-top: 18px; text-align: center; color: var(--accent-cyan); font-weight: 700; font-size: 15px;">
+            <div style="margin-top: 16px; text-align: center; color: var(--accent-cyan); font-weight: 700; font-size: 15px;">
               Thank You! Any Questions?
             </div>
           </div>
