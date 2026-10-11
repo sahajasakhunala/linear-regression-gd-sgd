@@ -33,7 +33,7 @@ October 11, 2026
 [https://github.com/sahajasakhunala/linear-regression-gd-sgd](https://github.com/sahajasakhunala/linear-regression-gd-sgd)
 
 **Generated PDF Report:**  
-`Linear_Regression_GD_vs_SGD_Report.pdf` (12 pages, complete with running footers and page numbering)
+`Linear_Regression_GD_vs_SGD_Report.pdf` (11 pages, complete with running footers and page numbering)
 
 ---
 

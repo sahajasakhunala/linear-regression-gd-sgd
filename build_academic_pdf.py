@@ -585,109 +585,131 @@ def generate_report_html() -> str:
     The gradient vector ∇J(w, b) is computed by taking partial derivatives of J(w, b) using the calculus chain rule [2]:
   </p>
 
-  <div class="math-card">
-    <div class="math-card-header">
-      <span>Step 1: Weight Gradient Derivation (∂J / ∂w)</span>
-      <span class="eq-tag">Equation 3a</span>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8pt; margin: 5pt 0;">
+    <div class="math-card" style="margin: 0; padding: 6pt 10pt;">
+      <div class="math-card-header">
+        <span>Weight Gradient (∂J / ∂w)</span>
+        <span class="eq-tag">Eq. 3a</span>
+      </div>
+      <div style="font-family: 'Cambria Math', serif; font-size: 8.8pt; line-height: 1.5;">
+        1. Chain rule: <sup>∂J</sup>/<sub>∂w</sub> = <sup>1</sup>/<sub>n</sub> ∑ 2(y<sub>i</sub> - ŷ<sub>i</sub>) · (-x<sub>i</sub>)<br>
+        2. Closed form:<br>
+        <strong><sup>∂J</sup>/<sub>∂w</sub> = -<sup>2</sup>/<sub>n</sub> ∑<sub>i=1</sub><sup>n</sup> x<sub>i</sub> · (y<sub>i</sub> - ŷ<sub>i</sub>)</strong>
+      </div>
     </div>
-    <div style="font-family: 'Cambria Math', serif; font-size: 10pt; line-height: 1.7; padding: 2pt 0;">
-      1. Apply chain rule: &nbsp;&nbsp; <sup>∂J</sup>/<sub>∂w</sub> = <span style="font-size: 9.5pt;">1</span>/<span style="font-size: 8pt;">n</span> ∑<sub>i=1</sub><sup>n</sup> 2(y<sub>i</sub> - ŷ<sub>i</sub>) · <sup>∂</sup>/<sub>∂w</sub>(y<sub>i</sub> - w·x<sub>i</sub> - b)<br>
-      2. Substitute inner derivative: &nbsp;&nbsp; <sup>∂</sup>/<sub>∂w</sub>(y<sub>i</sub> - w·x<sub>i</sub> - b) = -x<sub>i</sub><br>
-      3. Factor constants: &nbsp;&nbsp; <strong><sup>∂J</sup>/<sub>∂w</sub> = -<sup>2</sup>/<sub>n</sub> ∑<sub>i=1</sub><sup>n</sup> x<sub>i</sub> · (y<sub>i</sub> - ŷ<sub>i</sub>)</strong>
+
+    <div class="math-card" style="margin: 0; padding: 6pt 10pt;">
+      <div class="math-card-header">
+        <span>Bias Gradient (∂J / ∂b)</span>
+        <span class="eq-tag">Eq. 3b</span>
+      </div>
+      <div style="font-family: 'Cambria Math', serif; font-size: 8.8pt; line-height: 1.5;">
+        1. Chain rule: <sup>∂J</sup>/<sub>∂b</sub> = <sup>1</sup>/<sub>n</sub> ∑ 2(y<sub>i</sub> - ŷ<sub>i</sub>) · (-1)<br>
+        2. Closed form:<br>
+        <strong><sup>∂J</sup>/<sub>∂b</sub> = -<sup>2</sup>/<sub>n</sub> ∑<sub>i=1</sub><sup>n</sup> (y<sub>i</sub> - ŷ<sub>i</sub>)</strong>
+      </div>
     </div>
   </div>
 
-  <div class="math-card">
-    <div class="math-card-header">
-      <span>Step 2: Bias Gradient Derivation (∂J / ∂b)</span>
-      <span class="eq-tag">Equation 3b</span>
-    </div>
-    <div style="font-family: 'Cambria Math', serif; font-size: 10pt; line-height: 1.7; padding: 2pt 0;">
-      1. Apply chain rule: &nbsp;&nbsp; <sup>∂J</sup>/<sub>∂b</sub> = <span style="font-size: 9.5pt;">1</span>/<span style="font-size: 8pt;">n</span> ∑<sub>i=1</sub><sup>n</sup> 2(y<sub>i</sub> - ŷ<sub>i</sub>) · <sup>∂</sup>/<sub>∂b</sub>(y<sub>i</sub> - w·x<sub>i</sub> - b)<br>
-      2. Substitute inner derivative: &nbsp;&nbsp; <sup>∂</sup>/<sub>∂b</sub>(y<sub>i</sub> - w·x<sub>i</sub> - b) = -1<br>
-      3. Factor constants: &nbsp;&nbsp; <strong><sup>∂J</sup>/<sub>∂b</sub> = -<sup>2</sup>/<sub>n</sub> ∑<sub>i=1</sub><sup>n</sup> (y<sub>i</sub> - ŷ<sub>i</sub>)</strong>
-    </div>
+  <div style="page-break-inside: avoid; break-inside: avoid; margin-top: 6pt;">
+    <h3 style="margin-top: 6pt; margin-bottom: 3pt;">5.4 Master Comparison: Batch GD vs. Stochastic GD Equations</h3>
+    <p style="margin-bottom: 4pt; font-size: 9.5pt;">
+      The mathematical formulation of parameter updates differs fundamentally in whether gradients are computed over the full dataset or a single observation [2], [4]:
+    </p>
+
+    <table style="margin: 4pt 0; font-size: 8pt;">
+      <thead>
+        <tr>
+          <th style="width: 25%; padding: 3pt 5pt;">Mathematical Property</th>
+          <th style="width: 37%; padding: 3pt 5pt;">Batch Gradient Descent (GD)</th>
+          <th style="width: 38%; padding: 3pt 5pt;">Stochastic Gradient Descent (SGD) [4]</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding: 2.5pt 5pt;"><strong>Data Scope per Step</strong></td>
+          <td style="padding: 2.5pt 5pt;">Entire Training Batch (all n = 10 samples)</td>
+          <td style="padding: 2.5pt 5pt;">Single Observation (sample i ∈ {{1, ..., n}})</td>
+        </tr>
+        <tr>
+          <td style="padding: 2.5pt 5pt;"><strong>Objective Function</strong></td>
+          <td style="padding: 2.5pt 5pt;">J(w, b) = <sup>1</sup>/<sub>n</sub> ∑<sub>i=1</sub><sup>n</sup> (y<sub>i</sub> - ŷ<sub>i</sub>)<sup>2</sup></td>
+          <td style="padding: 2.5pt 5pt;">J<sub>i</sub>(w, b) = (y<sub>i</sub> - ŷ<sub>i</sub>)<sup>2</sup></td>
+        </tr>
+        <tr>
+          <td style="padding: 2.5pt 5pt;"><strong>Weight Gradient (∇<sub>w</sub>)</strong></td>
+          <td style="padding: 2.5pt 5pt;"><sup>∂J</sup>/<sub>∂w</sub> = -<sup>2</sup>/<sub>n</sub> ∑<sub>i=1</sub><sup>n</sup> x<sub>i</sub>(y<sub>i</sub> - ŷ<sub>i</sub>)</td>
+          <td style="padding: 2.5pt 5pt;"><sup>∂J<sub>i</sub></sup>/<sub>∂w</sub> = -2 x<sub>i</sub>(y<sub>i</sub> - ŷ<sub>i</sub>)</td>
+        </tr>
+        <tr>
+          <td style="padding: 2.5pt 5pt;"><strong>Bias Gradient (∇<sub>b</sub>)</strong></td>
+          <td style="padding: 2.5pt 5pt;"><sup>∂J</sup>/<sub>∂b</sub> = -<sup>2</sup>/<sub>n</sub> ∑<sub>i=1</sub><sup>n</sup> (y<sub>i</sub> - ŷ<sub>i</sub>)</td>
+          <td style="padding: 2.5pt 5pt;"><sup>∂J<sub>i</sub></sup>/<sub>∂b</sub> = -2 (y<sub>i</sub> - ŷ<sub>i</sub>)</td>
+        </tr>
+        <tr>
+          <td style="padding: 2.5pt 5pt;"><strong>Weight Update Rule</strong></td>
+          <td style="padding: 2.5pt 5pt;">w ← w + α · <sup>2</sup>/<sub>n</sub> ∑<sub>i=1</sub><sup>n</sup> x<sub>i</sub>(y<sub>i</sub> - ŷ<sub>i</sub>)</td>
+          <td style="padding: 2.5pt 5pt;">w ← w + 2α · x<sub>i</sub>(y<sub>i</sub> - ŷ<sub>i</sub>)</td>
+        </tr>
+        <tr>
+          <td style="padding: 2.5pt 5pt;"><strong>Bias Update Rule</strong></td>
+          <td style="padding: 2.5pt 5pt;">b ← b + α · <sup>2</sup>/<sub>n</sub> ∑<sub>i=1</sub><sup>n</sup> (y<sub>i</sub> - ŷ<sub>i</sub>)</td>
+          <td style="padding: 2.5pt 5pt;">b ← b + 2α · (y<sub>i</sub> - ŷ<sub>i</sub>)</td>
+        </tr>
+        <tr>
+          <td style="padding: 2.5pt 5pt;"><strong>Gradient Estimation</strong></td>
+          <td style="padding: 2.5pt 5pt;">Exact deterministic gradient vector</td>
+          <td style="padding: 2.5pt 5pt;">Noisy, unbiased stochastic gradient estimate</td>
+        </tr>
+        <tr>
+          <td style="padding: 2.5pt 5pt;"><strong>Updates per Epoch</strong></td>
+          <td style="padding: 2.5pt 5pt;">1 update per pass over dataset</td>
+          <td style="padding: 2.5pt 5pt;">n = 10 updates per pass (shuffled per epoch)</td>
+        </tr>
+        <tr>
+          <td style="padding: 2.5pt 5pt;"><strong>Total Sample Work</strong></td>
+          <td style="padding: 2.5pt 5pt;">1,000 steps × 10 samples = <strong>10,000 evaluations</strong></td>
+          <td style="padding: 2.5pt 5pt;">100 epochs × 10 samples = <strong>1,000 evaluations</strong></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-
-  <h3>5.4 Master Comparison: Batch GD vs. Stochastic GD Equations</h3>
-  <p>
-    The mathematical formulation of parameter updates differs fundamentally in whether gradients are computed over the full dataset or a single observation [2], [4]:
-  </p>
-
-  <table>
-    <thead>
-      <tr>
-        <th style="width: 25%;">Mathematical Property</th>
-        <th style="width: 37%;">Batch Gradient Descent (GD)</th>
-        <th style="width: 38%;">Stochastic Gradient Descent (SGD) [4]</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><strong>Data Scope per Step</strong></td>
-        <td>Entire Training Batch (all n = 10 samples)</td>
-        <td>Single Observation (sample i ∈ {{1, ..., n}})</td>
-      </tr>
-      <tr>
-        <td><strong>Objective Function</strong></td>
-        <td>J(w, b) = <sup>1</sup>/<sub>n</sub> ∑<sub>i=1</sub><sup>n</sup> (y<sub>i</sub> - ŷ<sub>i</sub>)<sup>2</sup></td>
-        <td>J<sub>i</sub>(w, b) = (y<sub>i</sub> - ŷ<sub>i</sub>)<sup>2</sup></td>
-      </tr>
-      <tr>
-        <td><strong>Weight Gradient (∇<sub>w</sub>)</strong></td>
-        <td><sup>∂J</sup>/<sub>∂w</sub> = -<sup>2</sup>/<sub>n</sub> ∑<sub>i=1</sub><sup>n</sup> x<sub>i</sub>(y<sub>i</sub> - ŷ<sub>i</sub>)</td>
-        <td><sup>∂J<sub>i</sub></sup>/<sub>∂w</sub> = -2 x<sub>i</sub>(y<sub>i</sub> - ŷ<sub>i</sub>)</td>
-      </tr>
-      <tr>
-        <td><strong>Bias Gradient (∇<sub>b</sub>)</strong></td>
-        <td><sup>∂J</sup>/<sub>∂b</sub> = -<sup>2</sup>/<sub>n</sub> ∑<sub>i=1</sub><sup>n</sup> (y<sub>i</sub> - ŷ<sub>i</sub>)</td>
-        <td><sup>∂J<sub>i</sub></sup>/<sub>∂b</sub> = -2 (y<sub>i</sub> - ŷ<sub>i</sub>)</td>
-      </tr>
-      <tr>
-        <td><strong>Weight Update Rule</strong></td>
-        <td>w ← w + α · <sup>2</sup>/<sub>n</sub> ∑<sub>i=1</sub><sup>n</sup> x<sub>i</sub>(y<sub>i</sub> - ŷ<sub>i</sub>)</td>
-        <td>w ← w + 2α · x<sub>i</sub>(y<sub>i</sub> - ŷ<sub>i</sub>)</td>
-      </tr>
-      <tr>
-        <td><strong>Bias Update Rule</strong></td>
-        <td>b ← b + α · <sup>2</sup>/<sub>n</sub> ∑<sub>i=1</sub><sup>n</sup> (y<sub>i</sub> - ŷ<sub>i</sub>)</td>
-        <td>b ← b + 2α · (y<sub>i</sub> - ŷ<sub>i</sub>)</td>
-      </tr>
-      <tr>
-        <td><strong>Gradient Estimation</strong></td>
-        <td>Exact deterministic gradient vector</td>
-        <td>Noisy, unbiased stochastic gradient estimate</td>
-      </tr>
-      <tr>
-        <td><strong>Updates per Epoch</strong></td>
-        <td>1 update per pass over dataset</td>
-        <td>n = 10 updates per pass (shuffled per epoch)</td>
-      </tr>
-      <tr>
-        <td><strong>Total Sample Work</strong></td>
-        <td>1,000 steps × 10 samples = <strong>10,000 evaluations</strong></td>
-        <td>100 epochs × 10 samples = <strong>1,000 evaluations</strong></td>
-      </tr>
-    </tbody>
-  </table>
 
   <!-- ========================================================= -->
   <!-- 6. SYSTEM DESIGN & ARCHITECTURE                           -->
   <!-- ========================================================= -->
-  <h2>6. System Architecture & Modularity</h2>
-  <p>
-    The codebase is organized into decoupled modules following software engineering best practices:
-  </p>
-  <ul>
-    <li><code>src/data_preprocessing.py</code>: Data loading, descriptive audits, feature scaling analysis, and isolated 70/30 partitioning.</li>
-    <li><code>src/linear_regression.py</code>: First-principles core mathematics: forward prediction ŷ = wx + b, MSE, RMSE, and R².</li>
-    <li><code>src/gradient_descent.py</code>: Batch Gradient Descent implementation with complete parameter and loss trajectory tracking.</li>
-    <li><code>src/stochastic_gradient_descent.py</code>: Stochastic Gradient Descent with random permutation and epoch-level loss logging.</li>
-    <li><code>src/evaluation.py</code>: Model evaluation routines, closed-form OLS analytical baseline computation, and metric formatting.</li>
-    <li><code>src/visualization.py</code>: Production of the six publication-quality matplotlib figures using a non-interactive Agg backend [7].</li>
-    <li><code>main.py</code>: Master orchestration script executing training, evaluation, CSV exports, and visualization routines.</li>
-    <li><code>predict.py</code>: Interactive command-line predictor allowing live demonstration for any user-provided study hours.</li>
-  </ul>
+  <div style="page-break-inside: avoid; break-inside: avoid;">
+    <h2 style="margin-top: 8pt; margin-bottom: 4pt;">6. System Architecture & Modularity</h2>
+    <p style="margin-bottom: 5pt; font-size: 8.8pt;">
+      The codebase is organized into decoupled modules following software engineering best practices:
+    </p>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4pt 8pt; font-size: 7.8pt; line-height: 1.35;">
+      <div style="background: #f8fafc; border: 1pt solid #cbd5e1; border-radius: 4pt; padding: 3pt 6pt;">
+        <strong><code>src/data_preprocessing.py</code></strong>: Data loading, audits, and isolated 70/30 partitioning.
+      </div>
+      <div style="background: #f8fafc; border: 1pt solid #cbd5e1; border-radius: 4pt; padding: 3pt 6pt;">
+        <strong><code>src/linear_regression.py</code></strong>: First-principles prediction ŷ = wx + b, MSE, and R².
+      </div>
+      <div style="background: #f8fafc; border: 1pt solid #cbd5e1; border-radius: 4pt; padding: 3pt 6pt;">
+        <strong><code>src/gradient_descent.py</code></strong>: Batch GD with parameter and loss trajectory tracking.
+      </div>
+      <div style="background: #f8fafc; border: 1pt solid #cbd5e1; border-radius: 4pt; padding: 3pt 6pt;">
+        <strong><code>src/stochastic_gradient_descent.py</code></strong>: SGD with random index shuffling and epoch logging.
+      </div>
+      <div style="background: #f8fafc; border: 1pt solid #cbd5e1; border-radius: 4pt; padding: 3pt 6pt;">
+        <strong><code>src/evaluation.py</code></strong>: Evaluation routines and closed-form OLS analytical baseline [3].
+      </div>
+      <div style="background: #f8fafc; border: 1pt solid #cbd5e1; border-radius: 4pt; padding: 3pt 6pt;">
+        <strong><code>src/visualization.py</code></strong>: Six publication-quality figures via matplotlib Agg [7].
+      </div>
+      <div style="background: #f8fafc; border: 1pt solid #cbd5e1; border-radius: 4pt; padding: 3pt 6pt;">
+        <strong><code>main.py</code></strong>: Master orchestration script executing training, evaluation, and exports.
+      </div>
+      <div style="background: #f8fafc; border: 1pt solid #cbd5e1; border-radius: 4pt; padding: 3pt 6pt;">
+        <strong><code>predict.py</code></strong>: Interactive CLI tool for live score prediction on arbitrary study hours.
+      </div>
+    </div>
+  </div>
 
   <!-- ========================================================= -->
   <!-- 7. IMPLEMENTATION DETAILS                                 -->
@@ -710,48 +732,45 @@ def generate_report_html() -> str:
     The mathematical logic of both algorithms is formatted in structured, step-by-step procedures below:
   </p>
 
-  <div class="algo-card">
-    <div class="algo-header">Algorithm 1: Batch Gradient Descent (Deterministic Optimization)</div>
-    <div class="algo-body">
-      <div class="algo-step"><span class="algo-step-num">1.</span><span class="algo-step-content"><strong>Input:</strong> Training feature vector <strong>X</strong> ∈ ℝ<sup>n</sup>, ground truth vector <strong>y</strong> ∈ ℝ<sup>n</sup>, learning rate α = 0.01, iterations K = 1000.</span></div>
-      <div class="algo-step"><span class="algo-step-num">2.</span><span class="algo-step-content"><strong>Initialization:</strong> Set initial parameters w = 0.0, b = 0.0, sample size n = length(X).</span></div>
-      <div class="algo-step"><span class="algo-step-num">3.</span><span class="algo-step-content"><strong>Loop for iteration k = 1 to K:</strong></span></div>
-      <div class="algo-step"><span class="algo-step-num"></span><span class="algo-step-content" style="margin-left: 15pt;">
-        a. Compute batch predictions: &nbsp; <strong>ŷ = w · X + b</strong><br>
-        b. Evaluate batch loss: &nbsp; <strong>J = (1 / n) ∑ (y - ŷ)²</strong><br>
-        c. Compute exact analytical gradients across all n samples:<br>
-        &nbsp;&nbsp;&nbsp;&nbsp; <strong>∇<sub>w</sub> = (-2 / n) ∑ X · (y - ŷ)</strong><br>
-        &nbsp;&nbsp;&nbsp;&nbsp; <strong>∇<sub>b</sub> = (-2 / n) ∑ (y - ŷ)</strong><br>
-        d. Update parameters along negative gradient:<br>
-        &nbsp;&nbsp;&nbsp;&nbsp; <strong>w ← w - α · ∇<sub>w</sub></strong><br>
-        &nbsp;&nbsp;&nbsp;&nbsp; <strong>b ← b - α · ∇<sub>b</sub></strong><br>
-        e. Record J, w, b in convergence history.
-      </span></div>
-      <div class="algo-step"><span class="algo-step-num">4.</span><span class="algo-step-content"><strong>Output:</strong> Optimal parameters (w, b) and full convergence history.</span></div>
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8pt; margin-top: 6pt;">
+    <div class="algo-card" style="margin: 0;">
+      <div class="algo-header">Algorithm 1: Batch Gradient Descent</div>
+      <div class="algo-body" style="padding: 5pt 7pt; font-size: 7.6pt; line-height: 1.35;">
+        <div class="algo-step"><span class="algo-step-num" style="width: 14pt;">1.</span><span class="algo-step-content"><strong>Input:</strong> X ∈ ℝ<sup>n</sup>, y ∈ ℝ<sup>n</sup>, α = 0.01, K = 1000.</span></div>
+        <div class="algo-step"><span class="algo-step-num" style="width: 14pt;">2.</span><span class="algo-step-content"><strong>Init:</strong> w = 0.0, b = 0.0, n = length(X).</span></div>
+        <div class="algo-step"><span class="algo-step-num" style="width: 14pt;">3.</span><span class="algo-step-content"><strong>Loop k = 1 to K:</strong><br>
+          a. Predict: ŷ = w · X + b<br>
+          b. Loss: J = (1/n) ∑ (y - ŷ)²<br>
+          c. Full-batch gradients:<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<strong>∇<sub>w</sub> = (-2/n) ∑ X · (y - ŷ)</strong><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<strong>∇<sub>b</sub> = (-2/n) ∑ (y - ŷ)</strong><br>
+          d. Update parameters:<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<strong>w ← w - α · ∇<sub>w</sub></strong><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<strong>b ← b - α · ∇<sub>b</sub></strong><br>
+          e. Record J, w, b in history.</span></div>
+        <div class="algo-step"><span class="algo-step-num" style="width: 14pt;">4.</span><span class="algo-step-content"><strong>Output:</strong> Converged (w, b), history.</span></div>
+      </div>
     </div>
-  </div>
 
-  <div class="algo-card">
-    <div class="algo-header">Algorithm 2: Stochastic Gradient Descent (Stochastic Optimization)</div>
-    <div class="algo-body">
-      <div class="algo-step"><span class="algo-step-num">1.</span><span class="algo-step-content"><strong>Input:</strong> Training data (X, y), learning rate α = 0.01, epochs E = 100, random seed = 42.</span></div>
-      <div class="algo-step"><span class="algo-step-num">2.</span><span class="algo-step-content"><strong>Initialization:</strong> Set w = 0.0, b = 0.0, n = length(X).</span></div>
-      <div class="algo-step"><span class="algo-step-num">3.</span><span class="algo-step-content"><strong>Loop for epoch e = 1 to E:</strong></span></div>
-      <div class="algo-step"><span class="algo-step-num"></span><span class="algo-step-content" style="margin-left: 15pt;">
-        a. Generate random permutation of sample indices: &nbsp; <strong>π = Shuffle([0, 1, ..., n-1])</strong><br>
-        b. <strong>For each index i in π:</strong><br>
-        &nbsp;&nbsp;&nbsp;&nbsp; i. Extract individual sample: (x<sub>i</sub>, y<sub>i</sub>)<br>
-        &nbsp;&nbsp;&nbsp;&nbsp; ii. Predict individual output: <strong>ŷ<sub>i</sub> = w · x<sub>i</sub> + b</strong><br>
-        &nbsp;&nbsp;&nbsp;&nbsp; iii. Compute instantaneous sample gradient:<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>∇<sub>w, i</sub> = -2 · x<sub>i</sub> · (y<sub>i</sub> - ŷ<sub>i</sub>)</strong><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>∇<sub>b, i</sub> = -2 · (y<sub>i</sub> - ŷ<sub>i</sub>)</strong><br>
-        &nbsp;&nbsp;&nbsp;&nbsp; iv. Update parameters immediately:<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>w ← w - α · ∇<sub>w, i</sub></strong><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>b ← b - α · ∇<sub>b, i</sub></strong><br>
-        c. Compute epoch-level MSE over training set: &nbsp; <strong>J<sub>epoch</sub> = (1 / n) ∑ (y - (w·X + b))²</strong><br>
-        d. Record J<sub>epoch</sub>, w, b in history.
-      </span></div>
-      <div class="algo-step"><span class="algo-step-num">4.</span><span class="algo-step-content"><strong>Output:</strong> Optimal parameters (w, b) and epoch convergence history.</span></div>
+    <div class="algo-card" style="margin: 0;">
+      <div class="algo-header">Algorithm 2: Stochastic Gradient Descent</div>
+      <div class="algo-body" style="padding: 5pt 7pt; font-size: 7.6pt; line-height: 1.35;">
+        <div class="algo-step"><span class="algo-step-num" style="width: 14pt;">1.</span><span class="algo-step-content"><strong>Input:</strong> (X, y), α = 0.01, E = 100, seed = 42.</span></div>
+        <div class="algo-step"><span class="algo-step-num" style="width: 14pt;">2.</span><span class="algo-step-content"><strong>Init:</strong> w = 0.0, b = 0.0, n = length(X).</span></div>
+        <div class="algo-step"><span class="algo-step-num" style="width: 14pt;">3.</span><span class="algo-step-content"><strong>Loop epoch e = 1 to E:</strong><br>
+          a. Shuffle indices: π = Shuffle([0..n-1])<br>
+          b. <strong>For each index i in π:</strong><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;i. Sample: (x<sub>i</sub>, y<sub>i</sub>)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;ii. Predict: ŷ<sub>i</sub> = w · x<sub>i</sub> + b<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;iii. Sample gradient:<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>∇<sub>w,i</sub> = -2 x<sub>i</sub> (y<sub>i</sub> - ŷ<sub>i</sub>)</strong><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>∇<sub>b,i</sub> = -2 (y<sub>i</sub> - ŷ<sub>i</sub>)</strong><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;iv. Instant update:<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>w ← w - α ∇<sub>w,i</sub></strong>, <strong>b ← b - α ∇<sub>b,i</sub></strong><br>
+          c. Epoch loss: J<sub>epoch</sub> = (1/n) ∑ (y - ŷ)²<br>
+          d. Record J<sub>epoch</sub>, w, b in history.</span></div>
+        <div class="algo-step"><span class="algo-step-num" style="width: 14pt;">4.</span><span class="algo-step-content"><strong>Output:</strong> Converged (w, b), history.</span></div>
+      </div>
     </div>
   </div>
 
