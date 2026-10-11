@@ -4,6 +4,10 @@
 
 ## 1. Title Page
 
+<div align="center">
+  <img src="./assets/woxsen_logo.png" alt="Woxsen University Logo" width="320">
+</div>
+
 **Project Title:**  
 Linear Regression Using Gradient Descent and Stochastic Gradient Descent: A Comparative Study
 
@@ -11,7 +15,8 @@ Linear Regression Using Gradient Descent and Stochastic Gradient Descent: A Comp
 Foundations of Artificial Intelligence
 
 **Academic Institution:**  
-Department of Computer Science & Engineering  
+Department of Computer Science & Engineering, School of Technology  
+Woxsen University, Hyderabad  
 Academic Term: 2026
 
 **Course Faculty / Supervisor:**  
@@ -28,11 +33,14 @@ October 11, 2026
 **GitHub Project Repository:**  
 [https://github.com/sahajasakhunala/linear-regression-gd-sgd](https://github.com/sahajasakhunala/linear-regression-gd-sgd)
 
+**Generated PDF Report:**  
+`Linear_Regression_GD_vs_SGD_Report.pdf` (14 pages, complete with running footers and page numbering)
+
 ---
 
 ## 2. Abstract
 
-Optimization algorithms constitute the algorithmic engine of modern artificial intelligence and machine learning. In this project, a comprehensive comparative study between Batch Gradient Descent (GD) and Stochastic Gradient Descent (SGD) is conducted for univariate Linear Regression. Built strictly from first principles using Python and NumPy, the system avoids black-box library estimators (such as scikit-learn's `LinearRegression` or `SGDRegressor`) in order to inspect every intermediate mathematical step: hypothesis generation, Mean Squared Error (MSE) loss computation, closed-form gradient evaluation, and parameter updates. 
+Optimization algorithms constitute the mathematical engine of modern artificial intelligence and statistical learning. In this project, a comprehensive comparative study between Batch Gradient Descent (GD) and Stochastic Gradient Descent (SGD) is conducted for univariate Linear Regression. Built strictly from first principles using Python and NumPy, the system avoids black-box library estimators (such as scikit-learn's `LinearRegression` or `SGDRegressor`) in order to inspect every intermediate computational step: forward hypothesis generation, Mean Squared Error (MSE) loss computation, closed-form gradient evaluation, and parameter updates.
 
 The empirical investigation is performed on an academic dataset of 15 student records relating study hours to examination scores. Strict machine learning hygiene is enforced via a 70/30 train/test split (10 training samples, 5 held-out test samples) under reproducible random seeding (seed 42) with zero data leakage. Both optimization algorithms are tracked across their convergence trajectories alongside an analytical Ordinary Least Squares (OLS) benchmark. The final models demonstrate convergence to virtually identical regression equations: Batch GD yields $\hat{y} = 7.7822x + 28.2121$, while SGD yields $\hat{y} = 7.7156x + 28.5394$. On unseen test data, both models generalize strongly, obtaining a test $R^2$ of 0.9973 and a test Root Mean Squared Error (RMSE) of approximately 0.93 marks. SGD achieves comparable generalization while requiring an order of magnitude fewer individual sample evaluations (1,000 versus 10,000 for Batch GD), illustrating key computational and dynamical trade-offs between deterministic and stochastic optimization.
 
@@ -82,87 +90,93 @@ The specific technical and educational objectives of this investigation are:
 
 ---
 
-## 6. Theoretical Background
+## 6. Theoretical Background and Organized Mathematics
 
-### 6.1 The Linear Regression Hypothesis
+To ensure mathematical clarity and ease of comprehension, all equations, notations, and derivations are systematically organized into dedicated reference blocks below.
 
-For an observation indexed by $i$, the predicted target value $\hat{y}_i$ is defined by:
+### 6.1 Master Variable Definition Reference
 
-$$\hat{y}_i = f(x_i) = w x_i + b$$
+| Mathematical Symbol | Formal Concept | Physical Meaning in Project | Value / Domain in Experiment |
+| :---: | :--- | :--- | :--- |
+| **$x_i$** | Independent Feature | Number of hours studied by student $i$ | $1.0 \le x \le 8.0$ hours |
+| **$y_i$** | Ground Truth Label | Actual final exam percentage score | $35.0 \le y \le 89.0$ marks |
+| **$\hat{y}_i$** | Model Prediction | Predicted exam score: $\hat{y}_i = w x_i + b$ | Continuous scalar (marks) |
+| **$w$** | Weight Parameter (Slope) | Marks gained per additional study hour | Initialized at $0.0$; Converges to $\approx 7.78$ |
+| **$b$** | Bias Parameter (Intercept) | Baseline exam score with $0$ study hours | Initialized at $0.0$; Converges to $\approx 28.21$ |
+| **$n$** | Batch Sample Size | Number of observations in training partition | $n = 10$ training samples |
+| **$\alpha$** | Learning Rate (Step Size) | Gradient descent update step scalar | Hyperparameter fixed at $\alpha = 0.01$ |
+| **$J(w, b)$** | Objective Loss Function | Mean Squared Error (MSE) across samples | Convex quadratic surface |
 
-- **Weight ($w$):** Quantifies the rate of change in the target variable per unit increase in the input feature. In this study, $w$ represents the expected increase in exam marks per additional hour of study.
-- **Bias ($b$):** Quantifies the expected baseline value of the target when the input feature is zero. Here, $b$ represents the baseline exam score for a student who logs zero study hours.
+---
 
-### 6.2 Loss Function: Mean Squared Error (MSE)
+### 6.2 The Linear Regression Hypothesis
 
-To quantify model prediction error across a dataset of $n$ observations, the Mean Squared Error objective function is employed:
+For any given student observation indexed by $i$, the linear hypothesis predicts:
 
-$$J(w, b) = \text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2 = \frac{1}{n} \sum_{i=1}^{n} (y_i - (w x_i + b))^2$$
+$$\hat{y}_i = w \cdot x_i + b$$
 
-MSE is chosen over alternative loss functions (such as Mean Absolute Error) for four fundamental mathematical reasons:
-1. **Strict Convexity:** The quadratic formulation guarantees that the loss surface $J(w, b)$ is a convex paraboloid (bowl-shaped). A strictly convex loss surface possesses a unique global minimum with zero local minima traps.
-2. **Smooth Differentiability:** MSE is continuously differentiable everywhere across parameter space, ensuring continuous, closed-form gradients.
-3. **Progressive Residual Penalty:** Squaring residual errors $(y_i - \hat{y}_i)$ penalizes large errors substantially more than minor discrepancies, discouraging extreme predictive failures.
-4. **Maximum Likelihood Equivalence:** Under the assumption that residual errors are independent and identically distributed (i.i.d.) Gaussian noise $\epsilon_i \sim \mathcal{N}(0, \sigma^2)$, minimizing MSE is mathematically equivalent to maximizing the likelihood of the training data.
+- **Weight ($w$):** Quantifies the rate of increase in exam score per hour of study.
+- **Bias ($b$):** Quantifies the expected baseline score of a student who studies zero hours.
 
-### 6.3 Analytical Gradient Derivation
+---
 
-To navigate parameter space toward the global minimum of $J(w, b)$, the gradient vector $\nabla J(w, b)$ is computed via the chain rule of calculus.
+### 6.3 Mean Squared Error (MSE) Objective Function
 
-#### Partial Derivative with respect to Weight ($w$):
+To quantify empirical prediction error across $n$ training observations, the Mean Squared Error loss is formulated as:
 
+$$J(w, b) = \text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2 = \frac{1}{n} \sum_{i=1}^{n} \left( y_i - (w \cdot x_i + b) \right)^2$$
+
+**Theoretical Justification for MSE:**
+1. **Strict Convexity:** The quadratic bowl $J(w, b)$ has a unique global minimum, eliminating local minima traps.
+2. **Smooth Differentiability:** The objective is continuously differentiable everywhere, providing well-defined gradients.
+3. **Progressive Error Penalty:** Squaring penalizes large deviations substantially more than small errors.
+4. **Statistical Foundations:** Equivalent to Maximum Likelihood Estimation (MLE) under i.i.d. Gaussian error assumptions.
+
+---
+
+### 6.4 Step-by-Step Analytical Gradient Derivations
+
+The gradient vector $\nabla J(w, b) = \left[ \frac{\partial J}{\partial w}, \frac{\partial J}{\partial b} \right]^T$ indicates the direction of steepest ascent. Applying the chain rule of calculus yields exact closed-form expressions:
+
+#### Step 1: Weight Gradient Derivation ($\frac{\partial J}{\partial w}$)
 $$\frac{\partial J}{\partial w} = \frac{\partial}{\partial w} \left[ \frac{1}{n} \sum_{i=1}^{n} (y_i - (w x_i + b))^2 \right]$$
 
-Applying the chain rule:
-
-$$\frac{\partial J}{\partial w} = \frac{1}{n} \sum_{i=1}^{n} 2(y_i - (w x_i + b)) \cdot \frac{\partial}{\partial w}(y_i - w x_i - b)$$
+$$\frac{\partial J}{\partial w} = \frac{1}{n} \sum_{i=1}^{n} 2(y_i - \hat{y}_i) \cdot \frac{\partial}{\partial w}(y_i - w x_i - b)$$
 
 $$\frac{\partial J}{\partial w} = \frac{1}{n} \sum_{i=1}^{n} 2(y_i - \hat{y}_i) \cdot (-x_i)$$
 
-$$\frac{\partial J}{\partial w} = -\frac{2}{n} \sum_{i=1}^{n} x_i (y_i - \hat{y}_i)$$
+$$\mathbf{\frac{\partial J}{\partial w} = -\frac{2}{n} \sum_{i=1}^{n} x_i \cdot (y_i - \hat{y}_i)}$$
 
-#### Partial Derivative with respect to Bias ($b$):
-
+#### Step 2: Bias Gradient Derivation ($\frac{\partial J}{\partial b}$)
 $$\frac{\partial J}{\partial b} = \frac{\partial}{\partial b} \left[ \frac{1}{n} \sum_{i=1}^{n} (y_i - (w x_i + b))^2 \right]$$
 
-$$\frac{\partial J}{\partial b} = \frac{1}{n} \sum_{i=1}^{n} 2(y_i - (w x_i + b)) \cdot (-1)$$
+$$\frac{\partial J}{\partial b} = \frac{1}{n} \sum_{i=1}^{n} 2(y_i - \hat{y}_i) \cdot (-1)$$
 
-$$\frac{\partial J}{\partial b} = -\frac{2}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)$$
+$$\mathbf{\frac{\partial J}{\partial b} = -\frac{2}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)}$$
 
-### 6.4 Parameter Update Rules
-
-Parameters are updated along the negative gradient direction scaled by the learning rate $\alpha \in \mathbb{R}^+$:
+#### Step 3: Parameter Update Rules (Gradient Descent Step)
+Parameters are adjusted in the direction opposite to the gradient scaled by the learning rate $\alpha$:
 
 $$w \leftarrow w - \alpha \frac{\partial J}{\partial w} = w + \alpha \frac{2}{n} \sum_{i=1}^{n} x_i (y_i - \hat{y}_i)$$
 
 $$b \leftarrow b - \alpha \frac{\partial J}{\partial b} = b + \alpha \frac{2}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)$$
 
-The learning rate $\alpha$ governs step magnitude: an excessively large $\alpha$ causes gradient explosion and divergence, while an excessively small $\alpha$ leads to slow convergence. In this study, $\alpha = 0.01$ was verified to provide rapid, stable convergence.
+---
 
-### 6.5 Batch Gradient Descent vs. Stochastic Gradient Descent
+### 6.5 Master Comparison: Batch GD vs. Stochastic GD Equations
 
-| Dimension | Batch Gradient Descent (GD) | Stochastic Gradient Descent (SGD) |
+| Mathematical Property | Batch Gradient Descent (GD) | Stochastic Gradient Descent (SGD) |
 | :--- | :--- | :--- |
-| **Batch Size per Step** | Full training batch ($n = 10$) | Single observation ($n = 1$) |
-| **Gradient Nature** | Exact, true gradient of empirical loss | Noisy, unbiased estimate of true gradient |
-| **Update Frequency** | Once per iteration (1,000 updates in 1,000 steps) | Once per sample (10 updates per epoch; 1,000 updates in 100 epochs) |
-| **Loss Trajectory** | Monotonically decreasing, deterministic | Fluctuating, stochastic trajectory across epochs |
-| **Computational Cost per Step** | $\mathcal{O}(n)$ operations per update | $\mathcal{O}(1)$ operations per update |
-| **Total Sample Evaluations** | $1,000 \times 10 = 10,000$ evaluations | $100 \times 10 = 1,000$ evaluations |
-| **Data Shuffling** | Not required (entire dataset aggregated) | Crucial: random permutation per epoch prevents limit cycles |
-
-#### Mathematical Formulation for SGD Updates:
-For an individual sample $(x_i, y_i)$, the instantaneous loss is:
-
-$$J_i(w, b) = (y_i - (w x_i + b))^2$$
-
-The per-sample gradients and updates are:
-
-$$\frac{\partial J_i}{\partial w} = -2 x_i (y_i - \hat{y}_i) \implies w \leftarrow w + 2\alpha x_i (y_i - \hat{y}_i)$$
-
-$$\frac{\partial J_i}{\partial b} = -2 (y_i - \hat{y}_i) \implies b \leftarrow b + 2\alpha (y_i - \hat{y}_i)$$
-
-Because $\mathbb{E}_{i}[\nabla J_i(w, b)] = \nabla J(w, b)$, the stochastic gradient is an unbiased estimator of the true gradient.
+| **Data Scope per Step** | Full training batch (all $n = 10$ samples) | Single observation (sample $i \in \{1, \dots, n\}$) |
+| **Hypothesis Form** | $\hat{y} = w \mathbf{X} + b$ (Vectorized) | $\hat{y}_i = w x_i + b$ (Scalar) |
+| **Objective Function** | $J_{\text{Batch}}(w, b) = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2$ | $J_i(w, b) = (y_i - \hat{y}_i)^2$ |
+| **Weight Gradient ($\nabla_w$)** | $\frac{\partial J}{\partial w} = -\frac{2}{n}\sum_{i=1}^{n} x_i (y_i - \hat{y}_i)$ | $\frac{\partial J_i}{\partial w} = -2 x_i (y_i - \hat{y}_i)$ |
+| **Bias Gradient ($\nabla_b$)** | $\frac{\partial J}{\partial b} = -\frac{2}{n}\sum_{i=1}^{n} (y_i - \hat{y}_i)$ | $\frac{\partial J_i}{\partial b} = -2 (y_i - \hat{y}_i)$ |
+| **Weight Update Rule** | $w \leftarrow w + \alpha \frac{2}{n}\sum_{i=1}^{n} x_i (y_i - \hat{y}_i)$ | $w \leftarrow w + 2\alpha x_i (y_i - \hat{y}_i)$ |
+| **Bias Update Rule** | $b \leftarrow b + \alpha \frac{2}{n}\sum_{i=1}^{n} (y_i - \hat{y}_i)$ | $b \leftarrow b + 2\alpha (y_i - \hat{y}_i)$ |
+| **Nature of Gradient** | Exact deterministic empirical gradient | Noisy, unbiased stochastic gradient |
+| **Updates per Epoch** | $1$ update per pass over dataset | $n = 10$ updates per pass (shuffled per epoch) |
+| **Total Sample Work** | $1,000 \times 10 = \mathbf{10,000}$ evaluations | $100 \times 10 = \mathbf{1,000}$ evaluations |
 
 ---
 
@@ -194,6 +208,7 @@ flowchart TD
         Eval --> Tab["results/results.csv & test_predictions.csv"]
         Eval --> Pres["index.html (Interactive Presentation Deck)"]
         Eval --> Pred["predict.py (Interactive CLI Predictor)"]
+        Eval --> PDF["Linear_Regression_GD_vs_SGD_Report.pdf (14-page PDF)"]
     end
 ```
 
@@ -206,7 +221,8 @@ flowchart TD
 6. `visualization.py`: Generates the six high-resolution matplotlib visual figures with publication-ready styling.
 7. `main.py`: The master orchestration script running the automated pipeline end-to-end.
 8. `predict.py`: Interactive and command-line prediction script for live testing and demonstration.
-9. `index.html`: Standalone, interactive HTML5 presentation deck with moveable cards and a 5-palette theme engine.
+9. `build_academic_pdf.py`: Automated pipeline converting report markdown/HTML to a 14-page numbered PDF.
+10. `index.html`: Standalone, interactive HTML5 presentation deck with moveable cards and a 5-palette theme engine.
 
 ---
 
@@ -243,70 +259,74 @@ To ensure strict experimental integrity:
 - **Optimization Isolation:** The 5 test observations are never passed to the optimization routines. No gradients, residuals, or loss values are calculated on test samples during model fitting.
 - **Preprocessing Isolation:** Feature scaling analysis demonstrated that raw features are naturally bounded ($1.0 \le x \le 8.0$) and converge reliably with $\alpha = 0.01$. Keeping raw scale preserves direct physical interpretability of parameters: $w \approx 7.7$ marks per study hour, and $b \approx 28.2$ baseline marks.
 
-### 8.3 Algorithmic Pseudocode
+---
 
-#### Algorithm 1: Batch Gradient Descent
+### 8.3 Structured Algorithmic Procedures
+
+#### Algorithm 1: Batch Gradient Descent (Deterministic Optimization)
 ```text
-Input: Training data (X, y), Learning rate alpha = 0.01, Iterations = 1000
-Output: Optimized parameters (w, b), Loss history
+1. Inputs:
+   - Training feature vector X in R^n, target vector y in R^n
+   - Learning rate alpha = 0.01, Total iterations K = 1000
 
-Initialize w = 0.0, b = 0.0
-n = length(X)
+2. Initialization:
+   - Initial parameters: w = 0.0, b = 0.0
+   - Sample count: n = length(X)
 
-For iteration = 1 to 1000 do:
-    y_hat = w * X + b
-    loss = (1 / n) * sum((y - y_hat)^2)
-    
-    grad_w = (-2 / n) * sum(X * (y - y_hat))
-    grad_b = (-2 / n) * sum(y - y_hat)
-    
-    w = w - alpha * grad_w
-    b = b - alpha * grad_b
-    
-    Record loss, w, b in history
-End For
-Return w, b, history
+3. Optimization Loop (for iteration k = 1 to K):
+   a. Compute batch predictions:
+      y_hat = w * X + b
+
+   b. Compute batch empirical MSE:
+      J = (1 / n) * sum((y - y_hat)^2)
+
+   c. Compute analytical partial derivatives across all n observations:
+      grad_w = (-2 / n) * sum(X * (y - y_hat))
+      grad_b = (-2 / n) * sum(y - y_hat)
+
+   d. Update parameters along the negative gradient:
+      w <- w - alpha * grad_w
+      b <- b - alpha * grad_b
+
+   e. Append (k, J, w, b) to convergence trajectory history.
+
+4. Output:
+   - Return optimized parameters (w, b) and convergence trajectory history.
 ```
 
-#### Algorithm 2: Stochastic Gradient Descent (SGD)
+#### Algorithm 2: Stochastic Gradient Descent (Stochastic Optimization)
 ```text
-Input: Training data (X, y), Learning rate alpha = 0.01, Epochs = 100, Random seed = 42
-Output: Optimized parameters (w, b), Loss history
+1. Inputs:
+   - Training feature vector X in R^n, target vector y in R^n
+   - Learning rate alpha = 0.01, Epoch count E = 100, Random seed = 42
 
-Initialize w = 0.0, b = 0.0
-n = length(X)
-Set random seed = 42
+2. Initialization:
+   - Initial parameters: w = 0.0, b = 0.0
+   - Sample count: n = length(X)
 
-For epoch = 1 to 100 do:
-    indices = RandomPermutation([0, 1, ..., n-1])
-    
-    For each index i in indices do:
-        x_i = X[i]
-        y_i = y[i]
-        
-        y_hat_i = w * x_i + b
-        
-        grad_w = -2 * x_i * (y_i - y_hat_i)
-        grad_b = -2 * (y_i - y_hat_i)
-        
-        w = w - alpha * grad_w
-        b = b - alpha * grad_b
-    End For
-    
-    y_hat_all = w * X + b
-    epoch_loss = (1 / n) * sum((y - y_hat_all)^2)
-    Record epoch_loss, w, b in history
-End For
-Return w, b, history
+3. Optimization Loop (for epoch e = 1 to E):
+   a. Generate random permutation of training indices:
+      indices = RandomShuffle([0, 1, ..., n-1])
+
+   b. For each sample index i in indices:
+      i.   Extract individual observation: (x_i, y_i)
+      ii.  Compute single-sample prediction:
+           y_hat_i = w * x_i + b
+      iii. Compute instantaneous stochastic gradient:
+           grad_w_i = -2 * x_i * (y_i - y_hat_i)
+           grad_b_i = -2 * (y_i - y_hat_i)
+      iv.  Update parameters immediately:
+           w <- w - alpha * grad_w_i
+           b <- b - alpha * grad_b_i
+
+   c. Compute post-epoch full training MSE:
+      J_epoch = (1 / n) * sum((y - (w * X + b))^2)
+
+   d. Append (e, J_epoch, w, b) to epoch trajectory history.
+
+4. Output:
+   - Return optimized parameters (w, b) and epoch trajectory history.
 ```
-
-### 8.4 Technology Stack
-
-- **Python 3.10:** Core programming language.
-- **NumPy:** Vectorized array computations, dot products, and random shuffling.
-- **Pandas:** Structured tabular manipulation and CSV export.
-- **Matplotlib:** Static figure generation with non-interactive backend (`Agg`).
-- **HTML5 / CSS3 / ES6:** Interactive presentation deck engine.
 
 ---
 
