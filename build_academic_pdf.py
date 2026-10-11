@@ -53,7 +53,7 @@ def generate_report_html() -> str:
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Linear Regression: Batch GD vs. Stochastic GD - Academic Report</title>
+<title>Linear Regression Using Batch Gradient Descent & Stochastic Gradient Descent - Academic Report</title>
 <style>
   @page {{
     size: A4 portrait;
@@ -68,7 +68,7 @@ def generate_report_html() -> str:
 
   body {{
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    color: #1e293b;
+    color: #000000;
     line-height: 1.55;
     font-size: 10pt;
     background: #ffffff;
@@ -81,25 +81,27 @@ def generate_report_html() -> str:
 
   /* Typography */
   h1, h2, h3, h4 {{
-    color: #0f172a;
+    color: #000000;
     font-weight: 700;
     page-break-after: avoid;
     break-after: avoid;
   }}
 
-  h1 {{ font-size: 20pt; line-height: 1.25; margin-bottom: 8pt; }}
-  h2 {{ font-size: 13.5pt; margin-top: 14pt; margin-bottom: 6pt; border-bottom: 1.5pt solid #e2e8f0; padding-bottom: 3pt; color: #1e3a8a; }}
-  h3 {{ font-size: 11pt; margin-top: 10pt; margin-bottom: 4pt; color: #0369a1; }}
-  h4 {{ font-size: 9.5pt; margin-top: 8pt; margin-bottom: 4pt; }}
+  h1 {{ font-size: 20pt; line-height: 1.25; margin-bottom: 8pt; color: #000000; }}
+  h2 {{ font-size: 13.5pt; margin-top: 14pt; margin-bottom: 6pt; border-bottom: 1.5pt solid #000000; padding-bottom: 3pt; color: #000000; }}
+  h3 {{ font-size: 11pt; margin-top: 10pt; margin-bottom: 4pt; color: #000000; }}
+  h4 {{ font-size: 9.5pt; margin-top: 8pt; margin-bottom: 4pt; color: #000000; }}
 
   p {{
     margin-bottom: 7pt;
     text-align: justify;
+    color: #000000;
   }}
 
   ul, ol {{
     margin-left: 18pt;
     margin-bottom: 7pt;
+    color: #000000;
   }}
 
   li {{
@@ -128,14 +130,14 @@ def generate_report_html() -> str:
   .report-main-title {{
     font-size: 23pt;
     font-weight: 800;
-    color: #0f172a;
+    color: #000000;
     line-height: 1.2;
     margin-bottom: 10pt;
   }}
 
   .report-subtitle {{
     font-size: 12pt;
-    color: #475569;
+    color: #333333;
     margin-bottom: 30pt;
     font-weight: 500;
   }}
@@ -149,20 +151,20 @@ def generate_report_html() -> str:
   }}
 
   .meta-card {{
-    background: #f8fafc;
-    border: 1pt solid #e2e8f0;
-    border-radius: 8pt;
+    background: #ffffff;
+    border: 1pt solid #000000;
+    border-radius: 6pt;
     padding: 14pt;
   }}
 
   .meta-card-title {{
     font-size: 10pt;
     font-weight: 700;
-    color: #1e3a8a;
+    color: #000000;
     margin-bottom: 8pt;
     text-transform: uppercase;
     letter-spacing: 0.8pt;
-    border-bottom: 1pt solid #cbd5e1;
+    border-bottom: 1pt solid #000000;
     padding-bottom: 3pt;
   }}
 
@@ -170,7 +172,7 @@ def generate_report_html() -> str:
     display: flex;
     justify-content: space-between;
     padding: 4pt 0;
-    border-bottom: 0.5pt dashed #e2e8f0;
+    border-bottom: 0.5pt dashed #d1d5db;
     font-size: 9.5pt;
   }}
 
@@ -180,13 +182,13 @@ def generate_report_html() -> str:
 
   .member-name {{
     font-weight: 600;
-    color: #1e293b;
+    color: #000000;
   }}
 
   .member-id {{
     font-family: monospace;
     font-weight: 700;
-    color: #2563eb;
+    color: #000000;
   }}
 
   .meta-info-row {{
@@ -195,7 +197,7 @@ def generate_report_html() -> str:
   }}
 
   .meta-info-label {{
-    color: #64748b;
+    color: #555555;
     font-size: 8pt;
     text-transform: uppercase;
     font-weight: 600;
@@ -203,15 +205,15 @@ def generate_report_html() -> str:
 
   .meta-info-val {{
     font-weight: 700;
-    color: #0f172a;
+    color: #000000;
   }}
 
   .title-footer {{
     margin-top: 25pt;
-    border-top: 1pt solid #e2e8f0;
+    border-top: 1pt solid #000000;
     padding-top: 12pt;
     font-size: 8.5pt;
-    color: #64748b;
+    color: #333333;
   }}
 
   /* Tables */
@@ -226,26 +228,27 @@ def generate_report_html() -> str:
 
   th, td {{
     padding: 5pt 7pt;
-    border: 1pt solid #cbd5e1;
+    border: 1pt solid #000000;
     text-align: left;
+    color: #000000;
   }}
 
   th {{
-    background: #f1f5f9;
-    color: #0f172a;
+    background: #000000;
+    color: #ffffff;
     font-weight: 700;
   }}
 
   tr:nth-child(even) {{
-    background: #f8fafc;
+    background: #f9fafb;
   }}
 
   /* Math Blocks & Equation Cards */
   .math-card {{
-    background: #f8fafc;
-    border: 1pt solid #cbd5e1;
-    border-left: 3.5pt solid #2563eb;
-    border-radius: 6pt;
+    background: #ffffff;
+    border: 1pt solid #000000;
+    border-left: 4pt solid #000000;
+    border-radius: 4pt;
     padding: 8pt 12pt;
     margin: 8pt 0;
     page-break-inside: avoid;
@@ -255,7 +258,7 @@ def generate_report_html() -> str:
   .math-card-header {{
     font-size: 9pt;
     font-weight: 700;
-    color: #1e3a8a;
+    color: #000000;
     margin-bottom: 4pt;
     display: flex;
     justify-content: space-between;
@@ -265,10 +268,11 @@ def generate_report_html() -> str:
   .eq-tag {{
     font-size: 7.5pt;
     font-family: monospace;
-    background: #e2e8f0;
-    color: #334155;
+    background: #f3f4f6;
+    color: #000000;
     padding: 1pt 5pt;
     border-radius: 3pt;
+    border: 0.5pt solid #000000;
   }}
 
   .math-formula {{
@@ -276,41 +280,42 @@ def generate_report_html() -> str:
     font-size: 11.5pt;
     text-align: center;
     padding: 4pt 0;
-    color: #0f172a;
+    color: #000000;
   }}
 
   .math-details {{
     margin-top: 4pt;
     font-size: 8.2pt;
-    color: #475569;
-    border-top: 0.5pt solid #e2e8f0;
+    color: #1f2937;
+    border-top: 0.5pt solid #d1d5db;
     padding-top: 4pt;
   }}
 
   /* Algorithm Box */
   .algo-card {{
-    background: #f8fafc;
-    border: 1pt solid #cbd5e1;
-    border-radius: 6pt;
+    background: #ffffff;
+    border: 1pt solid #000000;
+    border-radius: 4pt;
     margin: 8pt 0;
     page-break-inside: avoid;
     break-inside: avoid;
   }}
 
   .algo-header {{
-    background: #0f172a;
+    background: #000000;
     color: #ffffff;
     padding: 5pt 9pt;
     font-size: 9pt;
     font-weight: 700;
-    border-top-left-radius: 5pt;
-    border-top-right-radius: 5pt;
+    border-top-left-radius: 3pt;
+    border-top-right-radius: 3pt;
   }}
 
   .algo-body {{
     padding: 7pt 10pt;
     font-size: 8.2pt;
     line-height: 1.45;
+    color: #000000;
   }}
 
   .algo-step {{
@@ -321,13 +326,14 @@ def generate_report_html() -> str:
   .algo-step-num {{
     width: 20pt;
     font-weight: 700;
-    color: #2563eb;
+    color: #000000;
     font-family: monospace;
     flex-shrink: 0;
   }}
 
   .algo-step-content {{
     flex: 1;
+    color: #000000;
   }}
 
   /* Figure Styling */
@@ -342,42 +348,56 @@ def generate_report_html() -> str:
     width: 95%;
     max-height: 270pt;
     object-fit: contain;
-    border: 1pt solid #cbd5e1;
-    border-radius: 6pt;
+    border: 1pt solid #000000;
+    border-radius: 4pt;
     background: #ffffff;
     box-shadow: 0 1pt 3pt rgba(0,0,0,0.06);
   }}
 
   .figure-caption {{
     font-size: 8.2pt;
-    color: #475569;
+    color: #333333;
     margin-top: 4pt;
     font-style: italic;
   }}
 
   .figure-caption strong {{
-    color: #0f172a;
+    color: #000000;
     font-style: normal;
   }}
 
   /* Callout Boxes */
   .callout {{
-    background: #eff6ff;
-    border-left: 3pt solid #3b82f6;
+    background: #f9fafb;
+    border: 1pt solid #000000;
+    border-left: 3.5pt solid #000000;
     padding: 7pt 9pt;
     border-radius: 4pt;
     margin: 7pt 0;
     font-size: 8.8pt;
+    color: #000000;
   }}
 
   .callout-success {{
-    background: #ecfdf5;
-    border-left-color: #10b981;
+    background: #f9fafb;
+    border: 1pt solid #000000;
+    border-left: 3.5pt solid #000000;
+    color: #000000;
   }}
 
   .cite {{
-    font-weight: 600;
-    color: #1e3a8a;
+    font-weight: 700;
+    color: #000000;
+  }}
+
+  code {{
+    font-family: Consolas, monospace;
+    background: #f3f4f6;
+    padding: 1pt 4pt;
+    border-radius: 3pt;
+    font-size: 8.5pt;
+    color: #000000;
+    border: 0.5pt solid #9ca3af;
   }}
 </style>
 </head>
@@ -392,7 +412,7 @@ def generate_report_html() -> str:
     </div>
 
     <div>
-      <h1 class="report-main-title">Linear Regression Using Gradient Descent & Stochastic Gradient Descent</h1>
+      <h1 class="report-main-title">Linear Regression Using Batch Gradient Descent & Stochastic Gradient Descent</h1>
       <div class="report-subtitle">A First-Principles Comparative Study on Optimization Dynamics & Generalization Parity</div>
     </div>
 
@@ -684,28 +704,28 @@ def generate_report_html() -> str:
       The codebase is organized into decoupled modules following software engineering best practices:
     </p>
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4pt 8pt; font-size: 7.8pt; line-height: 1.35;">
-      <div style="background: #f8fafc; border: 1pt solid #cbd5e1; border-radius: 4pt; padding: 3pt 6pt;">
+      <div style="background: #ffffff; border: 1pt solid #000000; border-radius: 4pt; padding: 3pt 6pt; color: #000000;">
         <strong><code>src/data_preprocessing.py</code></strong>: Data loading, audits, and isolated 70/30 partitioning.
       </div>
-      <div style="background: #f8fafc; border: 1pt solid #cbd5e1; border-radius: 4pt; padding: 3pt 6pt;">
+      <div style="background: #ffffff; border: 1pt solid #000000; border-radius: 4pt; padding: 3pt 6pt; color: #000000;">
         <strong><code>src/linear_regression.py</code></strong>: First-principles prediction ŷ = wx + b, MSE, and R².
       </div>
-      <div style="background: #f8fafc; border: 1pt solid #cbd5e1; border-radius: 4pt; padding: 3pt 6pt;">
+      <div style="background: #ffffff; border: 1pt solid #000000; border-radius: 4pt; padding: 3pt 6pt; color: #000000;">
         <strong><code>src/gradient_descent.py</code></strong>: Batch GD with parameter and loss trajectory tracking.
       </div>
-      <div style="background: #f8fafc; border: 1pt solid #cbd5e1; border-radius: 4pt; padding: 3pt 6pt;">
+      <div style="background: #ffffff; border: 1pt solid #000000; border-radius: 4pt; padding: 3pt 6pt; color: #000000;">
         <strong><code>src/stochastic_gradient_descent.py</code></strong>: SGD with random index shuffling and epoch logging.
       </div>
-      <div style="background: #f8fafc; border: 1pt solid #cbd5e1; border-radius: 4pt; padding: 3pt 6pt;">
+      <div style="background: #ffffff; border: 1pt solid #000000; border-radius: 4pt; padding: 3pt 6pt; color: #000000;">
         <strong><code>src/evaluation.py</code></strong>: Evaluation routines and closed-form OLS analytical baseline [3].
       </div>
-      <div style="background: #f8fafc; border: 1pt solid #cbd5e1; border-radius: 4pt; padding: 3pt 6pt;">
+      <div style="background: #ffffff; border: 1pt solid #000000; border-radius: 4pt; padding: 3pt 6pt; color: #000000;">
         <strong><code>src/visualization.py</code></strong>: Six publication-quality figures via matplotlib Agg [7].
       </div>
-      <div style="background: #f8fafc; border: 1pt solid #cbd5e1; border-radius: 4pt; padding: 3pt 6pt;">
+      <div style="background: #ffffff; border: 1pt solid #000000; border-radius: 4pt; padding: 3pt 6pt; color: #000000;">
         <strong><code>main.py</code></strong>: Master orchestration script executing training, evaluation, and exports.
       </div>
-      <div style="background: #f8fafc; border: 1pt solid #cbd5e1; border-radius: 4pt; padding: 3pt 6pt;">
+      <div style="background: #ffffff; border: 1pt solid #000000; border-radius: 4pt; padding: 3pt 6pt; color: #000000;">
         <strong><code>predict.py</code></strong>: Interactive CLI tool for live score prediction on arbitrary study hours.
       </div>
     </div>
@@ -929,12 +949,12 @@ def generate_report_html() -> str:
 
   <div class="figure-container">
     <img src="{fig1_b64}" alt="Figure 1: Dataset Partition Scatter Plot" class="figure-img">
-    <div class="figure-caption"><strong>Figure 1: Dataset Partition Scatter Plot.</strong> 10 training samples (blue circles) and 5 held-out test samples (orange squares) distributed across 1.0 to 8.0 study hours without overlap.</div>
+    <div class="figure-caption"><strong>Figure 1: Dataset Partition Scatter Plot.</strong> 10 training samples (filled circles) and 5 held-out test samples (open squares) distributed across 1.0 to 8.0 study hours without overlap.</div>
   </div>
 
   <div class="figure-container">
     <img src="{fig2_b64}" alt="Figure 2: Fitted Regression Lines" class="figure-img">
-    <div class="figure-caption"><strong>Figure 2: Fitted Regression Lines (GD vs. SGD).</strong> Batch GD line (ŷ = 7.7822x + 28.2121) and SGD line (ŷ = 7.7156x + 28.5394) overlap almost indistinguishably, confirming identical convergence.</div>
+    <div class="figure-caption"><strong>Figure 2: Fitted Regression Lines (Batch GD vs. SGD).</strong> Batch GD line (solid black) and SGD line (dashed line) overlap almost indistinguishably, confirming identical convergence.</div>
   </div>
 
   <div class="page-break"></div>
@@ -958,7 +978,7 @@ def generate_report_html() -> str:
 
   <div class="figure-container">
     <img src="{fig6_b64}" alt="Figure 6: Unseen Test Set Predictions" class="figure-img">
-    <div class="figure-caption"><strong>Figure 6: Actual vs. Predicted Scores on Unseen Test Data.</strong> Grouped bar chart demonstrating tight alignment between actual exam scores and model predictions across all 5 test students.</div>
+    <div class="figure-caption"><strong>Figure 6: Actual vs. Predicted Scores on Unseen Test Data.</strong> Grouped bar chart in grayscale demonstrating tight alignment between actual exam scores and model predictions across all 5 test students.</div>
   </div>
 
   <div class="page-break"></div>
@@ -1092,14 +1112,14 @@ def stamp_page_numbers_and_footers(raw_pdf_path: str, final_pdf_path: str):
             continue
 
         page_num_str = f"Page {page_idx + 1} of {total_pages}"
-        left_footer_str = "Linear Regression: Batch GD vs. SGD | Foundations of AI (Woxsen University)"
+        left_footer_str = "Linear Regression: Batch GD vs. SGD | Foundations of AI"
 
         # Draw running footer line
         line_y = height - 36
         page.draw_line(
             pymupdf.Point(40, line_y),
             pymupdf.Point(width - 40, line_y),
-            color=(0.8, 0.85, 0.9),
+            color=(0.7, 0.7, 0.7),
             width=0.75
         )
 
@@ -1109,7 +1129,7 @@ def stamp_page_numbers_and_footers(raw_pdf_path: str, final_pdf_path: str):
             left_footer_str,
             fontsize=8,
             fontname="helv",
-            color=(0.4, 0.45, 0.5)
+            color=(0.2, 0.2, 0.2)
         )
 
         # Draw right page number
@@ -1119,7 +1139,7 @@ def stamp_page_numbers_and_footers(raw_pdf_path: str, final_pdf_path: str):
             page_num_str,
             fontsize=8.5,
             fontname="helv",
-            color=(0.15, 0.25, 0.4)
+            color=(0.0, 0.0, 0.0)
         )
 
     doc.save(final_pdf_path)

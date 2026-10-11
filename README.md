@@ -1,4 +1,4 @@
-# Linear Regression Using Gradient Descent and Stochastic Gradient Descent: A Comparative Study
+# Linear Regression Using Batch Gradient Descent and Stochastic Gradient Descent: A Comparative Study
 
 Course: Fundamentals of Artificial Intelligence  
 Project Type: Educational Machine Learning Laboratory and Comparative Analysis  
