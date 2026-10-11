@@ -424,7 +424,6 @@ def generate_report_html() -> str:
     </div>
 
     <div>
-      <div class="title-academic-badge">Academic Laboratory Project Report</div>
       <h1 class="report-main-title">Linear Regression Using Gradient Descent & Stochastic Gradient Descent</h1>
       <div class="report-subtitle">A First-Principles Comparative Study on Optimization Dynamics & Generalization Parity</div>
     </div>
