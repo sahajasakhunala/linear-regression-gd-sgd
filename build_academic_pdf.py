@@ -2,16 +2,18 @@
 Academic PDF Generation Pipeline
 =================================
 Course: Foundations of Artificial Intelligence
-Institution: Woxsen University
+Institution: School of Technology, Woxsen University
 Project: Linear Regression: Batch GD vs. Stochastic GD
 
 This script compiles a comprehensive, publication-quality academic report:
 1. Ingests all project results, tables, and 6 high-res figures.
 2. Ingests the official Woxsen University logo.
 3. Renders clean, organized mathematical equations and pseudocode algorithms.
-4. Generates an A4 print-ready HTML document with base64 embedded assets.
-5. Invokes Microsoft Edge in headless print-to-pdf mode.
-6. Post-processes the PDF using PyMuPDF to stamp exact page numbers ('Page X of Y')
+4. Serializes sections starting from 1. Abstract through 11. References.
+5. Employs strict IEEE citation style in-text and in the reference list.
+6. Generates an A4 print-ready HTML document with base64 embedded assets.
+7. Invokes Microsoft Edge in headless print-to-pdf mode.
+8. Post-processes the PDF using PyMuPDF to stamp exact page numbers ('Page X of Y')
    and academic running footers on every page.
 """
 
@@ -86,18 +88,18 @@ def generate_report_html() -> str:
   }}
 
   h1 {{ font-size: 20pt; line-height: 1.25; margin-bottom: 8pt; }}
-  h2 {{ font-size: 14pt; margin-top: 16pt; margin-bottom: 6pt; border-bottom: 1.5pt solid #e2e8f0; padding-bottom: 4pt; color: #1e3a8a; }}
-  h3 {{ font-size: 11.5pt; margin-top: 12pt; margin-bottom: 5pt; color: #0369a1; }}
-  h4 {{ font-size: 10pt; margin-top: 8pt; margin-bottom: 4pt; }}
+  h2 {{ font-size: 13.5pt; margin-top: 14pt; margin-bottom: 6pt; border-bottom: 1.5pt solid #e2e8f0; padding-bottom: 3pt; color: #1e3a8a; }}
+  h3 {{ font-size: 11pt; margin-top: 10pt; margin-bottom: 4pt; color: #0369a1; }}
+  h4 {{ font-size: 9.5pt; margin-top: 8pt; margin-bottom: 4pt; }}
 
   p {{
-    margin-bottom: 8pt;
+    margin-bottom: 7pt;
     text-align: justify;
   }}
 
   ul, ol {{
     margin-left: 18pt;
-    margin-bottom: 8pt;
+    margin-bottom: 7pt;
   }}
 
   li {{
@@ -121,20 +123,6 @@ def generate_report_html() -> str:
   .title-logo {{
     max-width: 260pt;
     height: auto;
-  }}
-
-  .title-academic-badge {{
-    display: inline-block;
-    background: #eff6ff;
-    border: 1pt solid #bfdbfe;
-    color: #1d4ed8;
-    font-size: 9pt;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1.5pt;
-    padding: 4pt 12pt;
-    border-radius: 4pt;
-    margin-bottom: 14pt;
   }}
 
   .report-main-title {{
@@ -230,14 +218,14 @@ def generate_report_html() -> str:
   table {{
     width: 100%;
     border-collapse: collapse;
-    margin: 10pt 0;
-    font-size: 9pt;
+    margin: 8pt 0;
+    font-size: 8.8pt;
     page-break-inside: avoid;
     break-inside: avoid;
   }}
 
   th, td {{
-    padding: 6pt 8pt;
+    padding: 5pt 7pt;
     border: 1pt solid #cbd5e1;
     text-align: left;
   }}
@@ -258,24 +246,24 @@ def generate_report_html() -> str:
     border: 1pt solid #cbd5e1;
     border-left: 3.5pt solid #2563eb;
     border-radius: 6pt;
-    padding: 10pt 14pt;
-    margin: 10pt 0;
+    padding: 8pt 12pt;
+    margin: 8pt 0;
     page-break-inside: avoid;
     break-inside: avoid;
   }}
 
   .math-card-header {{
-    font-size: 9.5pt;
+    font-size: 9pt;
     font-weight: 700;
     color: #1e3a8a;
-    margin-bottom: 6pt;
+    margin-bottom: 4pt;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }}
 
   .eq-tag {{
-    font-size: 8pt;
+    font-size: 7.5pt;
     font-family: monospace;
     background: #e2e8f0;
     color: #334155;
@@ -285,38 +273,18 @@ def generate_report_html() -> str:
 
   .math-formula {{
     font-family: "Cambria Math", "Latin Modern Math", "Times New Roman", serif;
-    font-size: 12pt;
+    font-size: 11.5pt;
     text-align: center;
-    padding: 6pt 0;
+    padding: 4pt 0;
     color: #0f172a;
   }}
 
   .math-details {{
-    margin-top: 6pt;
-    font-size: 8.5pt;
+    margin-top: 4pt;
+    font-size: 8.2pt;
     color: #475569;
     border-top: 0.5pt solid #e2e8f0;
-    padding-top: 5pt;
-  }}
-
-  .var-grid {{
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 4pt 12pt;
-    font-size: 8.5pt;
-    margin-top: 4pt;
-  }}
-
-  .var-item {{
-    display: flex;
-    gap: 6pt;
-  }}
-
-  .var-sym {{
-    font-family: "Cambria Math", serif;
-    font-weight: 700;
-    color: #1d4ed8;
-    min-width: 25pt;
+    padding-top: 4pt;
   }}
 
   /* Algorithm Box */
@@ -324,7 +292,7 @@ def generate_report_html() -> str:
     background: #f8fafc;
     border: 1pt solid #cbd5e1;
     border-radius: 6pt;
-    margin: 10pt 0;
+    margin: 8pt 0;
     page-break-inside: avoid;
     break-inside: avoid;
   }}
@@ -332,26 +300,26 @@ def generate_report_html() -> str:
   .algo-header {{
     background: #0f172a;
     color: #ffffff;
-    padding: 6pt 10pt;
-    font-size: 9.5pt;
+    padding: 5pt 9pt;
+    font-size: 9pt;
     font-weight: 700;
     border-top-left-radius: 5pt;
     border-top-right-radius: 5pt;
   }}
 
   .algo-body {{
-    padding: 8pt 12pt;
-    font-size: 8.5pt;
-    line-height: 1.5;
+    padding: 7pt 10pt;
+    font-size: 8.2pt;
+    line-height: 1.45;
   }}
 
   .algo-step {{
     display: flex;
-    margin-bottom: 4pt;
+    margin-bottom: 3pt;
   }}
 
   .algo-step-num {{
-    width: 22pt;
+    width: 20pt;
     font-weight: 700;
     color: #2563eb;
     font-family: monospace;
@@ -364,7 +332,7 @@ def generate_report_html() -> str:
 
   /* Figure Styling */
   .figure-container {{
-    margin: 12pt 0;
+    margin: 10pt 0;
     text-align: center;
     page-break-inside: avoid;
     break-inside: avoid;
@@ -372,7 +340,7 @@ def generate_report_html() -> str:
 
   .figure-img {{
     width: 95%;
-    max-height: 280pt;
+    max-height: 270pt;
     object-fit: contain;
     border: 1pt solid #cbd5e1;
     border-radius: 6pt;
@@ -381,9 +349,9 @@ def generate_report_html() -> str:
   }}
 
   .figure-caption {{
-    font-size: 8.5pt;
+    font-size: 8.2pt;
     color: #475569;
-    margin-top: 5pt;
+    margin-top: 4pt;
     font-style: italic;
   }}
 
@@ -396,10 +364,10 @@ def generate_report_html() -> str:
   .callout {{
     background: #eff6ff;
     border-left: 3pt solid #3b82f6;
-    padding: 8pt 10pt;
+    padding: 7pt 9pt;
     border-radius: 4pt;
-    margin: 8pt 0;
-    font-size: 9pt;
+    margin: 7pt 0;
+    font-size: 8.8pt;
   }}
 
   .callout-success {{
@@ -407,16 +375,16 @@ def generate_report_html() -> str:
     border-left-color: #10b981;
   }}
 
-  .callout-warning {{
-    background: #fffbeb;
-    border-left-color: #f59e0b;
+  .cite {{
+    font-weight: 600;
+    color: #1e3a8a;
   }}
 </style>
 </head>
 <body>
 
   <!-- ========================================================= -->
-  <!-- 1. TITLE PAGE                                             -->
+  <!-- TITLE PAGE                                                -->
   <!-- ========================================================= -->
   <div class="title-page">
     <div class="title-logo-container">
@@ -456,14 +424,14 @@ def generate_report_html() -> str:
           <div class="meta-info-val">Dr. YVR Naga Pavan</div>
         </div>
         <div class="meta-info-row">
-          <div class="meta-info-label">Department & Institution</div>
-          <div class="meta-info-val">Dept. of Computer Science & Engineering, Woxsen University</div>
+          <div class="meta-info-label">Institution</div>
+          <div class="meta-info-val">School of Technology, Woxsen University</div>
         </div>
       </div>
     </div>
 
     <div class="title-footer">
-      <div>Submission Date: October 2026 | Academic Term: 2026</div>
+      <div>Submission Date: October 11, 2026 | Academic Term: 2026</div>
       <div>GitHub Repository: https://github.com/sahajasakhunala/linear-regression-gd-sgd</div>
     </div>
   </div>
@@ -471,33 +439,33 @@ def generate_report_html() -> str:
   <div class="page-break"></div>
 
   <!-- ========================================================= -->
-  <!-- 2. ABSTRACT                                               -->
+  <!-- 1. ABSTRACT                                               -->
   <!-- ========================================================= -->
-  <h2>2. Abstract</h2>
+  <h2>1. Abstract</h2>
   <p>
-    Optimization algorithms constitute the mathematical engine of modern artificial intelligence and statistical learning. In this project, an end-to-end empirical and theoretical comparative study between Batch Gradient Descent (GD) and Stochastic Gradient Descent (SGD) is conducted for univariate Linear Regression. Built entirely from first mathematical principles using Python and NumPy, the system eliminates reliance on high-level library estimators (such as scikit-learn's <code>LinearRegression</code> or <code>SGDRegressor</code>) in order to make every intermediate computational step transparent: forward hypothesis generation, Mean Squared Error (MSE) loss computation, closed-form analytical gradient calculation, and iterative parameter updates.
+    Optimization algorithms constitute the mathematical engine of modern artificial intelligence and statistical learning [1], [2]. In this project, an end-to-end empirical and theoretical comparative study between Batch Gradient Descent (GD) and Stochastic Gradient Descent (SGD) is conducted for univariate Linear Regression. Built entirely from first mathematical principles using Python and NumPy [5], the system eliminates reliance on high-level library estimators (such as scikit-learn's <code>LinearRegression</code> or <code>SGDRegressor</code>) in order to make every intermediate computational step transparent: forward hypothesis generation, Mean Squared Error (MSE) loss computation, closed-form analytical gradient calculation, and iterative parameter updates.
   </p>
   <p>
-    The experiment is conducted on a canonical 15-observation academic dataset tracking the relationship between study hours and exam scores. Methodological rigor is maintained via an isolated 70/30 train/test partition (10 training observations, 5 held-out test observations) under seed 42 with zero data leakage. Both iterative optimizers are evaluated against the closed-form Ordinary Least Squares (OLS) analytical reference. The experimental results demonstrate that both algorithms successfully recover the underlying data-generating relationship: Batch GD converges to <strong>ŷ = 7.7822x + 28.2121</strong>, while SGD converges to <strong>ŷ = 7.7156x + 28.5394</strong>. On unseen test data, both models achieve identical generalization fidelity (test R² = 0.9973, test RMSE ≈ 0.93 marks). Crucially, SGD achieves equivalent predictive accuracy while requiring an order of magnitude fewer individual sample evaluations (1,000 versus 10,000 for Batch GD), illustrating fundamental trade-offs between deterministic and stochastic optimization.
+    The experiment is conducted on a canonical 15-observation academic dataset tracking the relationship between study hours and exam scores. Methodological rigor is maintained via an isolated 70/30 train/test partition (10 training observations, 5 held-out test observations) under seed 42 with zero data leakage. Both iterative optimizers are evaluated against the closed-form Ordinary Least Squares (OLS) analytical reference [3]. The experimental results demonstrate that both algorithms successfully recover the underlying data-generating relationship: Batch GD converges to <strong>ŷ = 7.7822x + 28.2121</strong>, while SGD converges to <strong>ŷ = 7.7156x + 28.5394</strong>. On unseen test data, both models achieve identical generalization fidelity (test R² = 0.9973, test RMSE ≈ 0.93 marks). Crucially, SGD achieves equivalent predictive accuracy while requiring an order of magnitude fewer individual sample evaluations (1,000 versus 10,000 for Batch GD), illustrating fundamental trade-offs between deterministic and stochastic optimization [2], [4].
   </p>
 
   <!-- ========================================================= -->
-  <!-- 3. PROBLEM STATEMENT                                      -->
+  <!-- 2. PROBLEM STATEMENT                                      -->
   <!-- ========================================================= -->
-  <h2>3. Problem Statement</h2>
+  <h2>2. Problem Statement</h2>
   <p>
-    Contemporary machine learning practice frequently treats model fitting as an opaque API invocation. While abstractions accelerate rapid prototyping, they obscure the underlying mechanics of optimization: loss landscape topology, learning rate sensitivity, gradient variance, and parameter trajectory stability. When optimization is treated as a black-box, practitioners miss foundational engineering insights into how individual data points guide parameter updates, why stochastic updates introduce variance, and how data leakage distorts empirical validation.
+    Contemporary machine learning practice frequently treats model fitting as an opaque API invocation. While abstractions accelerate rapid prototyping, they obscure the underlying mechanics of optimization: loss landscape topology, learning rate sensitivity, gradient variance, and parameter trajectory stability [1], [4]. When optimization is treated as a black-box, practitioners miss foundational engineering insights into how individual data points guide parameter updates, why stochastic updates introduce variance, and how data leakage distorts empirical validation [2].
   </p>
   <p>
     To resolve this pedagogical challenge, this project develops a transparent, from-scratch implementation of Linear Regression. By deriving gradients analytically, implementing update rules manually, maintaining strict test-set isolation, and comparing Batch GD against SGD, this study provides complete clarity into how Linear Regression learns from data.
   </p>
 
   <!-- ========================================================= -->
-  <!-- 4. INTRODUCTION & 5. OBJECTIVES                           -->
+  <!-- 3. INTRODUCTION                                           -->
   <!-- ========================================================= -->
-  <h2>4. Introduction</h2>
+  <h2>3. Introduction</h2>
   <p>
-    Supervised regression identifies continuous functional mappings between input features and target outcomes. In its univariate formulation, Linear Regression models an affine relationship:
+    Supervised regression identifies continuous functional mappings between input features and target outcomes. In its univariate formulation, Linear Regression represents the bedrock foundation of statistical learning and predictive modeling [1], [3]:
   </p>
   <div class="math-card">
     <div class="math-card-header">
@@ -512,30 +480,31 @@ def generate_report_html() -> str:
     </div>
   </div>
   <p>
-    While small linear systems can be solved directly via the Normal Equation, iterative gradient-based optimization forms the foundation for modern machine learning, deep neural networks, and foundation models where analytical inversion is intractable.
+    While small linear systems can be solved directly via the Normal Equation / Ordinary Least Squares closed-form solution [3], iterative first-order optimization via Gradient Descent forms the universal backbone for training deep neural networks, transformers, and large-scale artificial intelligence architectures where analytical matrix inversion is computationally intractable [2].
   </p>
 
-  <h2>5. Project Objectives</h2>
+  <!-- ========================================================= -->
+  <!-- 4. PROJECT OBJECTIVES                                     -->
+  <!-- ========================================================= -->
+  <h2>4. Project Objectives</h2>
   <ul>
-    <li><strong>Mathematical Formulation:</strong> Formulate the linear regression hypothesis and derive analytical partial derivatives of Mean Squared Error (MSE) with respect to weight (w) and bias (b).</li>
-    <li><strong>First-Principles Implementation:</strong> Develop Batch GD and SGD completely from scratch in Python using vectorized NumPy routines, avoiding black-box library fits.</li>
-    <li><strong>Zero Data Leakage Safeguards:</strong> Partition data into 70% training (n=10) and 30% testing (n=5) subsets with strict isolation during fitting.</li>
-    <li><strong>Comparative Trajectory Tracking:</strong> Record iteration-by-iteration and epoch-by-epoch loss trajectories to contrast deterministic versus stochastic convergence.</li>
+    <li><strong>Mathematical Formulation:</strong> Formulate the linear regression hypothesis and derive analytical partial derivatives of Mean Squared Error (MSE) with respect to weight (w) and bias (b) [1].</li>
+    <li><strong>First-Principles Implementation:</strong> Develop Batch GD and SGD completely from scratch in Python [8] using vectorized NumPy routines [5], avoiding black-box library fits.</li>
+    <li><strong>Zero Data Leakage Safeguards:</strong> Partition data into 70% training (n=10) and 30% testing (n=5) subsets with strict isolation during fitting [3].</li>
+    <li><strong>Comparative Trajectory Tracking:</strong> Record iteration-by-iteration and epoch-by-epoch loss trajectories to contrast deterministic versus stochastic convergence [4].</li>
     <li><strong>Comprehensive Generalization Evaluation:</strong> Evaluate models on unseen test observations using MSE, RMSE, and R² alongside closed-form OLS solutions.</li>
-    <li><strong>Publication-Quality Visualization:</strong> Generate six high-resolution visual figures illustrating dataset partition, fitted lines, loss curves, and actual versus predicted test scores.</li>
+    <li><strong>Publication-Quality Visualization:</strong> Generate six high-resolution visual figures illustrating dataset partition, fitted lines, loss curves, and actual versus predicted test scores using Matplotlib [7].</li>
   </ul>
 
-  <div class="page-break"></div>
-
   <!-- ========================================================= -->
-  <!-- 6. THEORETICAL BACKGROUND (ORGANIZED MATHEMATICS)         -->
+  <!-- 5. THEORETICAL BACKGROUND (ORGANIZED MATHEMATICS)         -->
   <!-- ========================================================= -->
-  <h2>6. Theoretical Background & Mathematical Derivations</h2>
+  <h2>5. Theoretical Background & Mathematical Derivations</h2>
   <p>
-    To make the mathematics intuitive and structured, all equations, variables, and derivations are organized systematically below.
+    To make the mathematics intuitive and structured, all equations, variables, and derivations are organized systematically below following standard statistical learning principles [1], [3].
   </p>
 
-  <h3>6.1 Master Variable Definition Reference</h3>
+  <h3>5.1 Master Variable Definition Reference</h3>
   <table>
     <thead>
       <tr>
@@ -597,7 +566,7 @@ def generate_report_html() -> str:
     </tbody>
   </table>
 
-  <h3>6.2 Mean Squared Error (MSE) Objective Function</h3>
+  <h3>5.2 Mean Squared Error (MSE) Objective Function</h3>
   <div class="math-card">
     <div class="math-card-header">
       <span>Mean Squared Error (MSE) Formula</span>
@@ -607,13 +576,13 @@ def generate_report_html() -> str:
       J(w, b) = <span style="font-size: 11pt;">1</span>/<span style="font-size: 9pt;">n</span> ∑<sub>i=1</sub><sup>n</sup> (y<sub>i</sub> - ŷ<sub>i</sub>)<sup>2</sup> = <span style="font-size: 11pt;">1</span>/<span style="font-size: 9pt;">n</span> ∑<sub>i=1</sub><sup>n</sup> (y<sub>i</sub> - (w·x<sub>i</sub> + b))<sup>2</sup>
     </div>
     <div class="math-details">
-      <strong>Why MSE is selected:</strong> (1) <em>Strict Convexity</em> guarantees a unique global minimum with zero local minima traps; (2) <em>Continuous Differentiability</em> produces smooth analytical gradients everywhere; (3) <em>Quadratic Penalty</em> strongly discourages large residual errors; (4) Minimizing MSE is mathematically equivalent to Maximum Likelihood Estimation (MLE) under Gaussian error assumptions.
+      <strong>Why MSE is selected [1], [3]:</strong> (1) <em>Strict Convexity</em> guarantees a unique global minimum with zero local minima traps; (2) <em>Continuous Differentiability</em> produces smooth analytical gradients everywhere; (3) <em>Quadratic Penalty</em> strongly discourages large residual errors; (4) Minimizing MSE is mathematically equivalent to Maximum Likelihood Estimation (MLE) under Gaussian error assumptions.
     </div>
   </div>
 
-  <h3>6.3 Step-by-Step Analytical Gradient Derivations</h3>
+  <h3>5.3 Step-by-Step Analytical Gradient Derivations</h3>
   <p>
-    The gradient vector ∇J(w, b) is computed by taking partial derivatives of J(w, b) using the calculus chain rule:
+    The gradient vector ∇J(w, b) is computed by taking partial derivatives of J(w, b) using the calculus chain rule [2]:
   </p>
 
   <div class="math-card">
@@ -621,8 +590,8 @@ def generate_report_html() -> str:
       <span>Step 1: Weight Gradient Derivation (∂J / ∂w)</span>
       <span class="eq-tag">Equation 3a</span>
     </div>
-    <div style="font-family: 'Cambria Math', serif; font-size: 10.5pt; line-height: 1.8; padding: 4pt 0;">
-      1. Apply chain rule: &nbsp;&nbsp; <sup>∂J</sup>/<sub>∂w</sub> = <span style="font-size: 10pt;">1</span>/<span style="font-size: 8pt;">n</span> ∑<sub>i=1</sub><sup>n</sup> 2(y<sub>i</sub> - ŷ<sub>i</sub>) · <sup>∂</sup>/<sub>∂w</sub>(y<sub>i</sub> - w·x<sub>i</sub> - b)<br>
+    <div style="font-family: 'Cambria Math', serif; font-size: 10pt; line-height: 1.7; padding: 2pt 0;">
+      1. Apply chain rule: &nbsp;&nbsp; <sup>∂J</sup>/<sub>∂w</sub> = <span style="font-size: 9.5pt;">1</span>/<span style="font-size: 8pt;">n</span> ∑<sub>i=1</sub><sup>n</sup> 2(y<sub>i</sub> - ŷ<sub>i</sub>) · <sup>∂</sup>/<sub>∂w</sub>(y<sub>i</sub> - w·x<sub>i</sub> - b)<br>
       2. Substitute inner derivative: &nbsp;&nbsp; <sup>∂</sup>/<sub>∂w</sub>(y<sub>i</sub> - w·x<sub>i</sub> - b) = -x<sub>i</sub><br>
       3. Factor constants: &nbsp;&nbsp; <strong><sup>∂J</sup>/<sub>∂w</sub> = -<sup>2</sup>/<sub>n</sub> ∑<sub>i=1</sub><sup>n</sup> x<sub>i</sub> · (y<sub>i</sub> - ŷ<sub>i</sub>)</strong>
     </div>
@@ -633,18 +602,16 @@ def generate_report_html() -> str:
       <span>Step 2: Bias Gradient Derivation (∂J / ∂b)</span>
       <span class="eq-tag">Equation 3b</span>
     </div>
-    <div style="font-family: 'Cambria Math', serif; font-size: 10.5pt; line-height: 1.8; padding: 4pt 0;">
-      1. Apply chain rule: &nbsp;&nbsp; <sup>∂J</sup>/<sub>∂b</sub> = <span style="font-size: 10pt;">1</span>/<span style="font-size: 8pt;">n</span> ∑<sub>i=1</sub><sup>n</sup> 2(y<sub>i</sub> - ŷ<sub>i</sub>) · <sup>∂</sup>/<sub>∂b</sub>(y<sub>i</sub> - w·x<sub>i</sub> - b)<br>
+    <div style="font-family: 'Cambria Math', serif; font-size: 10pt; line-height: 1.7; padding: 2pt 0;">
+      1. Apply chain rule: &nbsp;&nbsp; <sup>∂J</sup>/<sub>∂b</sub> = <span style="font-size: 9.5pt;">1</span>/<span style="font-size: 8pt;">n</span> ∑<sub>i=1</sub><sup>n</sup> 2(y<sub>i</sub> - ŷ<sub>i</sub>) · <sup>∂</sup>/<sub>∂b</sub>(y<sub>i</sub> - w·x<sub>i</sub> - b)<br>
       2. Substitute inner derivative: &nbsp;&nbsp; <sup>∂</sup>/<sub>∂b</sub>(y<sub>i</sub> - w·x<sub>i</sub> - b) = -1<br>
       3. Factor constants: &nbsp;&nbsp; <strong><sup>∂J</sup>/<sub>∂b</sub> = -<sup>2</sup>/<sub>n</sub> ∑<sub>i=1</sub><sup>n</sup> (y<sub>i</sub> - ŷ<sub>i</sub>)</strong>
     </div>
   </div>
 
-  <div class="page-break"></div>
-
-  <h3>6.4 Master Comparison: Batch GD vs. Stochastic GD Equations</h3>
+  <h3>5.4 Master Comparison: Batch GD vs. Stochastic GD Equations</h3>
   <p>
-    The mathematical formulation of parameter updates differs fundamentally in whether gradients are computed over the full dataset or a single observation:
+    The mathematical formulation of parameter updates differs fundamentally in whether gradients are computed over the full dataset or a single observation [2], [4]:
   </p>
 
   <table>
@@ -652,7 +619,7 @@ def generate_report_html() -> str:
       <tr>
         <th style="width: 25%;">Mathematical Property</th>
         <th style="width: 37%;">Batch Gradient Descent (GD)</th>
-        <th style="width: 38%;">Stochastic Gradient Descent (SGD)</th>
+        <th style="width: 38%;">Stochastic Gradient Descent (SGD) [4]</th>
       </tr>
     </thead>
     <tbody>
@@ -705,9 +672,9 @@ def generate_report_html() -> str:
   </table>
 
   <!-- ========================================================= -->
-  <!-- 7. SYSTEM DESIGN & 8. IMPLEMENTATION                      -->
+  <!-- 6. SYSTEM DESIGN & ARCHITECTURE                           -->
   <!-- ========================================================= -->
-  <h2>7. System Architecture & Modularity</h2>
+  <h2>6. System Architecture & Modularity</h2>
   <p>
     The codebase is organized into decoupled modules following software engineering best practices:
   </p>
@@ -717,13 +684,16 @@ def generate_report_html() -> str:
     <li><code>src/gradient_descent.py</code>: Batch Gradient Descent implementation with complete parameter and loss trajectory tracking.</li>
     <li><code>src/stochastic_gradient_descent.py</code>: Stochastic Gradient Descent with random permutation and epoch-level loss logging.</li>
     <li><code>src/evaluation.py</code>: Model evaluation routines, closed-form OLS analytical baseline computation, and metric formatting.</li>
-    <li><code>src/visualization.py</code>: Production of the six publication-quality matplotlib figures using a non-interactive Agg backend.</li>
+    <li><code>src/visualization.py</code>: Production of the six publication-quality matplotlib figures using a non-interactive Agg backend [7].</li>
     <li><code>main.py</code>: Master orchestration script executing training, evaluation, CSV exports, and visualization routines.</li>
     <li><code>predict.py</code>: Interactive command-line predictor allowing live demonstration for any user-provided study hours.</li>
   </ul>
 
-  <h2>8. Implementation Details</h2>
-  <h3>8.1 Dataset Partitioning & Zero Leakage Audit</h3>
+  <!-- ========================================================= -->
+  <!-- 7. IMPLEMENTATION DETAILS                                 -->
+  <!-- ========================================================= -->
+  <h2>7. Implementation Details</h2>
+  <h3>7.1 Dataset Partitioning & Zero Leakage Audit</h3>
   <p>
     The dataset contains 15 observations partitioned via scikit-learn's <code>train_test_split(test_size=0.3, random_state=42)</code>:
   </p>
@@ -732,12 +702,10 @@ def generate_report_html() -> str:
     <li><strong>Held-out Test Partition (30%, n=5):</strong> Hours = [1.0, 3.5, 5.5, 6.5, 7.5]; Scores = [35, 55, 71, 78, 85].</li>
   </ul>
   <div class="callout callout-success">
-    <strong>Zero Data Leakage Safeguard:</strong> The 5 test observations are completely quarantined during optimization. No gradients, residuals, or loss updates are evaluated on these samples while fitting parameters. They are evaluated strictly post-training to measure generalization.
+    <strong>Zero Data Leakage Safeguard:</strong> The 5 test observations are completely quarantined during optimization. No gradients, residuals, or loss updates are evaluated on these samples while fitting parameters. They are evaluated strictly post-training to measure generalization [3].
   </div>
 
-  <div class="page-break"></div>
-
-  <h3>8.2 Structured Algorithmic Pseudocode</h3>
+  <h3>7.2 Structured Algorithmic Pseudocode</h3>
   <p>
     The mathematical logic of both algorithms is formatted in structured, step-by-step procedures below:
   </p>
@@ -790,21 +758,21 @@ def generate_report_html() -> str:
   <div class="page-break"></div>
 
   <!-- ========================================================= -->
-  <!-- 9. EXPERIMENTAL RESULTS AND ANALYSIS                      -->
+  <!-- 8. EXPERIMENTAL RESULTS AND ANALYSIS                      -->
   <!-- ========================================================= -->
-  <h2>9. Experimental Results & Comparative Analysis</h2>
+  <h2>8. Experimental Results & Comparative Analysis</h2>
 
-  <h3>9.1 Quantitative Performance Metrics Table</h3>
+  <h3>8.1 Quantitative Performance Metrics Table</h3>
   <p>
-    The quantitative comparison between Batch Gradient Descent, Stochastic Gradient Descent, and the analytical Ordinary Least Squares solution is presented below:
+    The quantitative comparison between Batch Gradient Descent, Stochastic Gradient Descent, and the analytical Ordinary Least Squares solution [3] is presented below:
   </p>
   <table>
     <thead>
       <tr>
         <th>Performance Metric</th>
         <th>Batch Gradient Descent (GD)</th>
-        <th>Stochastic Gradient Descent (SGD)</th>
-        <th>Analytical OLS (Reference)</th>
+        <th>Stochastic Gradient Descent (SGD) [4]</th>
+        <th>Analytical OLS (Reference) [3]</th>
       </tr>
     </thead>
     <tbody>
@@ -871,7 +839,7 @@ def generate_report_html() -> str:
     </tbody>
   </table>
 
-  <h3>9.2 Held-Out Test Set Predictions Table</h3>
+  <h3>8.2 Held-Out Test Set Predictions Table</h3>
   <p>
     Evaluation on the 5 quarantined test students demonstrates high predictive fidelity across both optimizers:
   </p>
@@ -938,7 +906,7 @@ def generate_report_html() -> str:
 
   <div class="page-break"></div>
 
-  <h3>9.3 Graphical Analysis of the Six Visualizations</h3>
+  <h3>8.3 Graphical Analysis of the Six Visualizations</h3>
 
   <div class="figure-container">
     <img src="{fig1_b64}" alt="Figure 1: Dataset Partition Scatter Plot" class="figure-img">
@@ -959,7 +927,7 @@ def generate_report_html() -> str:
 
   <div class="figure-container">
     <img src="{fig4_b64}" alt="Figure 4: SGD Loss Curve" class="figure-img">
-    <div class="figure-caption"><strong>Figure 4: Stochastic Gradient Descent Loss Curve.</strong> Rapid initial convergence in the first 20 epochs followed by characteristic stochastic fluctuations around the minimum.</div>
+    <div class="figure-caption"><strong>Figure 4: Stochastic Gradient Descent Loss Curve.</strong> Rapid initial convergence in the first 20 epochs followed by characteristic stochastic fluctuations around the minimum [4].</div>
   </div>
 
   <div class="page-break"></div>
@@ -977,13 +945,13 @@ def generate_report_html() -> str:
   <div class="page-break"></div>
 
   <!-- ========================================================= -->
-  <!-- 10. DISCUSSION AND LIMITATIONS                            -->
+  <!-- 9. DISCUSSION AND LIMITATIONS                             -->
   <!-- ========================================================= -->
-  <h2>10. Discussion & Limitations</h2>
+  <h2>9. Discussion & Limitations</h2>
 
-  <h3>10.1 Convergence Dynamics and Gradient Variance</h3>
+  <h3>9.1 Convergence Dynamics and Gradient Variance</h3>
   <p>
-    The experimental results illustrate the core mathematical contrast between full-batch and stochastic gradient estimation. In Batch GD, the gradient vector reflects the true empirical risk across all training observations:
+    The experimental results illustrate the core mathematical contrast between full-batch and stochastic gradient estimation [2], [4]. In Batch GD, the gradient vector reflects the true empirical risk across all training observations:
   </p>
   <div class="math-card">
     <div class="math-formula">
@@ -999,15 +967,15 @@ def generate_report_html() -> str:
     </div>
   </div>
   <p>
-    Because individual observations deviate from the sample mean, the stochastic gradient acts as a noisy estimate of the true gradient. While this introduces variance (visible as epoch-by-epoch fluctuations in Figure 4 and Figure 5), it prevents the optimizer from stagnating and drives rapid early convergence.
+    Because individual observations deviate from the sample mean, the stochastic gradient acts as a noisy estimate of the true gradient. While this introduces variance (visible as epoch-by-epoch fluctuations in Figure 4 and Figure 5), it prevents the optimizer from stagnating and drives rapid early convergence [2].
   </p>
 
-  <h3>10.2 Computational Work & Scalability</h3>
+  <h3>9.2 Computational Work & Scalability</h3>
   <p>
-    A critical finding of this study is the sample evaluation efficiency of SGD. Batch GD required <strong>10,000 individual sample evaluations</strong> (1,000 iterations × 10 samples) to achieve test MSE = 0.8636. In contrast, SGD required only <strong>1,000 sample evaluations</strong> (100 epochs × 10 samples) to achieve test MSE = 0.8650. This represents a <strong>10× reduction in computational sample work</strong> for essentially identical predictive accuracy. On large-scale industry datasets (n ≥ 10⁶), Batch GD becomes computationally prohibitive per update, whereas SGD or Mini-batch GD makes rapid initial progress.
+    A critical finding of this study is the sample evaluation efficiency of SGD. Batch GD required <strong>10,000 individual sample evaluations</strong> (1,000 iterations × 10 samples) to achieve test MSE = 0.8636. In contrast, SGD required only <strong>1,000 sample evaluations</strong> (100 epochs × 10 samples) to achieve test MSE = 0.8650. This represents a <strong>10× reduction in computational sample work</strong> for essentially identical predictive accuracy. On large-scale industry datasets (n ≥ 10⁶), Batch GD becomes computationally prohibitive per update, whereas SGD or Mini-batch GD makes rapid initial progress [4].
   </p>
 
-  <h3>10.3 Methodological Limitations</h3>
+  <h3>9.3 Methodological Limitations</h3>
   <ul>
     <li><strong>Dataset Scale (n=15):</strong> The 15-observation dataset provides transparency for step-by-step tracing, but lacks the scale necessary to test complex regularization or higher-order variance effects.</li>
     <li><strong>Test Set Sensitivity (n<sub>test</sub>=5):</strong> Because the held-out test partition comprises only 5 observations, summary metrics (MSE, RMSE, R²) are sensitive to individual residual deviations. While our average absolute error is low (~0.77 marks), larger test cohorts are recommended for statistical confidence intervals.</li>
@@ -1015,9 +983,9 @@ def generate_report_html() -> str:
   </ul>
 
   <!-- ========================================================= -->
-  <!-- 11. CONCLUSION & 12. REFERENCES                           -->
+  <!-- 10. CONCLUSION & FUTURE WORK                              -->
   <!-- ========================================================= -->
-  <h2>11. Conclusion & Future Work</h2>
+  <h2>10. Conclusion & Future Work</h2>
   <p>
     This investigation successfully implemented, derived, and compared Batch Gradient Descent and Stochastic Gradient Descent from first principles for univariate Linear Regression.
   </p>
@@ -1026,24 +994,27 @@ def generate_report_html() -> str:
     <ol>
       <li><strong>Convergence Parity:</strong> Both algorithms successfully converged to the underlying data trend, arriving at nearly identical parameters (Batch GD: w=7.7822, b=28.2121; SGD: w=7.7156, b=28.5394).</li>
       <li><strong>Generalization Parity:</strong> Both models generalized with high fidelity on unseen test observations, achieving matching test R² = 0.9973 and RMSE ≈ 0.93 marks.</li>
-      <li><strong>Sample Efficiency:</strong> SGD achieved equivalent predictive performance with 10× fewer sample evaluations, empirically validating the efficiency of stochastic optimization.</li>
+      <li><strong>Sample Efficiency:</strong> SGD achieved equivalent predictive performance with 10× fewer sample evaluations, empirically validating the efficiency of stochastic optimization [4].</li>
     </ol>
   </div>
   <p>
-    <strong>Future Work:</strong> Future extensions include: (1) Implementing <em>Mini-Batch Gradient Descent</em> to balance vectorization speed and stochastic regularization; (2) Adding <em>adaptive learning rate schedules</em> (e.g., learning rate decay or Adam) to damp late-stage SGD oscillations; and (3) Scaling to multivariate datasets with feature normalization.
+    <strong>Future Work:</strong> Future extensions include: (1) Implementing <em>Mini-Batch Gradient Descent</em> to balance vectorization speed and stochastic regularization; (2) Adding <em>adaptive learning rate schedules</em> (e.g., learning rate decay or Adam [2]) to damp late-stage SGD oscillations; and (3) Scaling to multivariate datasets with feature normalization.
   </p>
 
-  <h2>12. References</h2>
-  <ol>
-    <li>Bishop, C. M. (2006). <em>Pattern Recognition and Machine Learning</em>. Springer New York. (Chapter 3: Linear Models for Regression).</li>
-    <li>Goodfellow, I., Bengio, Y., & Courville, A. (2016). <em>Deep Learning</em>. MIT Press. (Chapter 4: Numerical Computation; Chapter 5: Machine Learning Basics).</li>
-    <li>Hastie, T., Tibshirani, R., & Friedman, J. (2009). <em>The Elements of Statistical Learning: Data Mining, Inference, and Prediction</em> (2nd ed.). Springer.</li>
-    <li>Bottou, L. (2010). <em>Large-Scale Machine Learning with Stochastic Gradient Descent</em>. In Proceedings of COMPSTAT'2010 (pp. 177-186). Physica-Verlag HD.</li>
-    <li>Harris, C. R., Millman, K. J., van der Walt, S. J., et al. (2020). <em>Array programming with NumPy</em>. Nature, 585(7825), 357-362.</li>
-    <li>McKinney, W. (2010). <em>Data Structures for Statistical Computing in Python</em>. In Proceedings of the 9th Python in Science Conference (pp. 56-61).</li>
-    <li>Hunter, J. D. (2007). <em>Matplotlib: A 2D Graphics Environment</em>. Computing in Science & Engineering, 9(3), 90-95.</li>
-    <li>Official Python Documentation (2026). <em>The Python Standard Library</em>. Python Software Foundation. https://docs.python.org/3/</li>
-  </ol>
+  <!-- ========================================================= -->
+  <!-- 11. REFERENCES (IEEE FORMAT)                              -->
+  <!-- ========================================================= -->
+  <h2>11. References</h2>
+  <div style="font-size: 8.5pt; line-height: 1.6; margin-top: 6pt;">
+    <p style="margin-bottom: 5pt; text-align: left;">[1] C. M. Bishop, <em>Pattern Recognition and Machine Learning</em>. New York, NY, USA: Springer, 2006.</p>
+    <p style="margin-bottom: 5pt; text-align: left;">[2] I. Goodfellow, Y. Bengio, and A. Courville, <em>Deep Learning</em>. Cambridge, MA, USA: MIT Press, 2016.</p>
+    <p style="margin-bottom: 5pt; text-align: left;">[3] T. Hastie, R. Tibshirani, and J. Friedman, <em>The Elements of Statistical Learning: Data Mining, Inference, and Prediction</em>, 2nd ed. New York, NY, USA: Springer, 2009.</p>
+    <p style="margin-bottom: 5pt; text-align: left;">[4] L. Bottou, "Large-scale machine learning with stochastic gradient descent," in <em>Proc. COMPSTAT'2010</em>, Paris, France, 2010, pp. 177–186.</p>
+    <p style="margin-bottom: 5pt; text-align: left;">[5] C. R. Harris <em>et al.</em>, "Array programming with NumPy," <em>Nature</em>, vol. 585, no. 7825, pp. 357–362, 2020.</p>
+    <p style="margin-bottom: 5pt; text-align: left;">[6] W. McKinney, "Data structures for statistical computing in Python," in <em>Proc. 9th Python Sci. Conf.</em>, Austin, TX, USA, 2010, pp. 56–61.</p>
+    <p style="margin-bottom: 5pt; text-align: left;">[7] J. D. Hunter, "Matplotlib: A 2D graphics environment," <em>Comput. Sci. Eng.</em>, vol. 9, no. 3, pp. 90–95, 2007.</p>
+    <p style="margin-bottom: 5pt; text-align: left;">[8] Python Software Foundation, <em>The Python Standard Library Documentation</em>, Python 3.10, 2026. [Online]. Available: https://docs.python.org/3/</p>
+  </div>
 
 </body>
 </html>
@@ -1123,7 +1094,6 @@ def stamp_page_numbers_and_footers(raw_pdf_path: str, final_pdf_path: str):
         )
 
         # Draw right page number
-        # Approximate width calculation for right alignment
         num_width = len(page_num_str) * 5.2
         page.insert_text(
             pymupdf.Point(width - 40 - num_width, line_y + 16),
@@ -1142,7 +1112,7 @@ def main():
     print("=" * 60)
     print(" ACADEMIC REPORT PDF GENERATOR")
     print(" Subject: Foundations of Artificial Intelligence")
-    print(" Institution: Woxsen University")
+    print(" Institution: School of Technology, Woxsen University")
     print("=" * 60)
 
     html_file = "academic_report_render.html"

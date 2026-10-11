@@ -2,7 +2,7 @@
 
 ---
 
-## 1. Title Page
+## Title Page
 
 <div align="center">
   <img src="./assets/woxsen_logo.png" alt="Woxsen University Logo" width="320">
@@ -15,8 +15,7 @@ Linear Regression Using Gradient Descent and Stochastic Gradient Descent: A Comp
 Foundations of Artificial Intelligence
 
 **Academic Institution:**  
-Department of Computer Science & Engineering, School of Technology  
-Woxsen University, Hyderabad  
+School of Technology, Woxsen University, Hyderabad  
 Academic Term: 2026
 
 **Course Faculty / Supervisor:**  
@@ -34,67 +33,60 @@ October 11, 2026
 [https://github.com/sahajasakhunala/linear-regression-gd-sgd](https://github.com/sahajasakhunala/linear-regression-gd-sgd)
 
 **Generated PDF Report:**  
-`Linear_Regression_GD_vs_SGD_Report.pdf` (14 pages, complete with running footers and page numbering)
+`Linear_Regression_GD_vs_SGD_Report.pdf` (12 pages, complete with running footers and page numbering)
 
 ---
 
-## 2. Abstract
+## 1. Abstract
 
-Optimization algorithms constitute the mathematical engine of modern artificial intelligence and statistical learning. In this project, a comprehensive comparative study between Batch Gradient Descent (GD) and Stochastic Gradient Descent (SGD) is conducted for univariate Linear Regression. Built strictly from first principles using Python and NumPy, the system avoids black-box library estimators (such as scikit-learn's `LinearRegression` or `SGDRegressor`) in order to inspect every intermediate computational step: forward hypothesis generation, Mean Squared Error (MSE) loss computation, closed-form gradient evaluation, and parameter updates.
+Optimization algorithms constitute the mathematical engine of modern artificial intelligence and statistical learning [1], [2]. In this project, an end-to-end empirical and theoretical comparative study between Batch Gradient Descent (GD) and Stochastic Gradient Descent (SGD) is conducted for univariate Linear Regression. Built entirely from first mathematical principles using Python and NumPy [5], the system eliminates reliance on high-level library estimators (such as scikit-learn's `LinearRegression` or `SGDRegressor`) in order to make every intermediate computational step transparent: forward hypothesis generation, Mean Squared Error (MSE) loss computation, closed-form analytical gradient calculation, and iterative parameter updates.
 
-The empirical investigation is performed on an academic dataset of 15 student records relating study hours to examination scores. Strict machine learning hygiene is enforced via a 70/30 train/test split (10 training samples, 5 held-out test samples) under reproducible random seeding (seed 42) with zero data leakage. Both optimization algorithms are tracked across their convergence trajectories alongside an analytical Ordinary Least Squares (OLS) benchmark. The final models demonstrate convergence to virtually identical regression equations: Batch GD yields $\hat{y} = 7.7822x + 28.2121$, while SGD yields $\hat{y} = 7.7156x + 28.5394$. On unseen test data, both models generalize strongly, obtaining a test $R^2$ of 0.9973 and a test Root Mean Squared Error (RMSE) of approximately 0.93 marks. SGD achieves comparable generalization while requiring an order of magnitude fewer individual sample evaluations (1,000 versus 10,000 for Batch GD), illustrating key computational and dynamical trade-offs between deterministic and stochastic optimization.
-
----
-
-## 3. Problem Statement
-
-Standard machine learning packages provide high-level abstractions that fit linear regression parameters in a single line of execution. While computationally convenient for industry pipelines, these black-box abstractions conceal the core mechanics of iterative optimization: loss landscape navigation, gradient magnitude scaling, parameter trajectory stability, and sample-level stochasticity.
-
-When students or researchers treat optimization as an opaque library call, they miss fundamental engineering insights:
-1. How individual data points exert directional pull on model weights.
-2. Why gradient variance manifests as stochastic fluctuation in single-sample updates.
-3. How learning rates govern the trade-off between convergence speed and numerical overshoot.
-4. How data leakage during preprocessing artificially corrupts generalization claims.
-
-To resolve this pedagogical deficit, this project constructs an end-to-end machine learning system completely from first mathematical principles. By deriving analytical gradients, implementing parameter updates manually, isolating held-out test data, and visualizing optimization trajectories side-by-side, this study provides absolute transparency into how Linear Regression learns optimal parameters from empirical observations.
+The experiment is conducted on a canonical 15-observation academic dataset tracking the relationship between study hours and exam scores. Methodological rigor is maintained via an isolated 70/30 train/test partition (10 training observations, 5 held-out test observations) under seed 42 with zero data leakage. Both iterative optimizers are evaluated against the closed-form Ordinary Least Squares (OLS) analytical reference [3]. The experimental results demonstrate that both algorithms successfully recover the underlying data-generating relationship: Batch GD converges to **$\hat{y} = 7.7822x + 28.2121$**, while SGD converges to **$\hat{y} = 7.7156x + 28.5394$**. On unseen test data, both models achieve identical generalization fidelity (test $R^2 = 0.9973$, test $\text{RMSE} \approx 0.93$ marks). Crucially, SGD achieves equivalent predictive accuracy while requiring an order of magnitude fewer individual sample evaluations (1,000 versus 10,000 for Batch GD), illustrating fundamental trade-offs between deterministic and stochastic optimization [2], [4].
 
 ---
 
-## 4. Introduction
+## 2. Problem Statement
 
-Supervised machine learning identifies predictive relationships between input features and continuous target outcomes. Linear Regression represents the bedrock foundation of statistical learning and predictive modeling. In its simplest univariate formulation, it models an affine mapping from a single scalar input $x$ to a scalar output $y$:
+Contemporary machine learning practice frequently treats model fitting as an opaque API invocation. While abstractions accelerate rapid prototyping, they obscure the underlying mechanics of optimization: loss landscape topology, learning rate sensitivity, gradient variance, and parameter trajectory stability [1], [4]. When optimization is treated as a black-box, practitioners miss foundational engineering insights into how individual data points guide parameter updates, why stochastic updates introduce variance, and how data leakage distorts empirical validation [2].
 
-$$\hat{y} = w x + b$$
+To resolve this pedagogical challenge, this project develops a transparent, from-scratch implementation of Linear Regression. By deriving gradients analytically, implementing update rules manually, maintaining strict test-set isolation, and comparing Batch GD against SGD, this study provides complete clarity into how Linear Regression learns from data.
+
+---
+
+## 3. Introduction
+
+Supervised regression identifies continuous functional mappings between input features and target outcomes. In its univariate formulation, Linear Regression represents the bedrock foundation of statistical learning and predictive modeling [1], [3]:
+
+$$\hat{y}_i = w \cdot x_i + b$$
 
 Where:
-- $x \in \mathbb{R}$ represents the independent input feature (Study Hours).
-- $\hat{y} \in \mathbb{R}$ represents the predicted target value (Exam Score).
+- $x_i \in \mathbb{R}$ represents the independent input feature (Study Hours for student $i$).
+- $\hat{y}_i \in \mathbb{R}$ represents the predicted target value (Exam Score).
 - $w \in \mathbb{R}$ denotes the learnable weight parameter (slope).
 - $b \in \mathbb{R}$ denotes the learnable bias parameter (intercept).
 
-While closed-form solutions (such as the Normal Equation / Ordinary Least Squares) exist for small-scale linear systems, iterative first-order optimization via Gradient Descent forms the universal backbone for training deep neural networks, transformers, and large-scale AI architectures where analytical matrix inversion is computationally intractable. Consequently, understanding the convergence mechanics of Batch Gradient Descent and Stochastic Gradient Descent on a transparent linear objective establishes essential intuition for contemporary artificial intelligence.
+While small linear systems can be solved directly via the Normal Equation / Ordinary Least Squares closed-form solution [3], iterative first-order optimization via Gradient Descent forms the universal backbone for training deep neural networks, transformers, and large-scale artificial intelligence architectures where analytical matrix inversion is computationally intractable [2].
 
 ---
 
-## 5. Objectives
+## 4. Project Objectives
 
 The specific technical and educational objectives of this investigation are:
 
-1. **Mathematical Derivation:** Formulate the univariate linear regression hypothesis and derive the exact analytical gradients for the Mean Squared Error (MSE) loss function with respect to weight $w$ and bias $b$.
-2. **First-Principles Implementation:** Implement Batch Gradient Descent and Stochastic Gradient Descent from scratch in Python using only vectorized NumPy operations, eliminating all third-party model fitting utilities.
-3. **Analytical Benchmark:** Derive and compute the exact Ordinary Least Squares (OLS) parameter solution to serve as a theoretical baseline.
-4. **Experimental Rigor & Leakage Prevention:** Implement a strict 70/30 train/test partition with isolated preprocessing to guarantee zero data leakage between training optimization and post-training generalization evaluation.
-5. **Convergence Trajectory Analysis:** Record iteration-by-iteration and epoch-by-epoch loss trajectories to contrast the smooth, monotonic descent of Batch GD against the noisy, fluctuating trajectory of SGD.
-6. **Generalization Assessment:** Evaluate model performance on unseen test samples using standard statistical metrics: Mean Squared Error (MSE), Root Mean Squared Error (RMSE), and the Coefficient of Determination ($R^2$).
-7. **Empirical Visualization:** Generate six high-resolution, academic-quality plots documenting data partitions, fitted lines, loss curves, and actual-versus-predicted test outcomes.
+1. **Mathematical Formulation:** Formulate the linear regression hypothesis and derive analytical partial derivatives of Mean Squared Error (MSE) with respect to weight ($w$) and bias ($b$) [1].
+2. **First-Principles Implementation:** Develop Batch GD and SGD completely from scratch in Python [8] using vectorized NumPy routines [5], avoiding black-box library fits.
+3. **Zero Data Leakage Safeguards:** Partition data into 70% training ($n=10$) and 30% testing ($n=5$) subsets with strict isolation during fitting [3].
+4. **Comparative Trajectory Tracking:** Record iteration-by-iteration and epoch-by-epoch loss trajectories to contrast deterministic versus stochastic convergence [4].
+5. **Comprehensive Generalization Evaluation:** Evaluate models on unseen test observations using MSE, RMSE, and $R^2$ alongside closed-form OLS solutions.
+6. **Publication-Quality Visualization:** Generate six high-resolution visual figures illustrating dataset partition, fitted lines, loss curves, and actual versus predicted test scores using Matplotlib [7].
 
 ---
 
-## 6. Theoretical Background and Organized Mathematics
+## 5. Theoretical Background and Organized Mathematics
 
-To ensure mathematical clarity and ease of comprehension, all equations, notations, and derivations are systematically organized into dedicated reference blocks below.
+To ensure mathematical clarity and ease of comprehension, all equations, notations, and derivations are systematically organized into dedicated reference blocks below following standard statistical learning principles [1], [3].
 
-### 6.1 Master Variable Definition Reference
+### 5.1 Master Variable Definition Reference
 
 | Mathematical Symbol | Formal Concept | Physical Meaning in Project | Value / Domain in Experiment |
 | :---: | :--- | :--- | :--- |
@@ -109,24 +101,13 @@ To ensure mathematical clarity and ease of comprehension, all equations, notatio
 
 ---
 
-### 6.2 The Linear Regression Hypothesis
-
-For any given student observation indexed by $i$, the linear hypothesis predicts:
-
-$$\hat{y}_i = w \cdot x_i + b$$
-
-- **Weight ($w$):** Quantifies the rate of increase in exam score per hour of study.
-- **Bias ($b$):** Quantifies the expected baseline score of a student who studies zero hours.
-
----
-
-### 6.3 Mean Squared Error (MSE) Objective Function
+### 5.2 Mean Squared Error (MSE) Objective Function
 
 To quantify empirical prediction error across $n$ training observations, the Mean Squared Error loss is formulated as:
 
 $$J(w, b) = \text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2 = \frac{1}{n} \sum_{i=1}^{n} \left( y_i - (w \cdot x_i + b) \right)^2$$
 
-**Theoretical Justification for MSE:**
+**Theoretical Justification for MSE [1], [3]:**
 1. **Strict Convexity:** The quadratic bowl $J(w, b)$ has a unique global minimum, eliminating local minima traps.
 2. **Smooth Differentiability:** The objective is continuously differentiable everywhere, providing well-defined gradients.
 3. **Progressive Error Penalty:** Squaring penalizes large deviations substantially more than small errors.
@@ -134,9 +115,9 @@ $$J(w, b) = \text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2 = \frac{
 
 ---
 
-### 6.4 Step-by-Step Analytical Gradient Derivations
+### 5.3 Step-by-Step Analytical Gradient Derivations
 
-The gradient vector $\nabla J(w, b) = \left[ \frac{\partial J}{\partial w}, \frac{\partial J}{\partial b} \right]^T$ indicates the direction of steepest ascent. Applying the chain rule of calculus yields exact closed-form expressions:
+The gradient vector $\nabla J(w, b) = \left[ \frac{\partial J}{\partial w}, \frac{\partial J}{\partial b} \right]^T$ indicates the direction of steepest ascent. Applying the chain rule of calculus yields exact closed-form expressions [2]:
 
 #### Step 1: Weight Gradient Derivation ($\frac{\partial J}{\partial w}$)
 $$\frac{\partial J}{\partial w} = \frac{\partial}{\partial w} \left[ \frac{1}{n} \sum_{i=1}^{n} (y_i - (w x_i + b))^2 \right]$$
@@ -163,9 +144,9 @@ $$b \leftarrow b - \alpha \frac{\partial J}{\partial b} = b + \alpha \frac{2}{n}
 
 ---
 
-### 6.5 Master Comparison: Batch GD vs. Stochastic GD Equations
+### 5.4 Master Comparison: Batch GD vs. Stochastic GD Equations
 
-| Mathematical Property | Batch Gradient Descent (GD) | Stochastic Gradient Descent (SGD) |
+| Mathematical Property | Batch Gradient Descent (GD) | Stochastic Gradient Descent (SGD) [4] |
 | :--- | :--- | :--- |
 | **Data Scope per Step** | Full training batch (all $n = 10$ samples) | Single observation (sample $i \in \{1, \dots, n\}$) |
 | **Hypothesis Form** | $\hat{y} = w \mathbf{X} + b$ (Vectorized) | $\hat{y}_i = w x_i + b$ (Scalar) |
@@ -180,55 +161,26 @@ $$b \leftarrow b - \alpha \frac{\partial J}{\partial b} = b + \alpha \frac{2}{n}
 
 ---
 
-## 7. System Design
+## 6. System Architecture & Modularity
 
-The system follows a modular, decoupled software engineering architecture designed for separation of concerns and reproducibility.
+The codebase is organized into decoupled modules following software engineering best practices:
 
-```mermaid
-flowchart TD
-    subgraph Data Layer
-        CSV["study_hours_exam_scores.csv (15 records)"] --> Preproc["src/data_preprocessing.py"]
-        Preproc --> Split["70/30 Isolation Split (Seed 42)"]
-        Split --> TrainSet["Training Set (n=10)"]
-        Split --> TestSet["Test Set (n=5, Quarantined)"]
-    end
-
-    subgraph Optimization Engine
-        TrainSet --> GD["src/gradient_descent.py (Batch GD)"]
-        TrainSet --> SGD["src/stochastic_gradient_descent.py (SGD)"]
-        TrainSet --> OLS["src/evaluation.py (Analytical OLS Reference)"]
-    end
-
-    subgraph Evaluation & Outputs
-        GD --> Eval["src/evaluation.py (MSE, RMSE, R2)"]
-        SGD --> Eval
-        OLS --> Eval
-        TestSet --> Eval
-        Eval --> Viz["src/visualization.py (6 PNG Figures)"]
-        Eval --> Tab["results/results.csv & test_predictions.csv"]
-        Eval --> Pres["index.html (Interactive Presentation Deck)"]
-        Eval --> Pred["predict.py (Interactive CLI Predictor)"]
-        Eval --> PDF["Linear_Regression_GD_vs_SGD_Report.pdf (14-page PDF)"]
-    end
-```
-
-### Module Breakdown:
-1. `data_preprocessing.py`: Handles CSV ingestion, structure inspection, descriptive statistics, feature scaling audit, and 70/30 train/test partitioning.
-2. `linear_regression.py`: Houses fundamental mathematical definitions: forward prediction function $\hat{y} = wx + b$, Mean Squared Error (MSE), Root Mean Squared Error (RMSE), and Coefficient of Determination ($R^2$).
-3. `gradient_descent.py`: Implements Batch Gradient Descent with complete trajectory tracking (loss, weights, biases across 1,000 iterations).
-4. `stochastic_gradient_descent.py`: Implements Stochastic Gradient Descent with sample-level permutation and epoch-wise tracking across 100 epochs.
-5. `evaluation.py`: Houses model performance routines, closed-form OLS calculation, and formatted comparison table generation.
-6. `visualization.py`: Generates the six high-resolution matplotlib visual figures with publication-ready styling.
-7. `main.py`: The master orchestration script running the automated pipeline end-to-end.
-8. `predict.py`: Interactive and command-line prediction script for live testing and demonstration.
-9. `build_academic_pdf.py`: Automated pipeline converting report markdown/HTML to a 14-page numbered PDF.
-10. `index.html`: Standalone, interactive HTML5 presentation deck with moveable cards and a 5-palette theme engine.
+- `src/data_preprocessing.py`: Data loading, descriptive audits, feature scaling analysis, and isolated 70/30 partitioning.
+- `src/linear_regression.py`: First-principles core mathematics: forward prediction $\hat{y} = wx + b$, MSE, RMSE, and $R^2$.
+- `src/gradient_descent.py`: Batch Gradient Descent implementation with complete parameter and loss trajectory tracking.
+- `src/stochastic_gradient_descent.py`: Stochastic Gradient Descent with random permutation and epoch-level loss logging.
+- `src/evaluation.py`: Model evaluation routines, closed-form OLS analytical baseline computation, and metric formatting.
+- `src/visualization.py`: Production of the six publication-quality matplotlib figures using a non-interactive Agg backend [7].
+- `main.py`: Master orchestration script executing training, evaluation, CSV exports, and visualization routines.
+- `predict.py`: Interactive command-line predictor allowing live demonstration for any user-provided study hours.
+- `build_academic_pdf.py`: Automated pipeline converting report markdown/HTML to a 12-page numbered PDF.
+- `index.html`: Standalone, interactive HTML5 presentation deck with moveable cards and a 5-palette theme engine.
 
 ---
 
-## 8. Implementation Details
+## 7. Implementation Details
 
-### 8.1 Dataset Description and Partitioning
+### 7.1 Dataset Description and Partitioning
 
 The experimental dataset comprises 15 student observations recording study time in hours and resulting exam scores in percentage marks.
 
@@ -253,15 +205,11 @@ Student 15: (8.0 hr, 89 marks) -> Training Partition
 - **Training Partition ($n = 10$, 70%):** Hours = `[5.0, 2.0, 1.5, 8.0, 3.0, 4.5, 6.0, 7.0, 2.5, 4.0]`; Scores = `[68, 44, 39, 89, 52, 64, 75, 82, 48, 61]`.
 - **Test Partition ($n = 5$, 30%):** Hours = `[1.0, 3.5, 5.5, 6.5, 7.5]`; Scores = `[35, 55, 71, 78, 85]`.
 
-### 8.2 Data Leakage Prevention
-
-To ensure strict experimental integrity:
-- **Optimization Isolation:** The 5 test observations are never passed to the optimization routines. No gradients, residuals, or loss values are calculated on test samples during model fitting.
-- **Preprocessing Isolation:** Feature scaling analysis demonstrated that raw features are naturally bounded ($1.0 \le x \le 8.0$) and converge reliably with $\alpha = 0.01$. Keeping raw scale preserves direct physical interpretability of parameters: $w \approx 7.7$ marks per study hour, and $b \approx 28.2$ baseline marks.
+**Zero Data Leakage Safeguard:** The 5 test observations are completely quarantined during optimization. No gradients, residuals, or loss updates are evaluated on these samples while fitting parameters. They are evaluated strictly post-training to measure generalization [3].
 
 ---
 
-### 8.3 Structured Algorithmic Procedures
+### 7.2 Structured Algorithmic Procedures
 
 #### Algorithm 1: Batch Gradient Descent (Deterministic Optimization)
 ```text
@@ -330,13 +278,13 @@ To ensure strict experimental integrity:
 
 ---
 
-## 9. Experimental Results and Analysis
+## 8. Experimental Results and Comparative Analysis
 
-### 9.1 Performance Metrics Comparison Table
+### 8.1 Quantitative Performance Metrics Table
 
-The quantitative performance comparison between Batch Gradient Descent, Stochastic Gradient Descent, and the analytical Ordinary Least Squares solution is summarized below:
+The quantitative performance comparison between Batch Gradient Descent, Stochastic Gradient Descent, and the analytical Ordinary Least Squares solution [3] is summarized below:
 
-| Metric | Batch Gradient Descent (GD) | Stochastic Gradient Descent (SGD) | Analytical OLS (Reference) |
+| Metric | Batch Gradient Descent (GD) | Stochastic Gradient Descent (SGD) [4] | Analytical OLS (Reference) [3] |
 | :--- | :---: | :---: | :---: |
 | **Learned Weight ($w$)** | **7.7822** | **7.7156** | **7.6379** |
 | **Learned Bias ($b$)** | **28.2121** | **28.5394** | **28.9753** |
@@ -349,7 +297,7 @@ The quantitative performance comparison between Batch Gradient Descent, Stochast
 | **Total Parameter Updates** | 1,000 | 1,000 | 1 (Closed-form) |
 | **Total Sample Evaluations** | 10,000 | 1,000 | 10 |
 
-### 9.2 Test Set Predictions Table
+### 8.2 Held-Out Test Set Predictions Table
 
 Evaluation on the 5 quarantined test students yielded the following predictions:
 
@@ -365,7 +313,7 @@ The average absolute test error across all test samples is approximately **0.77 
 
 ---
 
-### 9.3 Visualizations and Graphical Analysis
+### 8.3 Graphical Analysis of the Six Visualizations
 
 #### Figure 1: Dataset Partition Scatter Plot
 ![Figure 1: Dataset Partition Scatter Plot](./results/figures/01_dataset_scatter.png)
@@ -391,7 +339,7 @@ The average absolute test error across all test samples is approximately **0.77 
 #### Figure 4: Stochastic Gradient Descent Loss Curve
 ![Figure 4: SGD Loss Curve](./results/figures/04_sgd_loss_curve.png)
 
-*Analysis of Figure 4:* The SGD loss curve illustrates rapid initial convergence, plummeting from 4117.60 to below 10 MSE within the first 30 epochs. However, unlike Batch GD, the curve exhibits noticeable high-frequency oscillations across epochs. This jitter is characteristic of stochastic gradient updates: individual data points pull the parameters in slightly different directions, causing the loss to fluctuate around the minimum.
+*Analysis of Figure 4:* The SGD loss curve illustrates rapid initial convergence, plummeting from 4117.60 to below 10 MSE within the first 30 epochs. However, unlike Batch GD, the curve exhibits noticeable high-frequency oscillations across epochs. This jitter is characteristic of stochastic gradient updates: individual data points pull the parameters in slightly different directions, causing the loss to fluctuate around the minimum [4].
 
 ---
 
@@ -412,27 +360,27 @@ Despite this qualitative difference in path, both reach virtually identical term
 
 ---
 
-## 10. Discussion and Limitations
+## 9. Discussion and Limitations
 
-### 10.1 Convergence Dynamics and Gradient Noise
+### 9.1 Convergence Dynamics and Gradient Noise
 
-The primary theoretical difference between Batch GD and SGD lies in their gradient calculation:
+The primary theoretical difference between Batch GD and SGD lies in their gradient calculation [2], [4]:
 - In **Batch GD**, the gradient vector is the true average over all training samples:
   $$\nabla J(w, b) = -\frac{2}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i) \begin{bmatrix} x_i \\ 1 \end{bmatrix}$$
   This results in deterministic, steady progress directly down the steepest descent vector of the loss surface.
 - In **SGD**, each update uses the gradient of a single sample $i$:
   $$\nabla J_i(w, b) = -2 (y_i - \hat{y}_i) \begin{bmatrix} x_i \\ 1 \end{bmatrix}$$
-  Because individual data points have distinct residual errors, the stochastic gradient acts as a noisy approximation of the true gradient. This noise causes the parameter vector to follow a erratic path. In deep learning and non-convex optimization, this stochastic noise is beneficial because it helps escape shallow local minima and saddle points. In strictly convex linear regression, the noise causes the parameters to wander within a small neighborhood around the global minimum rather than settling on the exact minimum.
+  Because individual data points have distinct residual errors, the stochastic gradient acts as a noisy approximation of the true gradient. This noise causes the parameter vector to follow a fluctuating path. In deep learning and non-convex optimization, this stochastic noise is beneficial because it helps escape shallow local minima and saddle points [2]. In strictly convex linear regression, the noise causes the parameters to wander within a small neighborhood around the global minimum rather than settling on the exact minimum.
 
-### 10.2 Computational Work and Sample Evaluations
+### 9.2 Computational Work and Sample Evaluations
 
 Under the chosen hyperparameters:
 - **Batch GD:** 1,000 iterations $\times$ 10 samples per iteration = **10,000 sample evaluations**.
 - **SGD:** 100 epochs $\times$ 10 samples per epoch = **1,000 sample evaluations**.
 
-Despite evaluating data points 10 times less frequently, SGD achieved equivalent test performance (Test MSE of 0.8650 vs. 0.8636). On massive datasets ($n \ge 10^6$), Batch GD is computationally impractical per step, whereas SGD provides rapid initial parameter convergence with minimal compute overhead.
+Despite evaluating data points 10 times less frequently, SGD achieved equivalent test performance (Test MSE of 0.8650 vs. 0.8636). On massive datasets ($n \ge 10^6$), Batch GD is computationally impractical per step, whereas SGD provides rapid initial parameter convergence with minimal compute overhead [4].
 
-### 10.3 Dataset Scale and Test Partition Limitations
+### 9.3 Methodological Limitations
 
 A thorough academic analysis requires transparent acknowledgment of experimental limitations:
 1. **Small Sample Size ($n = 15$):** The dataset is designed for educational clarity and step-by-step tracing. While ideal for instruction, a 15-sample dataset limits statistical power.
@@ -441,29 +389,29 @@ A thorough academic analysis requires transparent acknowledgment of experimental
 
 ---
 
-## 11. Conclusion
+## 10. Conclusion and Future Work
 
 This project successfully implemented and evaluated univariate Linear Regression from first mathematical principles. By deriving analytical gradients and developing Batch Gradient Descent and Stochastic Gradient Descent entirely without high-level library estimators, the study offers complete visibility into iterative optimization.
 
 ### Key Takeaways:
 1. **Parameter Equivalence:** Both Batch GD ($w = 7.7822, b = 28.2121$) and SGD ($w = 7.7156, b = 28.5394$) successfully recovered the underlying linear data generation process, converging to within 1% of the closed-form analytical OLS solution.
 2. **Identical Predictive Generalization:** On quarantined test samples, both methods produced matching generalization metrics ($R^2 = 0.9973$, $\text{RMSE} \approx 0.93$ marks).
-3. **Efficiency of Stochastic Updates:** SGD attained equivalent predictive accuracy with a **10-fold reduction in total sample evaluations** (1,000 vs. 10,000), empirically confirming the efficiency of stochastic optimization.
+3. **Efficiency of Stochastic Updates:** SGD attained equivalent predictive accuracy with a **10-fold reduction in total sample evaluations** (1,000 vs. 10,000), empirically confirming the efficiency of stochastic optimization [4].
 
 ### Future Improvements:
 - **Mini-Batch Gradient Descent:** Implementing mini-batch optimization (e.g., batch sizes of 2 to 4) to combine the vectorization efficiency of Batch GD with the computational speed and regularization benefits of SGD.
-- **Adaptive Learning Rate Schedules:** Introducing learning rate decay ($\alpha_t = \frac{\alpha_0}{1 + \gamma t}$) or adaptive moment estimation (Adam, RMSProp) to suppress late-stage SGD oscillations around the minimum.
+- **Adaptive Learning Rate Schedules:** Introducing learning rate decay ($\alpha_t = \frac{\alpha_0}{1 + \gamma t}$) or adaptive moment estimation (Adam [2]) to suppress late-stage SGD oscillations around the minimum.
 - **Multivariate Regression:** Extending the architecture to multi-feature datasets to study feature scaling, condition numbers, and matrix-vector formulations.
 
 ---
 
-## 12. References
+## 11. References
 
-1. Bishop, C. M. (2006). *Pattern Recognition and Machine Learning*. Springer New York. (Chapter 3: Linear Models for Regression).
-2. Goodfellow, I., Bengio, Y., & Courville, A. (2016). *Deep Learning*. MIT Press. (Chapter 4: Numerical Computation; Chapter 5: Machine Learning Basics).
-3. Hastie, T., Tibshirani, R., & Friedman, J. (2009). *The Elements of Statistical Learning: Data Mining, Inference, and Prediction* (2nd ed.). Springer.
-4. Bottou, L. (2010). *Large-Scale Machine Learning with Stochastic Gradient Descent*. In Proceedings of COMPSTAT'2010 (pp. 177-186). Physica-Verlag HD.
-5. Harris, C. R., Millman, K. J., van der Walt, S. J., et al. (2020). *Array programming with NumPy*. Nature, 585(7825), 357-362.
-6. McKinney, W. (2010). *Data Structures for Statistical Computing in Python*. In Proceedings of the 9th Python in Science Conference (pp. 56-61).
-7. Hunter, J. D. (2007). *Matplotlib: A 2D Graphics Environment*. Computing in Science & Engineering, 9(3), 90-95.
-8. Official Python Documentation (2026). *The Python Standard Library*. Python Software Foundation. [https://docs.python.org/3/](https://docs.python.org/3/)
+[1] C. M. Bishop, *Pattern Recognition and Machine Learning*. New York, NY, USA: Springer, 2006.  
+[2] I. Goodfellow, Y. Bengio, and A. Courville, *Deep Learning*. Cambridge, MA, USA: MIT Press, 2016.  
+[3] T. Hastie, R. Tibshirani, and J. Friedman, *The Elements of Statistical Learning: Data Mining, Inference, and Prediction*, 2nd ed. New York, NY, USA: Springer, 2009.  
+[4] L. Bottou, "Large-scale machine learning with stochastic gradient descent," in *Proc. COMPSTAT'2010*, Paris, France, 2010, pp. 177–186.  
+[5] C. R. Harris *et al.*, "Array programming with NumPy," *Nature*, vol. 585, no. 7825, pp. 357–362, 2020.  
+[6] W. McKinney, "Data structures for statistical computing in Python," in *Proc. 9th Python Sci. Conf.*, Austin, TX, USA, 2010, pp. 56–61.  
+[7] J. D. Hunter, "Matplotlib: A 2D graphics environment," *Comput. Sci. Eng.*, vol. 9, no. 3, pp. 90–95, 2007.  
+[8] Python Software Foundation, *The Python Standard Library Documentation*, Python 3.10, 2026. [Online]. Available: https://docs.python.org/3/
